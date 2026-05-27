@@ -1,0 +1,303 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kim Jaehyeok — Cinematic Atelier Portfolio</title>
+  <meta name="description" content="Kim Jaehyeok UI/UX portfolio website" />
+  <link rel="preload" as="image" href="assets/atelier-wide.webp">
+  <link rel="preload" as="image" href="assets/kia-hero.webp">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="intro-screen" id="introScreen" aria-hidden="true">
+    <div class="intro-grid" aria-hidden="true"></div>
+    <div class="intro-content">
+      <span class="intro-label">Kim Jaehyeok / UI UX Portfolio</span>
+      <h1 class="intro-title">
+        <span class="intro-outline">PORTFOLIO</span>
+        <span class="intro-fill">PORTFOLIO</span>
+      </h1>
+      <svg class="intro-scribe" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M1 10 C 10 4, 17 15, 25 9 S 40 3, 49 10 S 63 16, 72 8 S 88 4, 99 11" pathLength="1"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="progress" aria-hidden="true"></div>
+
+  <header class="site-header" data-nav>
+    <a class="brand" href="#top" aria-label="Kim Jaehyeok portfolio home">
+      <span>Kim Jaehyeok</span>
+      <strong>Portfolio</strong>
+    </a>
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="#profile">Profile</a>
+      <a href="#tools">Tools</a>
+      <a href="#works">Works</a>
+      <a href="#merge">Build</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-label="Portfolio cover">
+      <div class="hero-cream">
+        <p class="eyebrow hero-eyebrow">UI/UX · Web · App · Visual · 3D</p>
+        <h1 class="hero-title">PORTFOLIO</h1>
+        <p class="hero-copy">정보 구조, 화면 흐름, 시각 시스템을 연결해<br>명확한 디지털 경험을 만듭니다.</p>
+        <div class="hero-meta">
+          <span>Selected Works</span>
+          <span>2026</span>
+        </div>
+      </div>
+
+      <div class="hero-stage" aria-hidden="true">
+        <div class="stage-bg"></div>
+        <div class="stage-image image-parallax">
+          <img src="assets/atelier-wide.webp" alt="" />
+        </div>
+        <div class="stage-word">ATELIER</div>
+        <div class="stage-line">
+          <svg viewBox="0 0 100 28" preserveAspectRatio="none">
+            <path d="M1 17 C 8 8, 15 23, 23 16 S 38 6, 47 17 S 62 25, 73 15 S 90 9, 99 18"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="hero-work-rail" aria-label="Selected work quick links">
+        <a href="#kia"><span>01</span>KIA Website</a>
+        <a href="#gunit"><span>02</span>GUNIT App</a>
+        <a href="#character"><span>03</span>Character Design</a>
+        <a href="#modeling"><span>04</span>3D Modeling</a>
+      </div>
+    </section>
+
+    <section class="profile" id="profile">
+      <span class="section-index">01</span>
+      <div class="profile-title reveal">
+        <p class="eyebrow">Designer Profile</p>
+        <h2>사용자 흐름을 설계하고,<br>브랜드에 맞는 화면 경험으로 완성합니다.</h2>
+      </div>
+      <div class="profile-copy reveal">
+        <p>목적을 정의하고, 정보 구조와 화면 흐름을 정리한 뒤<br>브랜드 톤에 맞는 UI로 완성합니다.</p>
+        <div class="keyword-row">
+          <span>UI/UX</span>
+          <span>Web Design</span>
+          <span>App Design</span>
+          <span>Visual</span>
+          <span>3D</span>
+          <span>Interaction Concept</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="tools-interactive" id="tools">
+      <div class="tools-canvas">
+        <img class="tools-bg" src="assets/tools-pegboard-bg-empty.webp" alt="" aria-hidden="true" />
+
+        <div class="tools-title">
+          <p class="eyebrow">Tools & Skills</p>
+          <h2>프로젝트 단계별로 사용하는 툴과<br>활용 역량을 정리했습니다.</h2>
+        </div>
+
+        <div class="tools-layer">
+          <img class="tool-item tool-js" src="assets/tools/javascript_tape.png" alt="JavaScript" data-tool="JavaScript" data-desc="Interaction scripting and interface behavior" />
+          <img class="tool-item tool-ps" src="assets/tools/photoshop_screwdriver.png" alt="Photoshop" data-tool="Photoshop" data-desc="Image editing and visual refinement" />
+          <img class="tool-item tool-ai" src="assets/tools/illustrator_screwdriver.png" alt="Illustrator" data-tool="Illustrator" data-desc="Vector graphics and layout assets" />
+          <img class="tool-item tool-figma" src="assets/tools/figma_chisel.png" alt="Figma" data-tool="Figma" data-desc="UI structure and design systems" />
+          <img class="tool-item tool-vscode" src="assets/tools/vscode_tool.png" alt="VS Code" data-tool="VS Code" data-desc="HTML, CSS, and JavaScript production" />
+          <img class="tool-item tool-aitools" src="assets/tools/ai_saw.png" alt="AI Tools" data-tool="AI Tools" data-desc="Concept exploration and workflow support" />
+          <img class="tool-item tool-autocad" src="assets/tools/autocad_caliper.png" alt="AutoCAD" data-tool="AutoCAD" data-desc="Measured plans and spatial references" />
+          <img class="tool-item tool-react" src="assets/tools/react_chisel.png" alt="React" data-tool="React" data-desc="Component thinking and UI prototyping" />
+        </div>
+      </div>
+    </section>
+
+    <section class="works-display" id="works">
+      <div class="works-canvas">
+        <img class="works-bg" src="assets/works-pegboard-bg.webp" alt="" aria-hidden="true">
+
+        <div class="works-copy">
+          <div class="works-copy-meta">
+            <span>03</span>
+            <span>SELECTED WORKS</span>
+          </div>
+          <h2>역할, 목표, 결과물을 중심으로<br>정리한 대표 작업입니다.</h2>
+        </div>
+
+        <nav class="works-hanging-list" aria-label="Selected projects">
+          <a class="works-hanging-card" href="#kia">
+            <span class="work-no">01</span>
+            <strong>KIA Website</strong>
+            <span class="work-type">WEB DESIGN · UI/UX</span>
+          </a>
+          <a class="works-hanging-card" href="#gunit">
+            <span class="work-no">02</span>
+            <strong>GUNIT App</strong>
+            <span class="work-type">APP DESIGN · UX FLOW</span>
+          </a>
+          <a class="works-hanging-card is-disabled" href="#works" aria-label="Project 03 to be updated">
+            <span class="work-no">03</span>
+            <strong>Project 03</strong>
+            <span class="work-type">TO BE UPDATED</span>
+          </a>
+          <a class="works-hanging-card" href="#character">
+            <span class="work-no">04</span>
+            <strong>Character Design</strong>
+            <span class="work-type">ILLUSTRATION · VISUAL SYSTEM</span>
+          </a>
+          <a class="works-hanging-card" href="#modeling">
+            <span class="work-no">05</span>
+            <strong>3D Modeling</strong>
+            <span class="work-type">3D · RENDERING</span>
+          </a>
+        </nav>
+      </div>
+    </section>
+
+
+    <section id="merge" class="project-axis-section" aria-label="Project images are cut along a grangijil guide and fused into one composite pillar image">
+      <div class="project-axis-stage">
+        <div class="axis-sheet" aria-hidden="true">
+          <span class="axis-label axis-label-a">A-02 PROJECT AXIS</span>
+          <span class="axis-label axis-label-b">SCREEN BOUNDARY / 100VW × 100VH</span>
+          <span class="axis-label axis-label-c">CUT GUIDE / TRACE PATH</span>
+          <span class="axis-label axis-label-d">READ · REFINE · CONNECT</span>
+        </div>
+
+        <div class="axis-reference-line" aria-hidden="true"></div>
+
+        <div class="axis-card-track" aria-label="Project OG image cards">
+          <article class="axis-card axis-card-kia">
+            <img src="assets/kia-thumb.webp" alt="KIA Website OG image">
+            <span>01 / KIA Website</span>
+          </article>
+          <article class="axis-card axis-card-gunit">
+            <img src="assets/gunit-thumb.webp" alt="GUNIT App OG image">
+            <span>02 / GUNIT App</span>
+          </article>
+          <article class="axis-card axis-card-character">
+            <img src="assets/character-thumb.webp" alt="Character and 3D Works OG image">
+            <span>03 / Character &amp; 3D Works</span>
+          </article>
+        </div>
+
+        <svg class="axis-cut-svg" viewBox="0 0 1000 260" preserveAspectRatio="none" aria-hidden="true">
+          <path id="axisGuidePath" class="axis-guide-path" d="M55 132 C 132 112, 194 164, 274 136 S 414 82, 506 124 S 650 176, 728 130 S 858 88, 946 118"/>
+          <path id="axisDonePath" class="axis-done-path" d="M55 132 C 132 112, 194 164, 274 136 S 414 82, 506 124 S 650 176, 728 130 S 858 88, 946 118"/>
+        </svg>
+
+        <div class="axis-cut-labels" aria-hidden="true">
+          <span>TRACE GUIDE</span>
+          <span>CURSOR PATH</span>
+          <span>CUT LINE</span>
+          <span>GRANGIJIL CUT</span>
+        </div>
+
+        <svg class="axis-cursor" viewBox="0 0 42 52" aria-hidden="true">
+          <path d="M9 5 L32 28 L21 30 L27 44 L21 47 L15 33 L7 41 Z"/>
+        </svg>
+
+        <div class="axis-flow" aria-hidden="true">
+          <div class="axis-stream stream-kia"></div>
+          <div class="axis-stream stream-gunit"></div>
+          <div class="axis-stream stream-character"></div>
+        </div>
+
+        <div class="axis-result-block" aria-hidden="true">
+          <div class="result-layer result-kia"></div>
+          <div class="result-layer result-gunit"></div>
+          <div class="result-layer result-character"></div>
+          <span>FUSED RESULT BLOCK</span>
+        </div>
+
+        <div class="axis-composite-pillar" aria-hidden="true">
+          <div class="pillar-layer pillar-kia"></div>
+          <div class="pillar-layer pillar-gunit"></div>
+          <div class="pillar-layer pillar-character"></div>
+          <div class="pillar-cut-memory"></div>
+        </div>
+
+        <div class="axis-final-copy">
+          <h2>READ · REFINE · CONNECT</h2>
+          <p>세 개의 작업은 하나의 기준 위에서 다듬어지고 연결됩니다.</p>
+        </div>
+      </div>
+    </section>
+    <section class="project project-dark" id="kia">
+      <div class="project-visual image-reveal reveal" data-zoom-title="KIA Website">
+        <img src="assets/kia-hero.webp" alt="KIA website project visual" loading="lazy">
+      </div>
+      <div class="project-content reveal">
+        <span class="project-no">Project 01</span>
+        <h2>KIA Website</h2>
+        <p class="project-type">Web Design · UI/UX · Brand Experience</p>
+        <dl>
+          <div><dt>Goal</dt><dd>기아의 브랜드 메시지와 차량 정보를 명확한 웹 경험으로 재구성한 UI 디자인입니다.</dd></div>
+          <div><dt>Role</dt><dd>UI Design / Web Layout / Visual Direction</dd></div>
+          <div><dt>Output</dt><dd>Main Page / Detail Section / Responsive Layout</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="project" id="gunit">
+      <div class="project-content reveal">
+        <span class="project-no">Project 02</span>
+        <h2>GUNIT App</h2>
+        <p class="project-type">App Design · UX Flow · Service Concept</p>
+        <dl>
+          <div><dt>Goal</dt><dd>에어소프트 팀 매칭과 커뮤니티 활동을 연결하는 앱 서비스 UX를 설계했습니다.</dd></div>
+          <div><dt>Role</dt><dd>UX Structure / App UI / Screen Flow</dd></div>
+          <div><dt>Output</dt><dd>Home / Profile / Community / Event Screens</dd></div>
+        </dl>
+      </div>
+      <div class="project-visual image-reveal reveal" data-zoom-title="GUNIT App">
+        <img src="assets/gunit-hero.webp" alt="GUNIT app project visual" loading="lazy">
+      </div>
+    </section>
+
+    <section class="project project-dark" id="character">
+      <div class="project-visual image-reveal reveal" data-zoom-title="Character Design">
+        <img src="assets/character-hero.webp" alt="Character design project visual" loading="lazy">
+      </div>
+      <div class="project-content reveal">
+        <span class="project-no">Project 04</span>
+        <h2>Character Design</h2>
+        <p class="project-type">Character · Visual System · Brand Mood</p>
+        <dl>
+          <div><dt>Goal</dt><dd>Milo &amp; Pippa 캐릭터의 성격과 브랜드 무드를 시각 시스템으로 정리했습니다.</dd></div>
+          <div><dt>Role</dt><dd>Concept / Character Style / Application</dd></div>
+          <div><dt>Output</dt><dd>Main Character / Expression / Color Variation</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="project" id="modeling">
+      <div class="project-content reveal">
+        <span class="project-no">Project 05</span>
+        <h2>3D Modeling</h2>
+        <p class="project-type">3D Modeling · Material · Rendering</p>
+        <dl>
+          <div><dt>Goal</dt><dd>목재 의자의 형태, 재질, 조명을 정리해 현실감 있는 3D 렌더링으로 완성했습니다.</dd></div>
+          <div><dt>Role</dt><dd>Modeling / Material Setup / Lighting</dd></div>
+          <div><dt>Output</dt><dd>Object Modeling / Detail Rendering / Final Image</dd></div>
+        </dl>
+      </div>
+      <div class="project-visual image-reveal reveal" data-zoom-title="3D Modeling">
+        <img src="assets/modeling-hero.webp" alt="3D modeling project visual" loading="lazy">
+      </div>
+    </section>
+</main>
+
+  <div class="zoom-layer" id="zoomLayer" aria-hidden="true">
+    <button class="zoom-close" type="button" aria-label="Close preview">×</button>
+    <div class="zoom-inner">
+      <p class="zoom-title" id="zoomTitle"></p>
+      <img id="zoomImage" alt="">
+    </div>
+  </div>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
+
