@@ -1,5 +1,15 @@
 const fs = require('fs');
 const path = require('path');
+
+// WARNING: Do not run this script after installing the photo-based transparent tool PNG assets.
+// It can overwrite assets/tools/*.png.
+const GENERATE_TOOL_PNGS = process.env.GENERATE_TOOL_PNGS === 'true';
+
+if (!GENERATE_TOOL_PNGS) {
+  console.log('Skipped: set GENERATE_TOOL_PNGS=true to overwrite generated tool PNG assets.');
+  process.exit(0);
+}
+
 const sharp = require('sharp');
 
 const outDir = path.join(process.cwd(), 'assets', 'tools');

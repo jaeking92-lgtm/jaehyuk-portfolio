@@ -1,0 +1,9 @@
+.chrome-cdp/
+.chrome-profile/
+.chrome-profile-2/
+.codex-cdp-screenshots/
+stdout
+tools-check-cdp.png
+tools-check.png
+
+.codex-cdp-screenshot.js

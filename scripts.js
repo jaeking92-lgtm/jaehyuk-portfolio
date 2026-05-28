@@ -2,10 +2,6 @@
 const revealEls = document.querySelectorAll('.reveal');
 const introScreen = document.getElementById('introScreen');
 const header = document.querySelector('[data-nav]');
-const zoomLayer = document.getElementById('zoomLayer');
-const zoomImage = document.getElementById('zoomImage');
-const zoomTitle = document.getElementById('zoomTitle');
-const zoomClose = document.querySelector('.zoom-close');
 
 document.body.classList.add('intro-active');
 
@@ -86,58 +82,125 @@ const navObserver = new IntersectionObserver((entries)=>{
 },{threshold:.38});
 sections.forEach(section => navObserver.observe(section));
 
-const toolsInteractive = document.querySelector('.tools-interactive');
-if (toolsInteractive) {
-  if (reduceMotion) {
-    toolsInteractive.classList.add('tools-in');
-  } else {
-    const toolsObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          toolsInteractive.classList.add('tools-in');
-          toolsObserver.unobserve(toolsInteractive);
-        }
-      });
-    }, { threshold:.28 });
-    toolsObserver.observe(toolsInteractive);
-  }
+const toolSlots = document.querySelectorAll('.tool_slot');
+
+if (toolSlots.length) {
+  toolSlots.forEach((slot) => {
+    slot.addEventListener('click', (event) => {
+      const isTouchLike = window.matchMedia('(hover: none)').matches;
+
+      if (!isTouchLike) return;
+
+      event.stopPropagation();
+
+      const isActive = slot.classList.contains('is-active');
+
+      toolSlots.forEach((item) => item.classList.remove('is-active'));
+
+      if (!isActive) {
+        slot.classList.add('is-active');
+      }
+    });
+  });
+
+  document.addEventListener('click', () => {
+    toolSlots.forEach((item) => item.classList.remove('is-active'));
+  });
 }
 
-document.querySelectorAll('.project-visual').forEach(wrapper => {
-  const img = wrapper.querySelector('img');
-  if (!img) return;
+const projectDetails = {
+  kia: {
+    no: 'Project 01',
+    title: 'KIA Website',
+    type: 'Web Design · UI/UX · Brand Experience',
+    image: 'assets/kia-hero.webp',
+    alt: 'KIA website project visual',
+    goal: '기아의 브랜드 메시지와 차량 정보를 명확한 웹 경험으로 재구성한 UI 디자인입니다.',
+    role: 'UI Design / Web Layout / Visual Direction',
+    output: 'Main Page / Detail Section / Responsive Layout'
+  },
+  gunit: {
+    no: 'Project 02',
+    title: 'GUNIT App',
+    type: 'App Design · UX Flow · Service Concept',
+    image: 'assets/gunit-hero.webp',
+    alt: 'GUNIT app project visual',
+    goal: '에어소프트 팀 매칭과 커뮤니티 활동을 연결하는 앱 서비스 UX를 설계했습니다.',
+    role: 'UX Structure / App UI / Screen Flow',
+    output: 'Home / Profile / Community / Event Screens'
+  },
+  character: {
+    no: 'Project 03',
+    title: 'Character Design',
+    type: 'Character · Visual System · Brand Mood',
+    image: 'assets/character-hero.webp',
+    alt: 'Character design project visual',
+    goal: 'Milo & Pippa 캐릭터의 성격과 브랜드 무드를 시각 시스템으로 정리했습니다.',
+    role: 'Concept / Character Style / Application',
+    output: 'Main Character / Expression / Color Variation'
+  },
+  modeling: {
+    no: 'Project 04',
+    title: '3D Modeling',
+    type: '3D Modeling · Material · Rendering',
+    image: 'assets/modeling-hero.webp',
+    alt: '3D modeling project visual',
+    goal: '목재 의자의 형태, 재질, 조명을 정리해 현실감 있는 3D 렌더링으로 완성했습니다.',
+    role: 'Modeling / Material Setup / Lighting',
+    output: 'Object Modeling / Detail Rendering / Final Image'
+  }
+};
 
-  wrapper.addEventListener('mousemove', (event) => {
-    const rect = wrapper.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - .5;
-    const y = (event.clientY - rect.top) / rect.height - .5;
-    img.style.transform = `scale(1.035) translate(${(-x * 10).toFixed(2)}px, ${(-y * 8).toFixed(2)}px)`;
-  });
-  wrapper.addEventListener('mouseleave', () => {
-    img.style.transform = '';
-  });
-  wrapper.addEventListener('click', () => {
-    if (!zoomLayer || !zoomImage) return;
-    zoomImage.src = img.currentSrc || img.src;
-    zoomImage.alt = img.alt || '';
-    if (zoomTitle) zoomTitle.textContent = wrapper.dataset.zoomTitle || img.alt || 'Project preview';
-    zoomLayer.classList.add('is-open');
-    zoomLayer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  });
-});
+const projectModal = document.getElementById('projectModal');
+const projectModalImage = document.getElementById('projectModalImage');
+const projectModalNo = document.getElementById('projectModalNo');
+const projectModalTitle = document.getElementById('projectModalTitle');
+const projectModalType = document.getElementById('projectModalType');
+const projectModalGoal = document.getElementById('projectModalGoal');
+const projectModalRole = document.getElementById('projectModalRole');
+const projectModalOutput = document.getElementById('projectModalOutput');
+const projectOpenButtons = document.querySelectorAll('.project-open');
 
-function closeZoom() {
-  zoomLayer?.classList.remove('is-open');
-  zoomLayer?.setAttribute('aria-hidden', 'true');
+function openProjectModal(projectKey) {
+  const data = projectDetails[projectKey];
+  if (!data || !projectModal || !projectModalImage) return;
+
+  projectModalImage.src = data.image;
+  projectModalImage.alt = data.alt;
+  if (projectModalNo) projectModalNo.textContent = data.no;
+  if (projectModalTitle) projectModalTitle.textContent = data.title;
+  if (projectModalType) projectModalType.textContent = data.type;
+  if (projectModalGoal) projectModalGoal.textContent = data.goal;
+  if (projectModalRole) projectModalRole.textContent = data.role;
+  if (projectModalOutput) projectModalOutput.textContent = data.output;
+
+  projectModal.classList.add('is-open');
+  projectModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProjectModal() {
+  if (!projectModal) return;
+
+  projectModal.classList.remove('is-open');
+  projectModal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
 }
-zoomClose?.addEventListener('click', closeZoom);
-zoomLayer?.addEventListener('click', (event) => {
-  if (event.target === zoomLayer) closeZoom();
+
+projectOpenButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    openProjectModal(button.dataset.project);
+  });
 });
-addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') closeZoom();
+
+document.querySelectorAll('[data-modal-close]').forEach((button) => {
+  button.addEventListener('click', closeProjectModal);
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && projectModal?.classList.contains('is-open')) {
+    closeProjectModal();
+  }
 });
 
 

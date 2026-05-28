@@ -91,25 +91,45 @@
       </div>
     </section>
 
-    <section class="tools-interactive" id="tools">
-      <div class="tools-canvas">
-        <img class="tools-bg" src="assets/tools-pegboard-bg-empty.webp" alt="" aria-hidden="true" />
+    <section class="tools_board_interactive" id="tools">
+      <div class="tools_board_stage">
+        <img
+          class="tools_board_bg"
+          src="assets/tools/tools_board_empty.png"
+          alt="Tools board background"
+        />
 
-        <div class="tools-title">
-          <p class="eyebrow">Tools & Skills</p>
-          <h2>프로젝트 단계별로 사용하는 툴과<br>활용 역량을 정리했습니다.</h2>
-        </div>
+        <button class="tool_slot tool_slot_js" type="button" aria-label="JavaScript tool">
+          <img class="tool_asset" src="assets/tools/javascript_tape.png" alt="JavaScript tape measure" />
+        </button>
 
-        <div class="tools-layer">
-          <img class="tool-item tool-js" src="assets/tools/javascript_tape.png" alt="JavaScript" data-tool="JavaScript" data-desc="Interaction scripting and interface behavior" />
-          <img class="tool-item tool-ps" src="assets/tools/photoshop_screwdriver.png" alt="Photoshop" data-tool="Photoshop" data-desc="Image editing and visual refinement" />
-          <img class="tool-item tool-ai" src="assets/tools/illustrator_screwdriver.png" alt="Illustrator" data-tool="Illustrator" data-desc="Vector graphics and layout assets" />
-          <img class="tool-item tool-figma" src="assets/tools/figma_chisel.png" alt="Figma" data-tool="Figma" data-desc="UI structure and design systems" />
-          <img class="tool-item tool-vscode" src="assets/tools/vscode_tool.png" alt="VS Code" data-tool="VS Code" data-desc="HTML, CSS, and JavaScript production" />
-          <img class="tool-item tool-aitools" src="assets/tools/ai_saw.png" alt="AI Tools" data-tool="AI Tools" data-desc="Concept exploration and workflow support" />
-          <img class="tool-item tool-autocad" src="assets/tools/autocad_caliper.png" alt="AutoCAD" data-tool="AutoCAD" data-desc="Measured plans and spatial references" />
-          <img class="tool-item tool-react" src="assets/tools/react_chisel.png" alt="React" data-tool="React" data-desc="Component thinking and UI prototyping" />
-        </div>
+        <button class="tool_slot tool_slot_ps" type="button" aria-label="Photoshop tool">
+          <img class="tool_asset" src="assets/tools/photoshop_screwdriver.png" alt="Photoshop screwdriver" />
+        </button>
+
+        <button class="tool_slot tool_slot_ai" type="button" aria-label="Illustrator tool">
+          <img class="tool_asset" src="assets/tools/illustrator_screwdriver.png" alt="Illustrator screwdriver" />
+        </button>
+
+        <button class="tool_slot tool_slot_figma" type="button" aria-label="Figma tool">
+          <img class="tool_asset" src="assets/tools/figma_chisel.png" alt="Figma chisel" />
+        </button>
+
+        <button class="tool_slot tool_slot_vscode" type="button" aria-label="VS Code tool">
+          <img class="tool_asset" src="assets/tools/vscode_tool.png" alt="VS Code plane" />
+        </button>
+
+        <button class="tool_slot tool_slot_aitools" type="button" aria-label="AI tools">
+          <img class="tool_asset" src="assets/tools/ai_saw.png" alt="AI tools saw" />
+        </button>
+
+        <button class="tool_slot tool_slot_autocad" type="button" aria-label="AutoCAD tool">
+          <img class="tool_asset" src="assets/tools/autocad_caliper.png" alt="AutoCAD caliper" />
+        </button>
+
+        <button class="tool_slot tool_slot_react" type="button" aria-label="React tool">
+          <img class="tool_asset" src="assets/tools/react_chisel.png" alt="React chisel" />
+        </button>
       </div>
     </section>
 
@@ -126,31 +146,26 @@
         </div>
 
         <nav class="works-hanging-list" aria-label="Selected projects">
-          <a class="works-hanging-card" href="#kia">
+          <button class="works-hanging-card project-open" type="button" data-project="kia">
             <span class="work-no">01</span>
             <strong>KIA Website</strong>
             <span class="work-type">WEB DESIGN · UI/UX</span>
-          </a>
-          <a class="works-hanging-card" href="#gunit">
+          </button>
+          <button class="works-hanging-card project-open" type="button" data-project="gunit">
             <span class="work-no">02</span>
             <strong>GUNIT App</strong>
             <span class="work-type">APP DESIGN · UX FLOW</span>
-          </a>
-          <a class="works-hanging-card is-disabled" href="#works" aria-label="Project 03 to be updated">
+          </button>
+          <button class="works-hanging-card project-open" type="button" data-project="character">
             <span class="work-no">03</span>
-            <strong>Project 03</strong>
-            <span class="work-type">TO BE UPDATED</span>
-          </a>
-          <a class="works-hanging-card" href="#character">
-            <span class="work-no">04</span>
             <strong>Character Design</strong>
-            <span class="work-type">ILLUSTRATION · VISUAL SYSTEM</span>
-          </a>
-          <a class="works-hanging-card" href="#modeling">
-            <span class="work-no">05</span>
+            <span class="work-type">CHARACTER · VISUAL SYSTEM</span>
+          </button>
+          <button class="works-hanging-card project-open" type="button" data-project="modeling">
+            <span class="work-no">04</span>
             <strong>3D Modeling</strong>
-            <span class="work-type">3D · RENDERING</span>
-          </a>
+            <span class="work-type">3D MODELING · RENDERING</span>
+          </button>
         </nav>
       </div>
     </section>
@@ -224,80 +239,42 @@
         </div>
       </div>
     </section>
-    <section class="project project-dark" id="kia">
-      <div class="project-visual image-reveal reveal" data-zoom-title="KIA Website">
-        <img src="assets/kia-hero.webp" alt="KIA website project visual" loading="lazy">
-      </div>
-      <div class="project-content reveal">
-        <span class="project-no">Project 01</span>
-        <h2>KIA Website</h2>
-        <p class="project-type">Web Design · UI/UX · Brand Experience</p>
-        <dl>
-          <div><dt>Goal</dt><dd>기아의 브랜드 메시지와 차량 정보를 명확한 웹 경험으로 재구성한 UI 디자인입니다.</dd></div>
-          <div><dt>Role</dt><dd>UI Design / Web Layout / Visual Direction</dd></div>
-          <div><dt>Output</dt><dd>Main Page / Detail Section / Responsive Layout</dd></div>
-        </dl>
-      </div>
-    </section>
-
-    <section class="project" id="gunit">
-      <div class="project-content reveal">
-        <span class="project-no">Project 02</span>
-        <h2>GUNIT App</h2>
-        <p class="project-type">App Design · UX Flow · Service Concept</p>
-        <dl>
-          <div><dt>Goal</dt><dd>에어소프트 팀 매칭과 커뮤니티 활동을 연결하는 앱 서비스 UX를 설계했습니다.</dd></div>
-          <div><dt>Role</dt><dd>UX Structure / App UI / Screen Flow</dd></div>
-          <div><dt>Output</dt><dd>Home / Profile / Community / Event Screens</dd></div>
-        </dl>
-      </div>
-      <div class="project-visual image-reveal reveal" data-zoom-title="GUNIT App">
-        <img src="assets/gunit-hero.webp" alt="GUNIT app project visual" loading="lazy">
-      </div>
-    </section>
-
-    <section class="project project-dark" id="character">
-      <div class="project-visual image-reveal reveal" data-zoom-title="Character Design">
-        <img src="assets/character-hero.webp" alt="Character design project visual" loading="lazy">
-      </div>
-      <div class="project-content reveal">
-        <span class="project-no">Project 04</span>
-        <h2>Character Design</h2>
-        <p class="project-type">Character · Visual System · Brand Mood</p>
-        <dl>
-          <div><dt>Goal</dt><dd>Milo &amp; Pippa 캐릭터의 성격과 브랜드 무드를 시각 시스템으로 정리했습니다.</dd></div>
-          <div><dt>Role</dt><dd>Concept / Character Style / Application</dd></div>
-          <div><dt>Output</dt><dd>Main Character / Expression / Color Variation</dd></div>
-        </dl>
-      </div>
-    </section>
-
-    <section class="project" id="modeling">
-      <div class="project-content reveal">
-        <span class="project-no">Project 05</span>
-        <h2>3D Modeling</h2>
-        <p class="project-type">3D Modeling · Material · Rendering</p>
-        <dl>
-          <div><dt>Goal</dt><dd>목재 의자의 형태, 재질, 조명을 정리해 현실감 있는 3D 렌더링으로 완성했습니다.</dd></div>
-          <div><dt>Role</dt><dd>Modeling / Material Setup / Lighting</dd></div>
-          <div><dt>Output</dt><dd>Object Modeling / Detail Rendering / Final Image</dd></div>
-        </dl>
-      </div>
-      <div class="project-visual image-reveal reveal" data-zoom-title="3D Modeling">
-        <img src="assets/modeling-hero.webp" alt="3D modeling project visual" loading="lazy">
-      </div>
-    </section>
 </main>
 
-  <div class="zoom-layer" id="zoomLayer" aria-hidden="true">
-    <button class="zoom-close" type="button" aria-label="Close preview">×</button>
-    <div class="zoom-inner">
-      <p class="zoom-title" id="zoomTitle"></p>
-      <img id="zoomImage" alt="">
-    </div>
-  </div>
+  <div class="project-modal" id="projectModal" aria-hidden="true">
+    <div class="project-modal-backdrop" data-modal-close></div>
 
+    <section class="project-modal-panel" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
+      <button class="project-modal-close" type="button" aria-label="Close project detail" data-modal-close>×</button>
+
+      <div class="project-modal-visual">
+        <img id="projectModalImage" src="" alt="">
+      </div>
+
+      <div class="project-modal-content">
+        <span class="project-modal-no" id="projectModalNo"></span>
+        <h2 id="projectModalTitle"></h2>
+        <p class="project-modal-type" id="projectModalType"></p>
+
+        <dl class="project-modal-list">
+          <div>
+            <dt>Goal</dt>
+            <dd id="projectModalGoal"></dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd id="projectModalRole"></dd>
+          </div>
+          <div>
+            <dt>Output</dt>
+            <dd id="projectModalOutput"></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </div>
   <script src="scripts.js"></script>
 </body>
 </html>
+
 
