@@ -64,6 +64,11 @@
         </div>
       </div>
 
+      <button class="hero-scroll-guide" type="button" data-scroll-guide>
+        <span>scroll to explore</span>
+        <i aria-hidden="true">↓</i>
+      </button>
+
       <div class="hero-work-rail" aria-label="Selected work quick links">
         <a href="#kia"><span>01</span>KIA Website</a>
         <a href="#gunit"><span>02</span>GUNIT App</a>
@@ -91,45 +96,115 @@
       </div>
     </section>
 
-    <section class="tools_board_interactive" id="tools">
-      <div class="tools_board_stage">
+    <section class="tools-photo-section" id="tools" aria-label="Tools and skills">
+      <div class="tools-photo-stage">
         <img
-          class="tools_board_bg"
-          src="assets/tools/tools_board_empty.png"
-          alt="Tools board background"
+          class="tools-board-photo"
+          src="assets/tools/tools_board_empty.png?v=short-card-board-1"
+          alt="Tools and skills wooden board"
         />
 
-        <button class="tool_slot tool_slot_js" type="button" aria-label="JavaScript tool">
-          <img class="tool_asset" src="assets/tools/javascript_tape.png" alt="JavaScript tape measure" />
+        <div class="tools-board-meta tools-board-meta-left" aria-hidden="true">
+          <span>KIM JAEHYEOK</span>
+          <span>PORTFOLIO</span>
+        </div>
+
+        <div class="tools-board-meta tools-board-meta-right" aria-hidden="true">
+          <span>DESIGN &amp; DEVELOPMENT</span>
+          <span>SKILLS OVERVIEW</span>
+        </div>
+
+        <div class="tools-board-title" aria-hidden="true">
+          <strong>TOOLS &amp; SKILLS</strong>
+          <span>내가 사용하는 도구들</span>
+        </div>
+
+        <button class="tool-pin tool-pin-js" type="button" aria-label="JavaScript tool">
+          <img src="assets/tools/javascript_tape.png?v=short-card-tools-1" alt="JavaScript tape measure" />
         </button>
 
-        <button class="tool_slot tool_slot_ps" type="button" aria-label="Photoshop tool">
-          <img class="tool_asset" src="assets/tools/photoshop_screwdriver.png" alt="Photoshop screwdriver" />
+        <button class="tool-pin tool-pin-ps" type="button" aria-label="Photoshop tool">
+          <img src="assets/tools/photoshop_screwdriver.png?v=short-card-tools-1" alt="Photoshop screwdriver" />
         </button>
 
-        <button class="tool_slot tool_slot_ai" type="button" aria-label="Illustrator tool">
-          <img class="tool_asset" src="assets/tools/illustrator_screwdriver.png" alt="Illustrator screwdriver" />
+        <button class="tool-pin tool-pin-ai" type="button" aria-label="Illustrator tool">
+          <img src="assets/tools/illustrator_screwdriver.png?v=short-card-tools-1" alt="Illustrator screwdriver" />
         </button>
 
-        <button class="tool_slot tool_slot_figma" type="button" aria-label="Figma tool">
-          <img class="tool_asset" src="assets/tools/figma_chisel.png" alt="Figma chisel" />
+        <button class="tool-pin tool-pin-figma" type="button" aria-label="Figma tool">
+          <img src="assets/tools/figma_chisel.png?v=short-card-tools-1" alt="Figma chisel" />
         </button>
 
-        <button class="tool_slot tool_slot_vscode" type="button" aria-label="VS Code tool">
-          <img class="tool_asset" src="assets/tools/vscode_tool.png" alt="VS Code plane" />
+        <button class="tool-pin tool-pin-vscode" type="button" aria-label="VS Code tool">
+          <img src="assets/tools/vscode_tool.png?v=short-card-tools-1" alt="VS Code wooden plane" />
         </button>
 
-        <button class="tool_slot tool_slot_aitools" type="button" aria-label="AI tools">
-          <img class="tool_asset" src="assets/tools/ai_saw.png" alt="AI tools saw" />
+        <button class="tool-pin tool-pin-aitools" type="button" aria-label="AI tools">
+          <img src="assets/tools/ai_saw.png?v=short-card-tools-1" alt="AI tools saw" />
         </button>
 
-        <button class="tool_slot tool_slot_autocad" type="button" aria-label="AutoCAD tool">
-          <img class="tool_asset" src="assets/tools/autocad_caliper.png" alt="AutoCAD caliper" />
+        <button class="tool-pin tool-pin-autocad" type="button" aria-label="AutoCAD tool">
+          <img src="assets/tools/autocad_caliper.png?v=short-card-tools-1" alt="AutoCAD caliper" />
         </button>
 
-        <button class="tool_slot tool_slot_react" type="button" aria-label="React tool">
-          <img class="tool_asset" src="assets/tools/react_chisel.png" alt="React chisel" />
+        <button class="tool-pin tool-pin-react" type="button" aria-label="React tool">
+          <img src="assets/tools/react_chisel.png?v=short-card-tools-1" alt="React chisel" />
         </button>
+
+        <div class="tools-card-text-layer" aria-label="Tool descriptions">
+          <article class="tools-card-text">
+            <strong>JavaScript</strong>
+            <span>프로그래밍 언어</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+          <article class="tools-card-text">
+            <strong>VS Code</strong>
+            <span>코드 편집기</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+          <article class="tools-card-text">
+            <strong>React</strong>
+            <span>UI 라이브러리</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+          <article class="tools-card-text">
+            <strong>Figma</strong>
+            <span>UI/UX 디자인</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+          <article class="tools-card-text">
+            <strong>Photoshop</strong>
+            <span>이미지 편집</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+          <article class="tools-card-text">
+            <strong>Illustrator</strong>
+            <span>벡터 그래픽</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+          <article class="tools-card-text">
+            <strong>AI Tools</strong>
+            <span>GPT · Midjourney · Claude</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+          <article class="tools-card-text">
+            <strong>AutoCAD</strong>
+            <span>2D/3D 설계</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+        </div>
+
+        <div class="tools-board-footer" aria-hidden="true">
+          DESIGN · CODE · CREATE
+        </div>
       </div>
     </section>
 

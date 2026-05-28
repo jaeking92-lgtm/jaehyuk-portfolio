@@ -70,6 +70,92 @@ window.addEventListener('pointermove', (event) => {
   document.documentElement.style.setProperty('--my', my.toFixed(4));
 }, {passive:true});
 
+function initScrollGuide() {
+  const guide = document.querySelector('[data-scroll-guide]');
+  const character = document.querySelector('[data-hero-character]');
+
+  if (!guide) return;
+
+  guide.addEventListener('click', () => {
+    const profile = document.querySelector('#profile');
+    profile?.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  if (character) {
+    guide.addEventListener('mouseenter', () => {
+      character.classList.add('is-looking-guide');
+    });
+
+    guide.addEventListener('mouseleave', () => {
+      character.classList.remove('is-looking-guide');
+    });
+  }
+}
+
+function initSectionReveal() {
+  const revealSections = document.querySelectorAll('.profile, .tools-photo-section, .works-display');
+  if (!revealSections.length) return;
+
+  if (reduceMotion) {
+    revealSections.forEach((section) => section.classList.add('section-in'));
+    return;
+  }
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+
+      entry.target.classList.add('section-in');
+      sectionObserver.unobserve(entry.target);
+    });
+  }, {
+    threshold:.18,
+    rootMargin:'0px 0px -8% 0px'
+  });
+
+  revealSections.forEach((section) => sectionObserver.observe(section));
+}
+
+function initTitleReveal() {
+  const titleTargets = document.querySelectorAll('.hero-title, .profile h2, .tools-board-title, .works-copy h2');
+  if (!titleTargets.length) return;
+
+  titleTargets.forEach((title) => {
+    title.classList.add('title-reveal');
+  });
+
+  if (reduceMotion) {
+    titleTargets.forEach((title) => title.classList.add('title-in'));
+    return;
+  }
+
+  requestAnimationFrame(() => {
+    document.querySelector('.hero-title')?.classList.add('title-in');
+  });
+
+  const titleObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+
+      entry.target.classList.add('title-in');
+      titleObserver.unobserve(entry.target);
+    });
+  }, {
+    threshold:.25,
+    rootMargin:'0px 0px -10% 0px'
+  });
+
+  titleTargets.forEach((title) => {
+    if (!title.classList.contains('hero-title')) {
+      titleObserver.observe(title);
+    }
+  });
+}
+
+initScrollGuide();
+initSectionReveal();
+initTitleReveal();
+
 const sections = [...document.querySelectorAll('section[id]')];
 const navLinks = [...document.querySelectorAll('.nav a')];
 const navObserver = new IntersectionObserver((entries)=>{
@@ -82,7 +168,7 @@ const navObserver = new IntersectionObserver((entries)=>{
 },{threshold:.38});
 sections.forEach(section => navObserver.observe(section));
 
-const toolSlots = document.querySelectorAll('.tool_slot');
+const toolSlots = document.querySelectorAll('.tool-pin');
 
 if (toolSlots.length) {
   toolSlots.forEach((slot) => {
@@ -106,6 +192,454 @@ if (toolSlots.length) {
   document.addEventListener('click', () => {
     toolSlots.forEach((item) => item.classList.remove('is-active'));
   });
+}
+
+const isToolsCalibrateMode = new URLSearchParams(window.location.search).get('calibrate') === 'tools';
+const toolsStage = document.querySelector('.tools-photo-stage');
+
+if (isToolsCalibrateMode && toolsStage) {
+  const calibrationKey = 'toolsCalibrationV2';
+  const pinOrder = [
+    'tool-pin-js',
+    'tool-pin-ps',
+    'tool-pin-ai',
+    'tool-pin-figma',
+    'tool-pin-vscode',
+    'tool-pin-aitools',
+    'tool-pin-autocad',
+    'tool-pin-react'
+  ];
+  const targetOrder = [
+    ...pinOrder,
+    'tools-card-text-layer',
+    'tools-board-title',
+    'tools-board-meta-left',
+    'tools-board-meta-right',
+    'tools-board-footer'
+  ];
+  const calibrationTargets = targetOrder
+    .map((className) => toolsStage.querySelector(`.${className}`))
+    .filter(Boolean);
+  const toolPins = calibrationTargets.filter((item) => item.classList.contains('tool-pin'));
+  let selectedTarget = null;
+  let draggingTarget = null;
+  let dragOffsetX = 0;
+  let dragOffsetY = 0;
+
+  toolsStage.classList.add('is-calibrating');
+
+  const panel = document.createElement('div');
+  panel.className = 'tools-calibration-panel';
+  panel.innerHTML = `
+    <strong>Tools Calibration</strong>
+    <div data-calibration-selected>No tool selected</div>
+    <label>left <input data-calibration-field="left" type="number" step="0.1" disabled></label>
+    <label>top <input data-calibration-field="top" type="number" step="0.1" disabled></label>
+    <label>right <input data-calibration-field="right" type="number" step="0.1" disabled></label>
+    <label>bottom <input data-calibration-field="bottom" type="number" step="0.1" disabled></label>
+    <label>width <input data-calibration-field="width" type="number" step="0.1" disabled></label>
+    <label>height <input data-calibration-field="height" type="number" step="0.1" disabled></label>
+    <label>scale <input data-calibration-field="scale" type="number" step="0.01" disabled></label>
+    <label>rotate <input data-calibration-field="rotate" type="number" step="0.1" disabled></label>
+    <button type="button" data-calibration-reference>Toggle Reference</button>
+    <button type="button" data-calibration-grid>Toggle Grid</button>
+    <button type="button" data-calibration-copy>Copy CSS</button>
+    <button type="button" data-calibration-reset>Reset Local</button>
+    <code data-calibration-output>Select an item to calibrate.</code>
+  `;
+  document.body.appendChild(panel);
+
+  const selectedLabel = panel.querySelector('[data-calibration-selected]');
+  const fields = {
+    left: panel.querySelector('[data-calibration-field="left"]'),
+    top: panel.querySelector('[data-calibration-field="top"]'),
+    right: panel.querySelector('[data-calibration-field="right"]'),
+    bottom: panel.querySelector('[data-calibration-field="bottom"]'),
+    width: panel.querySelector('[data-calibration-field="width"]'),
+    height: panel.querySelector('[data-calibration-field="height"]'),
+    scale: panel.querySelector('[data-calibration-field="scale"]'),
+    rotate: panel.querySelector('[data-calibration-field="rotate"]')
+  };
+  const output = panel.querySelector('[data-calibration-output]');
+  const referenceButton = panel.querySelector('[data-calibration-reference]');
+  const gridButton = panel.querySelector('[data-calibration-grid]');
+  const copyButton = panel.querySelector('[data-calibration-copy]');
+  const resetButton = panel.querySelector('[data-calibration-reset]');
+
+  function getTargetClass(target) {
+    return targetOrder.find((className) => target.classList.contains(className));
+  }
+
+  function getMetrics(target) {
+    const stageRect = toolsStage.getBoundingClientRect();
+    const rect = target.getBoundingClientRect();
+    const styles = getComputedStyle(target);
+    const scale = parseFloat(styles.getPropertyValue('--tool-scale')) || 1;
+    const rotateRaw = styles.getPropertyValue('--tool-rot').trim();
+    const rotate = Number.parseFloat(rotateRaw) || 0;
+
+    return {
+      left: (target.offsetLeft / stageRect.width) * 100,
+      top: (target.offsetTop / stageRect.height) * 100,
+      right: ((stageRect.right - rect.right) / stageRect.width) * 100,
+      bottom: ((stageRect.bottom - rect.bottom) / stageRect.height) * 100,
+      width: (rect.width / stageRect.width) * 100,
+      height: (rect.height / stageRect.height) * 100,
+      scale,
+      rotate
+    };
+  }
+
+  function getCapabilities(target) {
+    const className = getTargetClass(target);
+    const isTool = target.classList.contains('tool-pin');
+
+    if (isTool) return ['left', 'top', 'width', 'scale', 'rotate'];
+    if (className === 'tools-card-text-layer') return ['left', 'right', 'bottom', 'height'];
+    if (className === 'tools-board-title') return ['left', 'top', 'width', 'height'];
+    if (className === 'tools-board-meta-left') return ['left', 'top', 'width', 'height'];
+    if (className === 'tools-board-meta-right') return ['right', 'top', 'width', 'height'];
+    if (className === 'tools-board-footer') return ['left', 'bottom', 'width', 'height'];
+    return ['left', 'top', 'width', 'height'];
+  }
+
+  function loadPositions() {
+    try {
+      return JSON.parse(localStorage.getItem(calibrationKey)) || {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function savePositions() {
+    const positions = {};
+    calibrationTargets.forEach((target) => {
+      const className = getTargetClass(target);
+      if (!className) return;
+      const metrics = getMetrics(target);
+      const capabilities = getCapabilities(target);
+      positions[className] = {};
+
+      capabilities.forEach((key) => {
+        const precision = key === 'scale' ? 2 : 2;
+        positions[className][key] = Number(metrics[key].toFixed(precision));
+      });
+    });
+
+    try {
+      localStorage.setItem(calibrationKey, JSON.stringify(positions));
+    } catch (error) {}
+  }
+
+  function setPercent(target, property, value) {
+    target.style[property] = `${value.toFixed(2)}%`;
+  }
+
+  function applyPosition(target, values) {
+    const isRightBased = target.classList.contains('tools-board-meta-right');
+    const isBottomBased = target.classList.contains('tools-card-text-layer')
+      || target.classList.contains('tools-board-footer');
+
+    if (typeof values.left === 'number') {
+      setPercent(target, 'left', values.left);
+      if (isRightBased) target.style.right = 'auto';
+    }
+    if (typeof values.right === 'number') {
+      setPercent(target, 'right', values.right);
+      if (isRightBased || target.classList.contains('tools-card-text-layer')) target.style.left = target.style.left || '';
+    }
+    if (typeof values.top === 'number') {
+      setPercent(target, 'top', values.top);
+      if (isBottomBased) target.style.bottom = 'auto';
+    }
+    if (typeof values.bottom === 'number') {
+      setPercent(target, 'bottom', values.bottom);
+      if (isBottomBased) target.style.top = 'auto';
+    }
+    if (typeof values.width === 'number') setPercent(target, 'width', values.width);
+    if (typeof values.height === 'number') setPercent(target, 'height', values.height);
+    if (typeof values.scale === 'number') {
+      target.style.setProperty('--tool-scale', values.scale.toFixed(2));
+      target.style.setProperty('--tool-scale-hover', (values.scale + .05).toFixed(2));
+    }
+    if (typeof values.rotate === 'number') {
+      target.style.setProperty('--tool-rot', `${values.rotate.toFixed(2)}deg`);
+    }
+  }
+
+  function applySavedPositions() {
+    const positions = loadPositions();
+    calibrationTargets.forEach((target) => {
+      const className = getTargetClass(target);
+      if (!className || !positions[className]) return;
+      applyPosition(target, positions[className]);
+    });
+  }
+
+  function setSelectedTarget(target) {
+    selectedTarget?.classList.remove('is-selected');
+    selectedTarget = target;
+    selectedTarget?.classList.add('is-selected');
+    updatePanel();
+  }
+
+  function updatePanel(message = '') {
+    if (!selectedTarget) {
+      selectedLabel.textContent = 'No tool selected';
+      Object.values(fields).forEach((field) => {
+        field.value = '';
+        field.disabled = true;
+      });
+      output.textContent = message || 'Select an item to calibrate.';
+      return;
+    }
+
+    const className = getTargetClass(selectedTarget);
+    const metrics = getMetrics(selectedTarget);
+    const capabilities = getCapabilities(selectedTarget);
+    selectedLabel.textContent = className || 'Selected item';
+
+    Object.entries(fields).forEach(([key, field]) => {
+      field.disabled = !capabilities.includes(key);
+      field.value = capabilities.includes(key) ? metrics[key].toFixed(key === 'scale' ? 2 : 2) : '';
+    });
+
+    output.textContent = message || `${className}\n${capabilities.map((key) => `${key}: ${metrics[key].toFixed(2)}`).join('\n')}`;
+  }
+
+  function updateTargetFromPointer(target, event) {
+    const stageRect = toolsStage.getBoundingClientRect();
+    const metrics = getMetrics(target);
+    const isTool = target.classList.contains('tool-pin');
+    const isRightBased = target.classList.contains('tools-board-meta-right');
+    const isBottomBased = target.classList.contains('tools-card-text-layer')
+      || target.classList.contains('tools-board-footer');
+
+    if (isTool) {
+      const left = ((event.clientX - stageRect.left) / stageRect.width) * 100;
+      const top = ((event.clientY - stageRect.top) / stageRect.height) * 100;
+      applyPosition(target, {left, top});
+    } else {
+      const newLeft = ((event.clientX - stageRect.left - dragOffsetX) / stageRect.width) * 100;
+      const newTop = ((event.clientY - stageRect.top - dragOffsetY) / stageRect.height) * 100;
+
+      if (isRightBased) {
+        applyPosition(target, {right: 100 - newLeft - metrics.width, top: newTop});
+      } else if (isBottomBased) {
+        applyPosition(target, {left: newLeft, bottom: 100 - newTop - metrics.height});
+      } else {
+        applyPosition(target, {left: newLeft, top: newTop});
+      }
+    }
+    savePositions();
+    updatePanel();
+  }
+
+  function nudgeSelected(deltaLeft, deltaTop, deltaWidth = 0, deltaScale = 0, deltaRotate = 0) {
+    if (!selectedTarget) return;
+
+    const metrics = getMetrics(selectedTarget);
+    const capabilities = getCapabilities(selectedTarget);
+    const values = {};
+
+    if (capabilities.includes('left')) values.left = metrics.left + deltaLeft;
+    if (capabilities.includes('right')) values.right = metrics.right - deltaLeft;
+    if (capabilities.includes('top')) values.top = metrics.top + deltaTop;
+    if (capabilities.includes('bottom')) values.bottom = metrics.bottom - deltaTop;
+    if (capabilities.includes('width')) values.width = Math.max(.5, metrics.width + deltaWidth);
+    if (capabilities.includes('scale')) values.scale = Math.max(.05, metrics.scale + deltaScale);
+    if (capabilities.includes('rotate')) values.rotate = metrics.rotate + deltaRotate;
+
+    applyPosition(selectedTarget, values);
+    savePositions();
+    updatePanel();
+  }
+
+  function formatRule(className, declarations) {
+    return `.${className} {\n${declarations.map((item) => `  ${item}`).join('\n')}\n}`;
+  }
+
+  function generateCss() {
+    const pinCss = pinOrder.map((pinClass) => {
+      const pin = toolsStage.querySelector(`.${pinClass}`);
+      if (!pin) return '';
+      const metrics = getMetrics(pin);
+      const hoverScale = Number.parseFloat(getComputedStyle(pin).getPropertyValue('--tool-scale-hover')) || metrics.scale + .05;
+      return formatRule(pinClass, [
+        `left: ${metrics.left.toFixed(2)}%;`,
+        `top: ${metrics.top.toFixed(2)}%;`,
+        `width: ${metrics.width.toFixed(2)}%;`,
+        `--tool-scale: ${metrics.scale.toFixed(2)};`,
+        `--tool-scale-hover: ${hoverScale.toFixed(2)};`,
+        `--tool-rot: ${metrics.rotate.toFixed(2)}deg;`
+      ]);
+    }).filter(Boolean);
+
+    const cardLayer = toolsStage.querySelector('.tools-card-text-layer');
+    const title = toolsStage.querySelector('.tools-board-title');
+    const metaLeft = toolsStage.querySelector('.tools-board-meta-left');
+    const metaRight = toolsStage.querySelector('.tools-board-meta-right');
+    const footer = toolsStage.querySelector('.tools-board-footer');
+    const extraCss = [];
+
+    if (cardLayer) {
+      const m = getMetrics(cardLayer);
+      extraCss.push(formatRule('tools-card-text-layer', [
+        `left: ${m.left.toFixed(2)}%;`,
+        `right: ${m.right.toFixed(2)}%;`,
+        `bottom: ${m.bottom.toFixed(2)}%;`,
+        `height: ${m.height.toFixed(2)}%;`
+      ]));
+    }
+    if (title) {
+      const m = getMetrics(title);
+      extraCss.push(formatRule('tools-board-title', [
+        `left: ${m.left.toFixed(2)}%;`,
+        `top: ${m.top.toFixed(2)}%;`,
+        `width: ${m.width.toFixed(2)}%;`,
+        `height: ${m.height.toFixed(2)}%;`
+      ]));
+    }
+    if (metaLeft) {
+      const m = getMetrics(metaLeft);
+      extraCss.push(formatRule('tools-board-meta-left', [
+        `left: ${m.left.toFixed(2)}%;`,
+        `top: ${m.top.toFixed(2)}%;`
+      ]));
+    }
+    if (metaRight) {
+      const m = getMetrics(metaRight);
+      extraCss.push(formatRule('tools-board-meta-right', [
+        `right: ${m.right.toFixed(2)}%;`,
+        `top: ${m.top.toFixed(2)}%;`
+      ]));
+    }
+    if (footer) {
+      const m = getMetrics(footer);
+      extraCss.push(formatRule('tools-board-footer', [
+        `left: ${m.left.toFixed(2)}%;`,
+        `bottom: ${m.bottom.toFixed(2)}%;`
+      ]));
+    }
+
+    return [...pinCss, ...extraCss].join('\n\n');
+  }
+
+  async function copyCss() {
+    const css = generateCss();
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(css);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = css;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+      }
+      output.textContent = 'Copied';
+      window.setTimeout(() => updatePanel(), 1200);
+    } catch (error) {
+      output.textContent = css;
+    }
+  }
+
+  applySavedPositions();
+
+  calibrationTargets.forEach((target) => {
+    target.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const rect = target.getBoundingClientRect();
+      setSelectedTarget(target);
+      draggingTarget = target;
+      dragOffsetX = event.clientX - rect.left;
+      dragOffsetY = event.clientY - rect.top;
+      target.setPointerCapture?.(event.pointerId);
+    });
+
+    target.addEventListener('pointermove', (event) => {
+      if (draggingTarget !== target) return;
+      event.preventDefault();
+      updateTargetFromPointer(target, event);
+    });
+
+    target.addEventListener('pointerup', () => {
+      draggingTarget = null;
+    });
+
+    target.addEventListener('pointercancel', () => {
+      draggingTarget = null;
+    });
+  });
+
+  Object.entries(fields).forEach(([key, field]) => {
+    field.addEventListener('input', () => {
+      if (!selectedTarget) return;
+      const value = Number(field.value);
+      if (!Number.isFinite(value)) return;
+
+      applyPosition(selectedTarget, {[key]: value});
+      savePositions();
+      updatePanel();
+    });
+  });
+
+  referenceButton.addEventListener('click', () => {
+    toolsStage.classList.toggle('show-reference');
+    referenceButton.textContent = toolsStage.classList.contains('show-reference')
+      ? 'Hide Reference'
+      : 'Toggle Reference';
+  });
+
+  gridButton.addEventListener('click', () => {
+    toolsStage.classList.toggle('show-grid');
+    gridButton.textContent = toolsStage.classList.contains('show-grid')
+      ? 'Hide Grid'
+      : 'Toggle Grid';
+  });
+
+  copyButton.addEventListener('click', copyCss);
+
+  resetButton.addEventListener('click', () => {
+    try {
+      localStorage.removeItem(calibrationKey);
+    } catch (error) {}
+    window.location.reload();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (!selectedTarget) return;
+
+    const step = event.shiftKey ? .5 : event.altKey ? .05 : .1;
+    const scaleStep = event.shiftKey ? .06 : .02;
+    const rotateStep = event.shiftKey ? -.5 : .5;
+    const keyMap = {
+      ArrowLeft: [-step, 0, 0, 0, 0],
+      ArrowRight: [step, 0, 0, 0, 0],
+      ArrowUp: [0, -step, 0, 0, 0],
+      ArrowDown: [0, step, 0, 0, 0],
+      '+': [0, 0, step, 0, 0],
+      '=': [0, 0, step, 0, 0],
+      '-': [0, 0, -step, 0, 0],
+      ']': [0, 0, 0, scaleStep, 0],
+      '[': [0, 0, 0, -scaleStep, 0],
+      r: [0, 0, 0, 0, rotateStep],
+      R: [0, 0, 0, 0, -.5]
+    };
+    const delta = keyMap[event.key];
+    if (!delta) return;
+
+    event.preventDefault();
+    nudgeSelected(delta[0], delta[1], delta[2], delta[3], delta[4]);
+  });
+
+  updatePanel();
 }
 
 const projectDetails = {
@@ -189,7 +723,11 @@ function closeProjectModal() {
 
 projectOpenButtons.forEach((button) => {
   button.addEventListener('click', () => {
-    openProjectModal(button.dataset.project);
+    button.classList.add('is-pressing');
+    window.setTimeout(() => {
+      button.classList.remove('is-pressing');
+      openProjectModal(button.dataset.project);
+    }, 130);
   });
 });
 
