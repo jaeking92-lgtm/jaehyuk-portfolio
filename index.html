@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
@@ -7,7 +7,7 @@
   <meta name="description" content="Kim Jaehyeok UI/UX portfolio website" />
   <link rel="preload" as="image" href="assets/atelier-wide.webp">
   <link rel="preload" as="image" href="assets/kia-hero.webp">
-  <link rel="stylesheet" href="./styles.css?v=tools-fix-20260528" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="intro-screen" id="introScreen" aria-hidden="true">
@@ -24,7 +24,23 @@
     </div>
   </div>
 
+  <div class="site-cursor" aria-hidden="true">
+    <span class="site-cursor-dot"></span>
+    <span class="site-cursor-label"></span>
+  </div>
+
   <div class="progress" aria-hidden="true"></div>
+
+  <div class="section-transition-rig" aria-hidden="true">
+    <div class="transition-paper-layer"></div>
+    <div class="transition-baseline"></div>
+  </div>
+
+  <div class="section-stage-indicator" aria-hidden="true">
+    <span class="stage-index">A-00</span>
+    <span class="stage-title">PORTFOLIO</span>
+    <span class="stage-state">READY</span>
+  </div>
 
   <header class="site-header" data-nav>
     <a class="brand" href="#top" aria-label="Kim Jaehyeok portfolio home">
@@ -34,16 +50,34 @@
     <nav class="nav" aria-label="Primary navigation">
       <a href="#profile">Profile</a>
       <a href="#tools">Tools</a>
-      <a href="#works">Works</a>
       <a href="#merge">Build</a>
+      <a href="#works">Works</a>
     </nav>
   </header>
 
   <main id="top">
-    <section class="hero" aria-label="Portfolio cover">
+    <section class="hero" id="hero" aria-label="Portfolio cover" data-section-name="HERO" data-section-index="A-00" data-section-title="ATELIER">
+      <div class="atelier-opening" aria-hidden="true">
+        <div class="atelier-opening-mark">
+          <span>KIM JAEHYEOK</span>
+          <strong>PORTFOLIO</strong>
+        </div>
+        <div class="atelier-opening-line"></div>
+      </div>
+
       <div class="hero-cream">
         <p class="eyebrow hero-eyebrow">UI/UX · Web · App · Visual · 3D</p>
-        <h1 class="hero-title">PORTFOLIO</h1>
+        <h1 class="hero-title" data-hero-title aria-label="PORTFOLIO">
+          <span aria-hidden="true">P</span>
+          <span aria-hidden="true">O</span>
+          <span aria-hidden="true">R</span>
+          <span aria-hidden="true">T</span>
+          <span aria-hidden="true">F</span>
+          <span aria-hidden="true">O</span>
+          <span aria-hidden="true">L</span>
+          <span aria-hidden="true">I</span>
+          <span aria-hidden="true">O</span>
+        </h1>
         <p class="hero-copy">정보 구조, 화면 흐름, 시각 시스템을 연결해<br>명확한 디지털 경험을 만듭니다.</p>
         <div class="hero-meta">
           <span>Selected Works</span>
@@ -51,11 +85,12 @@
         </div>
       </div>
 
-      <div class="hero-stage" aria-hidden="true">
+      <div class="hero-stage" aria-hidden="true" data-cursor-label="LIGHT">
         <div class="stage-bg"></div>
         <div class="stage-image image-parallax">
           <img src="assets/atelier-wide.webp" alt="" />
         </div>
+        <div class="hero-spotlight" aria-hidden="true"></div>
         <div class="stage-word">ATELIER</div>
         <div class="stage-line">
           <svg viewBox="0 0 100 28" preserveAspectRatio="none">
@@ -64,20 +99,25 @@
         </div>
       </div>
 
-      <button class="hero-scroll-guide" type="button" data-scroll-guide>
-        <span>scroll to explore</span>
-        <i aria-hidden="true">↓</i>
+      <div class="hero-project-preview" aria-hidden="true">
+        <img src="" alt="">
+        <span></span>
+      </div>
+
+      <button class="hero-scroll-guide" type="button" aria-label="다음 섹션으로 이동">
+        <span class="scroll-guide-line"></span>
+        <span class="scroll-guide-text">ENTER WORKSHOP</span>
       </button>
 
       <div class="hero-work-rail" aria-label="Selected work quick links">
-        <a href="#kia"><span>01</span>KIA Website</a>
-        <a href="#gunit"><span>02</span>GUNIT App</a>
-        <a href="#character"><span>03</span>Character Design</a>
-        <a href="#modeling"><span>04</span>3D Modeling</a>
+        <a href="#kia" data-hero-preview="kia" data-preview-title="KIA WEBSITE" data-preview-image="assets/kia-thumb.webp"><span>01</span>KIA Website</a>
+        <a href="#gunit" data-hero-preview="gunit" data-preview-title="GUNIT APP" data-preview-image="assets/work-03-placeholder.svg"><span>02</span>GUNIT App</a>
+        <a href="#character" data-hero-preview="character" data-preview-title="CHARACTER DESIGN" data-preview-image="assets/work-03-placeholder.svg"><span>03</span>Character Design</a>
+        <a href="#modeling" data-hero-preview="modeling" data-preview-title="3D MODELING" data-preview-image="assets/modeling-thumb.webp"><span>04</span>3D Modeling</a>
       </div>
     </section>
 
-    <section class="profile" id="profile">
+    <section class="profile" id="profile" data-section-name="PROFILE" data-section-index="A-01" data-section-title="DESIGNER PROFILE">
       <span class="section-index">01</span>
       <div class="profile-title reveal">
         <p class="eyebrow">Designer Profile</p>
@@ -96,147 +136,328 @@
       </div>
     </section>
 
-    <section class="tools-photo-section" id="tools" aria-label="Tools and skills">
+    <section class="tools-photo-section" id="tools" data-section-name="TOOLS" data-section-index="A-02" data-section-title="TOOL BOARD">
       <div class="tools-photo-stage">
-        <img
-          class="tools-board-photo"
-          src="assets/tools/tools_board_empty.png?v=short-card-board-1"
-          alt="Tools and skills wooden board"
-        />
+        <img class="tools-board-photo" src="assets/tools/tools_board_empty.png" alt="Tools board background" />
 
-        <div class="tools-board-meta tools-board-meta-left" aria-hidden="true">
-          <span>KIM JAEHYEOK</span>
-          <span>PORTFOLIO</span>
+        <div class="tools-board-title">
+          <strong>TOOLS</strong>
+          <span>Measured Skill Board</span>
         </div>
 
-        <div class="tools-board-meta tools-board-meta-right" aria-hidden="true">
-          <span>DESIGN &amp; DEVELOPMENT</span>
-          <span>SKILLS OVERVIEW</span>
+        <div class="tools-board-meta tools-board-meta-left">
+          <span>A-02</span>
+          <span>Skills</span>
         </div>
 
-        <div class="tools-board-title" aria-hidden="true">
-          <strong>TOOLS &amp; SKILLS</strong>
-          <span>내가 사용하는 도구들</span>
+        <div class="tools-board-meta tools-board-meta-right">
+          <span>Design</span>
+          <span>Development</span>
         </div>
 
-        <button class="tool-pin tool-pin-js" type="button" aria-label="JavaScript tool">
-          <img src="assets/tools/javascript_tape.png?v=short-card-tools-1" alt="JavaScript tape measure" />
+        <button class="tool-pin tool-pin-js" type="button" aria-label="JavaScript tool" data-tool-target="javascript" data-cursor-label="INSPECT">
+          <img src="assets/tools/javascript_tape.png" alt="JavaScript tape measure" />
         </button>
 
-        <button class="tool-pin tool-pin-ps" type="button" aria-label="Photoshop tool">
-          <img src="assets/tools/photoshop_screwdriver.png?v=short-card-tools-1" alt="Photoshop screwdriver" />
+        <button class="tool-pin tool-pin-ps" type="button" aria-label="Photoshop tool" data-tool-target="photoshop" data-cursor-label="INSPECT">
+          <img src="assets/tools/photoshop_screwdriver.png" alt="Photoshop screwdriver" />
         </button>
 
-        <button class="tool-pin tool-pin-ai" type="button" aria-label="Illustrator tool">
-          <img src="assets/tools/illustrator_screwdriver.png?v=short-card-tools-1" alt="Illustrator screwdriver" />
+        <button class="tool-pin tool-pin-ai" type="button" aria-label="Illustrator tool" data-tool-target="illustrator" data-cursor-label="INSPECT">
+          <img src="assets/tools/illustrator_screwdriver.png" alt="Illustrator screwdriver" />
         </button>
 
-        <button class="tool-pin tool-pin-figma" type="button" aria-label="Figma tool">
-          <img src="assets/tools/figma_chisel.png?v=short-card-tools-1" alt="Figma chisel" />
+        <button class="tool-pin tool-pin-figma" type="button" aria-label="Figma tool" data-tool-target="figma" data-cursor-label="INSPECT">
+          <img src="assets/tools/figma_chisel.png" alt="Figma chisel" />
         </button>
 
-        <button class="tool-pin tool-pin-vscode" type="button" aria-label="VS Code tool">
-          <img src="assets/tools/vscode_tool.png?v=short-card-tools-1" alt="VS Code wooden plane" />
+        <button class="tool-pin tool-pin-vscode" type="button" aria-label="VS Code tool" data-tool-target="vscode" data-cursor-label="INSPECT">
+          <img src="assets/tools/vscode_tool.png" alt="VS Code plane" />
         </button>
 
-        <button class="tool-pin tool-pin-aitools" type="button" aria-label="AI tools">
-          <img src="assets/tools/ai_saw.png?v=short-card-tools-1" alt="AI tools saw" />
+        <button class="tool-pin tool-pin-aitools" type="button" aria-label="AI tools" data-tool-target="aitools" data-cursor-label="INSPECT">
+          <img src="assets/tools/ai_saw.png" alt="AI tools saw" />
         </button>
 
-        <button class="tool-pin tool-pin-autocad" type="button" aria-label="AutoCAD tool">
-          <img src="assets/tools/autocad_caliper.png?v=short-card-tools-1" alt="AutoCAD caliper" />
+        <button class="tool-pin tool-pin-autocad" type="button" aria-label="AutoCAD tool" data-tool-target="autocad" data-cursor-label="INSPECT">
+          <img src="assets/tools/autocad_caliper.png" alt="AutoCAD caliper" />
         </button>
 
-        <button class="tool-pin tool-pin-react" type="button" aria-label="React tool">
-          <img src="assets/tools/react_chisel.png?v=short-card-tools-1" alt="React chisel" />
+        <button class="tool-pin tool-pin-react" type="button" aria-label="React tool" data-tool-target="react" data-cursor-label="INSPECT">
+          <img src="assets/tools/react_chisel.png" alt="React chisel" />
         </button>
 
-        <div class="tools-card-text-layer" aria-label="Tool descriptions">
-          <article class="tools-card-text">
+        <div class="tools-card-text-layer" aria-hidden="true">
+          <article class="tools-card-text" data-tool-info="javascript">
             <strong>JavaScript</strong>
-            <span>프로그래밍 언어</span>
+            <span>Interaction</span>
             <em>숙련도</em>
             <i>□□□□□□□□</i>
           </article>
-          <article class="tools-card-text">
-            <strong>VS Code</strong>
-            <span>코드 편집기</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
-          </article>
-          <article class="tools-card-text">
-            <strong>React</strong>
-            <span>UI 라이브러리</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
-          </article>
-          <article class="tools-card-text">
-            <strong>Figma</strong>
-            <span>UI/UX 디자인</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
-          </article>
-          <article class="tools-card-text">
+          <article class="tools-card-text" data-tool-info="photoshop">
             <strong>Photoshop</strong>
-            <span>이미지 편집</span>
+            <span>Visual Edit</span>
             <em>숙련도</em>
             <i>□□□□□□□□</i>
           </article>
-          <article class="tools-card-text">
+          <article class="tools-card-text" data-tool-info="illustrator">
             <strong>Illustrator</strong>
-            <span>벡터 그래픽</span>
+            <span>Vector System</span>
             <em>숙련도</em>
             <i>□□□□□□□□</i>
           </article>
-          <article class="tools-card-text">
+          <article class="tools-card-text" data-tool-info="figma">
+            <strong>Figma</strong>
+            <span>UI/UX</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+          <article class="tools-card-text" data-tool-info="vscode">
+            <strong>VS Code</strong>
+            <span>Frontend</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+          <article class="tools-card-text" data-tool-info="aitools">
             <strong>AI Tools</strong>
-            <span>GPT · Midjourney · Claude</span>
+            <span>Workflow</span>
             <em>숙련도</em>
             <i>□□□□□□□□</i>
           </article>
-          <article class="tools-card-text">
+          <article class="tools-card-text" data-tool-info="autocad">
             <strong>AutoCAD</strong>
-            <span>2D/3D 설계</span>
+            <span>Drafting</span>
+            <em>숙련도</em>
+            <i>□□□□□□□□</i>
+          </article>
+          <article class="tools-card-text" data-tool-info="react">
+            <strong>React</strong>
+            <span>Component</span>
             <em>숙련도</em>
             <i>□□□□□□□□</i>
           </article>
         </div>
 
-        <div class="tools-board-footer" aria-hidden="true">
-          DESIGN · CODE · CREATE
+        <div class="tools-board-footer">KIM JAEHYEOK PORTFOLIO</div>
+      </div>
+    </section>
+
+    <section id="merge" class="project-axis-section" aria-label="A-02 Project Axis" data-section-name="PROJECT AXIS" data-section-index="A-03" data-section-title="PROJECT AXIS">
+      <div class="project-axis-stage">
+        <div class="axis-sheet" aria-hidden="true">
+          <span class="axis-label axis-label-a">A-02 PROJECT AXIS</span>
+          <span class="axis-label axis-label-b">3 WORKS / ONE PILLAR</span>
+          <span class="axis-label axis-label-c">GROUP MOVE</span>
+          <span class="axis-label axis-label-d">READ · REFINE · CONNECT</span>
+        </div>
+
+        <div class="axis-boundary" aria-hidden="true"></div>
+
+        <div class="axis-stage-ruler" aria-hidden="true">
+          <span data-axis-step="stack">STACK</span>
+          <span data-axis-step="press">MERGE</span>
+          <span data-axis-step="fit">FIT</span>
+          <span data-axis-step="cut">CUT</span>
+          <span data-axis-step="settle">SETTLE</span>
+        </div>
+
+        <div class="axis-works-handoff" aria-hidden="true">
+          <div class="axis-handoff-card axis-handoff-kia">
+            <span>01</span>
+            <strong>KIA Website</strong>
+          </div>
+          <div class="axis-handoff-card axis-handoff-gunit">
+            <span>02</span>
+            <strong>GUNIT App</strong>
+          </div>
+          <div class="axis-handoff-card axis-handoff-character">
+            <span>03</span>
+            <strong>Character Design</strong>
+          </div>
+        </div>
+
+        <div class="axis-card-track" aria-label="Project cards">
+          <article class="axis-card axis-card-kia">
+            <img src="assets/kia-thumb.webp" alt="KIA Website">
+            <span>01 / KIA Website</span>
+          </article>
+          <article class="axis-card axis-card-gunit">
+            <img src="assets/work-03-placeholder.svg" alt="GUNIT App">
+            <span>02 / GUNIT App</span>
+          </article>
+          <article class="axis-card axis-card-character">
+            <img src="assets/work-03-placeholder.svg" alt="Character Design">
+            <span>03 / Character Design</span>
+          </article>
+        </div>
+
+        <div class="axis-card-stack" aria-hidden="true">
+          <div class="stack-card stack-card-kia"></div>
+          <div class="stack-card stack-card-gunit"></div>
+          <div class="stack-card stack-card-character"></div>
+          <span>ALIGNED STACK</span>
+        </div>
+
+        <div class="axis-pressed-slab" aria-hidden="true">
+          <div class="slab-layer slab-kia"></div>
+          <div class="slab-layer slab-gunit"></div>
+          <div class="slab-layer slab-character"></div>
+          <span>LAYERED WORK MATERIAL</span>
+        </div>
+
+        <div class="axis-composite-pillar" aria-hidden="true">
+          <div class="pillar-layer pillar-kia"></div>
+          <div class="pillar-layer pillar-gunit"></div>
+          <div class="pillar-layer pillar-character"></div>
+          <div class="pillar-glaze"></div>
+          <span>COMPOSITE PILLAR</span>
+        </div>
+
+        <div class="axis-fit-gap" aria-hidden="true"></div>
+
+        <div class="axis-contact-dots" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="axis-fit-label" aria-hidden="true">
+          <span class="fit-label-main">CONTACT CHECK</span>
+          <span class="fit-label-state">CHECKING</span>
+        </div>
+
+        <div class="axis-foundation-stone" aria-hidden="true">
+          <img src="assets/axis/foundation-stone.png" alt="">
+        </div>
+
+        <div class="axis-fitting-trace" data-axis-trace-zone data-cursor-label="CUT" aria-hidden="true">
+          <svg class="foundation-trace-svg" viewBox="0 0 1000 220" preserveAspectRatio="none">
+            <path
+              id="foundationContourPath"
+              class="foundation-contour-path"
+              d="M80 161 C 88 132, 96 112, 113 96 C 130 80, 153 70, 181 69 C 217 69, 246 79, 276 78 C 318 77, 363 69, 410 62 C 462 54, 510 38, 560 29 C 607 21, 636 25, 668 39 C 699 52, 735 51, 770 50 C 812 49, 849 59, 879 82 C 900 98, 914 126, 920 165"
+            />
+            <path
+              id="foundationTraceDrawPath"
+              class="foundation-trace-draw-path"
+              d="M80 161 C 88 132, 96 112, 113 96 C 130 80, 153 70, 181 69 C 217 69, 246 79, 276 78 C 318 77, 363 69, 410 62 C 462 54, 510 38, 560 29 C 607 21, 636 25, 668 39 C 699 52, 735 51, 770 50 C 812 49, 849 59, 879 82 C 900 98, 914 126, 920 165"
+            />
+            <path
+              id="foundationTraceDashedPath"
+              class="foundation-trace-dashed-path"
+              d="M80 161 C 88 132, 96 112, 113 96 C 130 80, 153 70, 181 69 C 217 69, 246 79, 276 78 C 318 77, 363 69, 410 62 C 462 54, 510 38, 560 29 C 607 21, 636 25, 668 39 C 699 52, 735 51, 770 50 C 812 49, 849 59, 879 82 C 900 98, 914 126, 920 165"
+            />
+            <path
+              id="foundationTraceCutDonePath"
+              class="foundation-trace-cut-done-path"
+              d="M80 161 C 88 132, 96 112, 113 96 C 130 80, 153 70, 181 69 C 217 69, 246 79, 276 78 C 318 77, 363 69, 410 62 C 462 54, 510 38, 560 29 C 607 21, 636 25, 668 39 C 699 52, 735 51, 770 50 C 812 49, 849 59, 879 82 C 900 98, 914 126, 920 165"
+            />
+          </svg>
+
+          <div class="trace-snap-halo" aria-hidden="true"></div>
+
+          <div class="trace-next-point" aria-hidden="true">
+            <span></span>
+            <em>NEXT TRACE POINT</em>
+          </div>
+
+          <div class="foundation-trace-label">
+            <span class="trace-label-main">TRACE TO CUT</span>
+            <span class="trace-label-state">WAITING</span>
+          </div>
+
+          <div class="foundation-trace-progress" aria-hidden="true">
+            <span></span>
+          </div>
+        </div>
+
+        <div class="axis-final-copy">
+          <h2>READ · REFINE · CONNECT</h2>
+          <p>세 개의 작업은 하나의 기준 위에서 다듬어지고 연결됩니다.</p>
+        </div>
+
+        <div class="axis-stability-hint" aria-hidden="true">
+          <span>WHEEL OR DRAG TO TEST FIT</span>
         </div>
       </div>
     </section>
 
-    <section class="works-display" id="works">
+
+    <section class="works-display" id="works" data-section-name="WORKS" data-section-index="A-04" data-section-title="SELECTED WORKS">
       <div class="works-canvas">
         <img class="works-bg" src="assets/works-pegboard-bg.webp" alt="" aria-hidden="true">
 
         <div class="works-copy">
           <div class="works-copy-meta">
-            <span>03</span>
+            <span>04</span>
             <span>SELECTED WORKS</span>
           </div>
-          <h2>역할, 목표, 결과물을 중심으로<br>정리한 대표 작업입니다.</h2>
+          <div class="works-inspector" data-works-inspector>
+            <div class="works-inspector-panel is-active" data-inspector-panel="default">
+              <p class="eyebrow">04 / Selected Works</p>
+              <h2>역할, 목표, 결과물을<br>중심으로 정리한<br>대표 작업입니다.</h2>
+              <p>오른쪽 프로젝트를 선택하면 각 작업의 목표와 역할을 확인할 수 있습니다.</p>
+            </div>
+
+            <div class="works-inspector-panel" data-inspector-panel="kia">
+              <p class="eyebrow">01 / Web Design · UI/UX</p>
+              <h2>KIA Website</h2>
+              <dl>
+                <div><dt>Goal</dt><dd>브랜드 메시지와 차량 정보를 명확한 웹 경험으로 재구성</dd></div>
+                <div><dt>Role</dt><dd>UI Design · Web Layout · Visual Direction</dd></div>
+                <div><dt>Output</dt><dd>Main Page · Detail Section · Responsive Layout</dd></div>
+              </dl>
+            </div>
+
+            <div class="works-inspector-panel" data-inspector-panel="gunit">
+              <p class="eyebrow">02 / App Design · UX Flow</p>
+              <h2>GUNIT App</h2>
+              <dl>
+                <div><dt>Goal</dt><dd>에어소프트 팀 매칭과 커뮤니티 활동을 연결하는 앱 서비스 UX 설계</dd></div>
+                <div><dt>Role</dt><dd>UX Structure · App UI · Screen Flow</dd></div>
+                <div><dt>Output</dt><dd>Home · Profile · Community · Event Screens</dd></div>
+              </dl>
+            </div>
+
+            <div class="works-inspector-panel" data-inspector-panel="character">
+              <p class="eyebrow">03 / Character · Visual System</p>
+              <h2>Character Design</h2>
+              <dl>
+                <div><dt>Goal</dt><dd>캐릭터의 성격과 브랜드 무드를 시각 시스템으로 정리</dd></div>
+                <div><dt>Role</dt><dd>Concept · Character Style · Application</dd></div>
+                <div><dt>Output</dt><dd>Main Character · Expression · Variation</dd></div>
+              </dl>
+            </div>
+
+            <div class="works-inspector-panel" data-inspector-panel="modeling">
+              <p class="eyebrow">04 / 3D Modeling · Rendering</p>
+              <h2>3D Modeling</h2>
+              <dl>
+                <div><dt>Goal</dt><dd>형태, 재질, 조명을 정리해 현실감 있는 3D 렌더링 완성</dd></div>
+                <div><dt>Role</dt><dd>Modeling · Material Setup · Lighting</dd></div>
+                <div><dt>Output</dt><dd>Object Modeling · Detail Rendering · Final Image</dd></div>
+              </dl>
+            </div>
+          </div>
         </div>
 
         <nav class="works-hanging-list" aria-label="Selected projects">
-          <button class="works-hanging-card project-open" type="button" data-project="kia">
+          <button class="works-hanging-card project-open" type="button" data-project="kia" data-inspector-target="kia" data-preview-image="assets/kia-thumb.webp" data-preview-title="KIA Website" data-cursor-label="PREVIEW">
             <span class="work-no">01</span>
             <strong>KIA Website</strong>
             <span class="work-type">WEB DESIGN · UI/UX</span>
           </button>
-          <button class="works-hanging-card project-open" type="button" data-project="gunit">
+          <button class="works-hanging-card project-open" type="button" data-project="gunit" data-inspector-target="gunit" data-preview-image="assets/work-03-placeholder.svg" data-preview-title="GUNIT App" data-cursor-label="PREVIEW">
             <span class="work-no">02</span>
             <strong>GUNIT App</strong>
             <span class="work-type">APP DESIGN · UX FLOW</span>
           </button>
-          <button class="works-hanging-card project-open" type="button" data-project="character">
+          <button class="works-hanging-card project-open" type="button" data-project="character" data-inspector-target="character" data-preview-image="assets/work-03-placeholder.svg" data-preview-title="Character Design" data-cursor-label="PREVIEW">
             <span class="work-no">03</span>
             <strong>Character Design</strong>
             <span class="work-type">CHARACTER · VISUAL SYSTEM</span>
           </button>
-          <button class="works-hanging-card project-open" type="button" data-project="modeling">
+          <button class="works-hanging-card project-open" type="button" data-project="modeling" data-inspector-target="modeling" data-preview-image="assets/modeling-thumb.webp" data-preview-title="3D Modeling" data-cursor-label="PREVIEW">
             <span class="work-no">04</span>
             <strong>3D Modeling</strong>
             <span class="work-type">3D MODELING · RENDERING</span>
@@ -244,77 +465,12 @@
         </nav>
       </div>
     </section>
-
-
-    <section id="merge" class="project-axis-section" aria-label="Project images are cut along a grangijil guide and fused into one composite pillar image">
-      <div class="project-axis-stage">
-        <div class="axis-sheet" aria-hidden="true">
-          <span class="axis-label axis-label-a">A-02 PROJECT AXIS</span>
-          <span class="axis-label axis-label-b">SCREEN BOUNDARY / 100VW × 100VH</span>
-          <span class="axis-label axis-label-c">CUT GUIDE / TRACE PATH</span>
-          <span class="axis-label axis-label-d">READ · REFINE · CONNECT</span>
-        </div>
-
-        <div class="axis-reference-line" aria-hidden="true"></div>
-
-        <div class="axis-card-track" aria-label="Project OG image cards">
-          <article class="axis-card axis-card-kia">
-            <img src="assets/kia-thumb.webp" alt="KIA Website OG image">
-            <span>01 / KIA Website</span>
-          </article>
-          <article class="axis-card axis-card-gunit">
-            <img src="assets/gunit-thumb.webp" alt="GUNIT App OG image">
-            <span>02 / GUNIT App</span>
-          </article>
-          <article class="axis-card axis-card-character">
-            <img src="assets/character-thumb.webp" alt="Character and 3D Works OG image">
-            <span>03 / Character &amp; 3D Works</span>
-          </article>
-        </div>
-
-        <svg class="axis-cut-svg" viewBox="0 0 1000 260" preserveAspectRatio="none" aria-hidden="true">
-          <path id="axisGuidePath" class="axis-guide-path" d="M55 132 C 132 112, 194 164, 274 136 S 414 82, 506 124 S 650 176, 728 130 S 858 88, 946 118"/>
-          <path id="axisDonePath" class="axis-done-path" d="M55 132 C 132 112, 194 164, 274 136 S 414 82, 506 124 S 650 176, 728 130 S 858 88, 946 118"/>
-        </svg>
-
-        <div class="axis-cut-labels" aria-hidden="true">
-          <span>TRACE GUIDE</span>
-          <span>CURSOR PATH</span>
-          <span>CUT LINE</span>
-          <span>GRANGIJIL CUT</span>
-        </div>
-
-        <svg class="axis-cursor" viewBox="0 0 42 52" aria-hidden="true">
-          <path d="M9 5 L32 28 L21 30 L27 44 L21 47 L15 33 L7 41 Z"/>
-        </svg>
-
-        <div class="axis-flow" aria-hidden="true">
-          <div class="axis-stream stream-kia"></div>
-          <div class="axis-stream stream-gunit"></div>
-          <div class="axis-stream stream-character"></div>
-        </div>
-
-        <div class="axis-result-block" aria-hidden="true">
-          <div class="result-layer result-kia"></div>
-          <div class="result-layer result-gunit"></div>
-          <div class="result-layer result-character"></div>
-          <span>FUSED RESULT BLOCK</span>
-        </div>
-
-        <div class="axis-composite-pillar" aria-hidden="true">
-          <div class="pillar-layer pillar-kia"></div>
-          <div class="pillar-layer pillar-gunit"></div>
-          <div class="pillar-layer pillar-character"></div>
-          <div class="pillar-cut-memory"></div>
-        </div>
-
-        <div class="axis-final-copy">
-          <h2>READ · REFINE · CONNECT</h2>
-          <p>세 개의 작업은 하나의 기준 위에서 다듬어지고 연결됩니다.</p>
-        </div>
-      </div>
-    </section>
 </main>
+
+  <div class="works-preview-card" aria-hidden="true">
+    <img src="" alt="">
+    <span></span>
+  </div>
 
   <div class="project-modal" id="projectModal" aria-hidden="true">
     <div class="project-modal-backdrop" data-modal-close></div>
@@ -348,7 +504,7 @@
       </div>
     </section>
   </div>
-  <script src="./scripts.js?v=tools-fix-20260528"></script>
+  <script src="scripts.js"></script>
 </body>
 </html>
 
