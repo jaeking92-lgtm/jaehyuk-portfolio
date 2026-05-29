@@ -4912,8 +4912,8 @@ body.cursor-preview .site-cursor{
 }
 .axis-card-stack,
 .axis-pressed-slab{
-  display:block !important;
-  visibility:visible !important;
+  display:none !important;
+  visibility:hidden !important;
 }
 .axis-final-copy{
   display:block !important;
