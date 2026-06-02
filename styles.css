@@ -2141,6 +2141,42 @@ main:focus{outline:0}
   color:rgba(47,42,34,.68);
   word-break:keep-all;
 }
+.designer-personal-info{
+  margin:18px 0 0;
+  display:grid;
+  border-top:1px solid rgba(47,42,34,.16);
+}
+.designer-personal-info div{
+  display:grid;
+  grid-template-columns:72px minmax(0,1fr);
+  gap:14px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(47,42,34,.12);
+}
+.designer-personal-info dt{
+  font-size:10px;
+  line-height:1.45;
+  letter-spacing:.16em;
+  color:rgba(47,42,34,.48);
+}
+.designer-personal-info dd{
+  margin:0;
+  min-width:0;
+  font-size:13px;
+  line-height:1.55;
+  color:rgba(47,42,34,.76);
+  word-break:keep-all;
+}
+.designer-personal-info a{
+  color:inherit;
+  text-decoration:none;
+  border-bottom:1px solid rgba(47,42,34,.24);
+}
+.designer-personal-info a:hover,
+.designer-personal-info a:focus-visible{
+  color:#6d3f22;
+  border-bottom-color:#6d3f22;
+}
 .designer-steps{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -2706,7 +2742,7 @@ main:focus{outline:0}
 .wood-cut-lane:before{
   background:
     linear-gradient(rgba(255,255,255,.08),rgba(92,52,20,.06)),
-    url("assets/about/wood-grain-light.jpg") center / cover no-repeat,
+    url("assets/about/wood-grain-light.jpg.png") center / cover no-repeat,
     repeating-linear-gradient(90deg,rgba(119,69,22,.11) 0,rgba(119,69,22,.11) 1px,transparent 1px,transparent 8px),
     linear-gradient(90deg,#e8c58f,#f5ddb4);
   box-shadow:
@@ -2722,31 +2758,31 @@ main:focus{outline:0}
   left:0;
   right:0;
   top:0;
-  height:24%;
-  clip-path:polygon(0 0,100% 0,100% 70%,78% 68%,58% 76%,36% 66%,14% 75%,0 68%);
+  height:17%;
+  clip-path:polygon(0 0,100% 0,100% 58%,78% 54%,58% 64%,36% 52%,14% 63%,0 56%);
 }
 .wood-residue-middle{
   left:0;
   right:0;
-  top:43%;
-  height:13.5%;
-  opacity:.82;
-  clip-path:polygon(0 25%,20% 12%,43% 30%,65% 14%,100% 24%,100% 88%,72% 78%,48% 92%,21% 74%,0 92%);
+  top:45%;
+  height:8%;
+  opacity:.58;
+  clip-path:polygon(0 34%,20% 18%,43% 38%,65% 20%,100% 32%,100% 70%,72% 62%,48% 78%,21% 58%,0 76%);
 }
 .wood-residue-bottom{
   left:0;
   right:0;
   bottom:0;
-  height:18%;
-  clip-path:polygon(0 28%,15% 14%,36% 24%,59% 10%,84% 20%,100% 14%,100% 100%,0 100%);
+  height:12%;
+  clip-path:polygon(0 38%,15% 22%,36% 32%,59% 16%,84% 28%,100% 20%,100% 100%,0 100%);
 }
 .wood-residue-left{
   left:0;
-  top:18%;
-  bottom:18%;
-  width:7%;
-  opacity:.9;
-  clip-path:polygon(0 0,100% 4%,70% 32%,100% 58%,62% 100%,0 100%);
+  top:14%;
+  bottom:12%;
+  width:4.6%;
+  opacity:.72;
+  clip-path:polygon(0 0,100% 4%,62% 32%,92% 58%,54% 100%,0 100%);
 }
 .wood-cut-lane{
   position:absolute;
@@ -2762,33 +2798,33 @@ main:focus{outline:0}
   will-change:transform;
 }
 .wood-cut-lane-1{
-  left:4%;
-  right:3%;
-  top:19%;
-  height:28%;
-  clip-path:polygon(0 8%,100% 0,100% 84%,78% 88%,52% 76%,24% 92%,0 82%);
+  left:0;
+  right:0;
+  top:13%;
+  height:34%;
+  clip-path:polygon(0 4%,100% 0,100% 90%,78% 92%,52% 82%,24% 96%,0 88%);
 }
 .wood-cut-lane-1:before{
   transform-origin:right center;
   transform:scaleX(var(--p1-scale));
 }
 .wood-cut-lane-2{
-  left:5%;
-  right:5%;
-  top:37%;
-  height:31%;
-  clip-path:polygon(0 5%,18% 0,45% 9%,70% 2%,100% 8%,100% 86%,80% 94%,54% 84%,28% 97%,0 88%);
+  left:0;
+  right:0;
+  top:35%;
+  height:34%;
+  clip-path:polygon(0 2%,18% 0,45% 8%,70% 1%,100% 6%,100% 90%,80% 96%,54% 88%,28% 100%,0 92%);
 }
 .wood-cut-lane-2:before{
   transform-origin:left center;
   transform:scaleX(var(--p2-scale));
 }
 .wood-cut-lane-3{
-  left:7%;
-  right:4%;
-  top:59%;
-  height:27%;
-  clip-path:polygon(0 10%,22% 0,52% 8%,75% 2%,100% 12%,100% 84%,76% 92%,48% 80%,20% 96%,0 86%);
+  left:0;
+  right:0;
+  top:57%;
+  height:33%;
+  clip-path:polygon(0 4%,22% 0,52% 7%,75% 1%,100% 8%,100% 90%,76% 96%,48% 86%,20% 100%,0 92%);
 }
 .wood-cut-lane-3:before{
   transform-origin:right center;
@@ -2817,11 +2853,12 @@ main:focus{outline:0}
 }
 .wood-shaving-img{
   position:absolute;
-  z-index:5;
-  width:clamp(88px,10vw,160px);
+  z-index:6;
+  width:clamp(92px,11vw,176px);
   pointer-events:none;
   opacity:0;
-  filter:drop-shadow(0 10px 14px rgba(84,48,21,.16));
+  filter:drop-shadow(0 16px 18px rgba(84,48,21,.20));
+  transition:filter .16s ease;
 }
 .wood-shaving-img[src=""],
 .wood-shaving-img:not([src]),
@@ -2831,19 +2868,19 @@ main:focus{outline:0}
 .shaving-img-1{
   left:var(--shaving1-x, 18%);
   top:var(--shaving1-y, 31%);
-  transform:rotate(-8deg) scale(var(--shaving1-scale));
+  transform:translate(-50%,-50%) rotate(var(--shaving1-rotate, -8deg)) scale(var(--shaving1-scale));
   opacity:var(--shaving1-opacity);
 }
 .shaving-img-2{
   left:var(--shaving2-x, 72%);
   top:var(--shaving2-y, 51%);
-  transform:rotate(12deg) scale(var(--shaving2-scale));
+  transform:translate(-50%,-50%) rotate(var(--shaving2-rotate, 12deg)) scale(var(--shaving2-scale));
   opacity:var(--shaving2-opacity);
 }
 .shaving-img-3{
   left:var(--shaving3-x, 34%);
   top:var(--shaving3-y, 75%);
-  transform:rotate(-4deg) scale(var(--shaving3-scale));
+  transform:translate(-50%,-50%) rotate(var(--shaving3-rotate, -4deg)) scale(var(--shaving3-scale));
   opacity:var(--shaving3-opacity);
 }
 .sawdust-bed{
@@ -8251,16 +8288,16 @@ body.cursor-preview .site-cursor{
 .works-display .works-inspector h2{
   order:2 !important;
   max-width:100%;
-  font-size:clamp(26px,2.35vw,46px);
+  font-size:clamp(24px,2vw,38px);
   line-height:1.02;
 }
 .works-display .works-inspector-visual{
   order:3 !important;
-  width:100% !important;
-  height:62% !important;
-  max-height:560px;
+  width:92% !important;
+  height:46% !important;
+  max-height:390px;
   min-height:0;
-  margin:16px 0 0 !important;
+  margin:18px auto 0 !important;
   overflow:hidden !important;
   place-items:center;
 }
@@ -8274,9 +8311,19 @@ body.cursor-preview .site-cursor{
 }
 .works-display .works-inspector dl{
   order:4 !important;
-  margin-top:14px !important;
-  max-height:24%;
+  margin-top:16px !important;
+  max-height:30%;
   overflow:hidden;
+}
+.works-display .works-inspector dl div{
+  grid-template-columns:70px 1fr;
+  gap:14px;
+  padding-top:7px;
+  padding-bottom:7px;
+}
+.works-display .works-inspector dd{
+  font-size:clamp(10px,.66vw,12px);
+  line-height:1.45;
 }
 .works-display .works-hanging-list{
   left:50.4% !important;

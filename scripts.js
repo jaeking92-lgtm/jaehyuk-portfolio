@@ -1023,16 +1023,38 @@ function initPartialWoodShaveReveal() {
     setNumber('--shaving3-opacity', clamp(p3 * 1.35));
     setNumber('--shaving3-scale', .65 + (p3 * .35));
 
-    if (activePass === 1) {
-      setPercent('--shaving1-x', clamp(x - 10, 7, 82));
-      setPercent('--shaving1-y', planeY + 4);
-    } else if (activePass === 2) {
-      setPercent('--shaving2-x', clamp(x + 8, 12, 84));
-      setPercent('--shaving2-y', planeY + 4);
-    } else {
-      setPercent('--shaving3-x', clamp(x - 10, 10, 82));
-      setPercent('--shaving3-y', planeY + 4);
-    }
+    const falling = (passProgress, followX, followY, targetX, targetY) => {
+      const drop = easeOutCubic(segment(passProgress, .52, 1));
+      return {
+        x: lerp(followX, targetX, drop),
+        y: lerp(followY, targetY, drop) + Math.sin(drop * Math.PI) * 2.4,
+        rotate: lerp(-8, 18, drop),
+        scale: .72 + (passProgress * .22) + (drop * .12),
+        opacity: clamp(passProgress * 1.4) * (1 - drop * .12)
+      };
+    };
+
+    const shaving1 = falling(p1, clamp(lerp(-18, 98, p1) - 8, 8, 88), lerp(31, 36, p1), 34, 87);
+    const shaving2 = falling(p2, clamp(lerp(118, 2, p2) + 8, 12, 92), lerp(52, 57, p2), 58, 89);
+    const shaving3 = falling(p3, clamp(lerp(-16, 98, p3) - 8, 8, 88), lerp(75, 79, p3), 78, 88);
+
+    setPercent('--shaving1-x', shaving1.x);
+    setPercent('--shaving1-y', shaving1.y);
+    board.style.setProperty('--shaving1-rotate', `${shaving1.rotate.toFixed(2)}deg`);
+    setNumber('--shaving1-scale', shaving1.scale);
+    setNumber('--shaving1-opacity', shaving1.opacity);
+
+    setPercent('--shaving2-x', shaving2.x);
+    setPercent('--shaving2-y', shaving2.y);
+    board.style.setProperty('--shaving2-rotate', `${(shaving2.rotate + 10).toFixed(2)}deg`);
+    setNumber('--shaving2-scale', shaving2.scale);
+    setNumber('--shaving2-opacity', shaving2.opacity);
+
+    setPercent('--shaving3-x', shaving3.x);
+    setPercent('--shaving3-y', shaving3.y);
+    board.style.setProperty('--shaving3-rotate', `${(shaving3.rotate - 4).toFixed(2)}deg`);
+    setNumber('--shaving3-scale', shaving3.scale);
+    setNumber('--shaving3-opacity', shaving3.opacity);
 
     if (progress > .015 && progress < .94 && local > .02 && local < .985) {
       board.dataset.activeShavePass = String(activePass);
