@@ -4,25 +4,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kim Jaehyeok — Cinematic Atelier Portfolio</title>
-  <meta name="description" content="Kim Jaehyeok UI/UX portfolio website" />
+  <meta name="description" content="김재혁 UI/UX 포트폴리오. 흐름을 읽고, 구조를 다듬어 브랜드에 맞는 디지털 경험으로 연결하는 웹·앱 디자인 작업을 정리했습니다." />
+  <meta name="theme-color" content="#f3e7d2" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Kim Jaehyeok Portfolio" />
+  <meta property="og:description" content="READ · REFINE · CONNECT. UI/UX, Web, App Design portfolio by Kim Jaehyeok." />
+  <meta property="og:image" content="assets/atelier-wide.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preload" as="image" href="assets/atelier-wide-bg.png">
+  <link rel="preload" as="image" href="assets/atelier-wide-table.png">
   <link rel="preload" as="image" href="assets/atelier-wide.webp">
+  <link rel="preload" as="image" href="assets/hero/carpenter/carpenter-hero-idle-front.webp">
+  <link rel="preload" as="image" href="assets/hero/carpenter/carpenter-hero-calm-blink.webp">
   <link rel="preload" as="image" href="assets/kia-hero.webp">
-  <link rel="stylesheet" href="styles.css?v=merge-direct-20260529" />
+  <link rel="stylesheet" href="styles.css?v=works-align-fix-20260602" />
 </head>
-<body>
-  <div class="intro-screen" id="introScreen" aria-hidden="true">
-    <div class="intro-grid" aria-hidden="true"></div>
-    <div class="intro-content">
-      <span class="intro-label">Kim Jaehyeok / UI UX Portfolio</span>
-      <h1 class="intro-title">
-        <span class="intro-outline">PORTFOLIO</span>
-        <span class="intro-fill">PORTFOLIO</span>
-      </h1>
-      <svg class="intro-scribe" viewBox="0 0 100 18" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M1 10 C 10 4, 17 15, 25 9 S 40 3, 49 10 S 63 16, 72 8 S 88 4, 99 11" pathLength="1"/>
-      </svg>
-    </div>
-  </div>
+<body id="top">
+  <a class="skip-link" href="#mainContent">본문 바로가기</a>
 
   <div class="site-cursor" aria-hidden="true">
     <span class="site-cursor-dot"></span>
@@ -48,25 +46,64 @@
       <strong>Portfolio</strong>
     </a>
     <nav class="nav" aria-label="Primary navigation">
-      <a href="#profile">Profile</a>
+      <a href="#about">About</a>
       <a href="#tools">Tools</a>
-      <a href="#merge">Build</a>
-      <a href="#works">Works</a>
+      <a href="#merge">Process</a>
+      <a href="#works">Projects</a>
+      <a href="#contact">Contact</a>
     </nav>
   </header>
 
-  <main id="top">
+  <main id="mainContent" tabindex="-1">
     <section class="hero" id="hero" aria-label="Portfolio cover" data-section-name="HERO" data-section-index="A-00" data-section-title="ATELIER">
-      <div class="atelier-opening" aria-hidden="true">
-        <div class="atelier-opening-mark">
-          <span>KIM JAEHYEOK</span>
-          <strong>PORTFOLIO</strong>
+      <div class="site-intro geometric-intro" data-site-intro aria-hidden="false">
+        <div class="geometric-intro-bg" aria-hidden="true"></div>
+
+        <svg
+          class="geometric-intro-svg"
+          viewBox="0 0 1440 900"
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+        >
+          <g class="intro-construction intro-grid-lines">
+            <line class="intro-line intro-line-delay-1" x1="140" y1="170" x2="1300" y2="170" pathLength="1" />
+            <line class="intro-line intro-line-delay-2" x1="140" y1="350" x2="1300" y2="350" pathLength="1" />
+            <line class="intro-line intro-line-delay-3" x1="140" y1="560" x2="1300" y2="560" pathLength="1" />
+            <line class="intro-line intro-line-delay-2" x1="470" y1="0" x2="470" y2="900" pathLength="1" />
+            <line class="intro-line intro-line-delay-3" x1="970" y1="0" x2="970" y2="900" pathLength="1" />
+            <line class="intro-line intro-line-delay-4" x1="720" y1="80" x2="720" y2="820" pathLength="1" />
+          </g>
+
+          <g class="intro-construction intro-circle-lines">
+            <circle class="intro-circle intro-circle-delay-1" cx="720" cy="450" r="250" pathLength="1" />
+            <circle class="intro-circle intro-circle-delay-2 intro-circle-dashed" cx="720" cy="450" r="145" pathLength="1" />
+          </g>
+
+        </svg>
+
+        <div class="geometric-intro-title-wrap" role="heading" aria-level="1" aria-label="PORTFOLIO">
+          <p class="geometric-intro-kicker">KIM JAEHYEOK PORTFOLIO</p>
+          <svg class="geometric-portfolio-title" viewBox="0 0 1400 220" aria-hidden="true">
+            <text
+              class="geometric-portfolio-text"
+              x="50%"
+              y="52%"
+              text-anchor="middle"
+              dominant-baseline="middle"
+              textLength="1260"
+              lengthAdjust="spacingAndGlyphs"
+            >PORTFOLIO</text>
+          </svg>
+          <span class="geometric-title-assistive">PORTFOLIO</span>
         </div>
-        <div class="atelier-opening-line"></div>
+
+        <div class="geometric-intro-caption">
+          <span>Architecting interfaces with measured structure.</span>
+        </div>
       </div>
 
       <div class="hero-cream">
-        <p class="eyebrow hero-eyebrow">UI/UX · Web · App · Visual · 3D</p>
+        <p class="eyebrow hero-eyebrow">UI/UX · Web Design · App Design · Interaction</p>
         <h1 class="hero-title" data-hero-title aria-label="PORTFOLIO">
           <span aria-hidden="true">P</span>
           <span aria-hidden="true">O</span>
@@ -78,21 +115,88 @@
           <span aria-hidden="true">I</span>
           <span aria-hidden="true">O</span>
         </h1>
-        <p class="hero-copy">정보 구조, 화면 흐름, 시각 시스템을 연결해<br>명확한 디지털 경험을 만듭니다.</p>
+        <p class="hero-copy">흐름을 읽고, 구조를 다듬어<br>브랜드에 맞는 디지털 경험으로 연결합니다.</p>
+        <div class="hero-actions" aria-label="Portfolio shortcuts">
+          <a href="#works">대표 작업 보기</a>
+          <a href="#contact">연락 정보 보기</a>
+        </div>
         <div class="hero-meta">
           <span>Selected Works</span>
           <span>2026</span>
         </div>
       </div>
 
-      <div class="hero-stage" aria-hidden="true" data-cursor-label="LIGHT">
-        <div class="stage-bg"></div>
-        <div class="stage-image image-parallax">
-          <img src="assets/atelier-wide.webp" alt="" />
+      <div class="hero-stage" data-cursor-label="LIGHT">
+        <div class="stage-bg" aria-hidden="true"></div>
+
+        <div class="hero-spec-card" aria-hidden="true">
+          <header class="spec-card-head">
+            <span>A-00 · PORTFOLIO</span>
+            <span>SELECTED WORKS</span>
+          </header>
+          <ul class="spec-card-rows">
+            <li><span>DESIGNER</span><strong>Kim Jaehyeok</strong></li>
+            <li><span>ROLE</span><strong>UI/UX · Web · App Design</strong></li>
+            <li><span>FOCUS</span><strong>Read · Refine · Connect</strong></li>
+            <li><span>WORKS</span><strong>03 Projects · 2026</strong></li>
+          </ul>
+          <footer class="spec-card-foot">
+            <span>CONTACT</span>
+            <strong>zp92@naver.com</strong>
+          </footer>
         </div>
-        <div class="hero-spotlight" aria-hidden="true"></div>
-        <div class="stage-word">ATELIER</div>
-        <div class="stage-line">
+
+        <div class="stage-image image-parallax">
+          <div class="hero-atelier-scene">
+            <img
+              class="hero-atelier-layer hero-atelier-bg"
+              src="assets/atelier-wide-bg.png"
+              alt=""
+            >
+
+            <div class="hero-atelier-monogram" aria-hidden="true">
+              <span class="atelier-mono-kicker">DESIGNER</span>
+              <strong class="atelier-mono-initial">KJ</strong>
+              <span class="atelier-mono-name">Kim Jaehyeok</span>
+            </div>
+
+            <img
+              class="hero-atelier-layer hero-atelier-table"
+              src="assets/atelier-wide-table.png?v=2"
+              alt=""
+            >
+
+            <div class="hero-desk-blueprints" aria-hidden="true">
+              <div class="hero-desk-measure hero-desk-measure-a"></div>
+              <div class="hero-desk-measure hero-desk-measure-b"></div>
+
+              <article class="hero-desk-card is-active" data-hero-work="kia">
+                <span class="desk-card-no">01</span>
+                <strong>KIA WEBSITE</strong>
+                <em>WEB · BRAND FLOW</em>
+                <i></i>
+              </article>
+
+              <article class="hero-desk-card" data-hero-work="gunit">
+                <span class="desk-card-no">02</span>
+                <strong>GUNIT APP</strong>
+                <em>APP · ROUTINE FLOW</em>
+                <i></i>
+              </article>
+
+              <article class="hero-desk-card" data-hero-work="gro">
+                <span class="desk-card-no">03</span>
+                <strong>GRO APP</strong>
+                <em>PLANT CARE · GROWTH FLOW</em>
+                <i></i>
+              </article>
+            </div>
+
+            <div class="hero-spotlight" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="stage-word" aria-hidden="true">ATELIER</div>
+        <div class="stage-line" aria-hidden="true">
           <svg viewBox="0 0 100 28" preserveAspectRatio="none">
             <path d="M1 17 C 8 8, 15 23, 23 16 S 38 6, 47 17 S 62 25, 73 15 S 90 9, 99 18"/>
           </svg>
@@ -110,44 +214,114 @@
       </button>
 
       <div class="hero-work-rail" aria-label="Selected work quick links">
-        <a href="#kia" data-hero-preview="kia" data-preview-title="KIA WEBSITE" data-preview-image="assets/kia-thumb.webp"><span>01</span>KIA Website</a>
-        <a href="#gunit" data-hero-preview="gunit" data-preview-title="GUNIT APP" data-preview-image="assets/work-03-placeholder.svg"><span>02</span>GUNIT App</a>
-        <a href="#character" data-hero-preview="character" data-preview-title="CHARACTER DESIGN" data-preview-image="assets/work-03-placeholder.svg"><span>03</span>Character Design</a>
-        <a href="#modeling" data-hero-preview="modeling" data-preview-title="3D MODELING" data-preview-image="assets/modeling-thumb.webp"><span>04</span>3D Modeling</a>
+        <a class="is-active" href="#works" data-hero-preview="kia" data-preview-title="KIA WEBSITE" data-preview-image="assets/kia-thumb.webp"><span>01</span>KIA Website</a>
+        <a href="#works" data-hero-preview="gunit" data-preview-title="GUNIT APP" data-preview-image="assets/gunit-thumb.png"><span>02</span>GUNIT App</a>
+        <a href="#works" data-hero-preview="gro" data-preview-title="GRO APP" data-preview-image="assets/GRO-project-thumb.png"><span>03</span>GRO App</a>
       </div>
     </section>
 
-    <section class="profile" id="profile" data-section-name="PROFILE" data-section-index="A-01" data-section-title="DESIGNER PROFILE">
-      <span class="section-index">01</span>
-      <div class="profile-title reveal">
-        <p class="eyebrow">Designer Profile</p>
-        <h2>사용자 흐름을 설계하고,<br>브랜드에 맞는 화면 경험으로 완성합니다.</h2>
-      </div>
-      <div class="profile-copy reveal">
-        <p>목적을 정의하고, 정보 구조와 화면 흐름을 정리한 뒤<br>브랜드 톤에 맞는 UI로 완성합니다.</p>
-        <div class="keyword-row">
-          <span>UI/UX</span>
-          <span>Web Design</span>
-          <span>App Design</span>
-          <span>Visual</span>
-          <span>3D</span>
-          <span>Interaction Concept</span>
+    <section
+      class="about-shave-reveal"
+      id="about"
+      data-section-name="ABOUT"
+      data-section-index="A-01"
+      data-section-title="DESIGNER INFO"
+    >
+      <div class="about-shave-stage">
+        <div class="about-shave-board reveal" data-shave-board>
+          <div class="about-shave-rail" aria-hidden="true"></div>
+
+          <div class="designer-info-card">
+            <div class="designer-info-head">
+              <p class="eyebrow">A-01 / DESIGNER INFO</p>
+              <span class="designer-info-stamp" aria-hidden="true">KJ</span>
+            </div>
+
+            <div class="designer-info-grid">
+              <div class="designer-info-main">
+                <h2>
+                  READ THE CONTEXT,<br>
+                  REFINE THE FLOW,<br>
+                  CONNECT THE EXPERIENCE.
+                </h2>
+
+                <p>
+                  도면을 읽듯 사용자의 흐름을 읽고,<br>
+                  흩어진 정보를 화면 구조로 정리합니다.<br>
+                  보기 좋은 화면보다, 목적까지 자연스럽게 도달하는 경험을 설계합니다.
+                </p>
+              </div>
+
+              <aside class="designer-profile-card" aria-label="Designer profile">
+                <span>KIM JAEHYEOK</span>
+                <strong>UI/UX · WEB/APP DESIGN</strong>
+                <p>
+                  공간과 도면을 이해한 경험을 바탕으로
+                  정보 구조와 사용자 흐름을 정리하는 디자이너입니다.
+                </p>
+              </aside>
+            </div>
+
+            <div class="designer-steps" aria-label="Work standard">
+              <article>
+                <span>01</span>
+                <strong>READ</strong>
+                <p>사용자의 목적과 정보 우선순위를 읽습니다.</p>
+              </article>
+              <article>
+                <span>02</span>
+                <strong>REFINE</strong>
+                <p>흩어진 정보를 화면 흐름과 구조로 다듬습니다.</p>
+              </article>
+              <article>
+                <span>03</span>
+                <strong>CONNECT</strong>
+                <p>정리된 구조를 UI와 인터랙션으로 연결합니다.</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="wood-residue wood-residue-top" aria-hidden="true"></div>
+          <div class="wood-residue wood-residue-middle" aria-hidden="true"></div>
+          <div class="wood-residue wood-residue-bottom" aria-hidden="true"></div>
+          <div class="wood-residue wood-residue-left" aria-hidden="true"></div>
+
+          <div class="wood-cut-lane wood-cut-lane-1" aria-hidden="true"></div>
+          <div class="wood-cut-lane wood-cut-lane-2" aria-hidden="true"></div>
+          <div class="wood-cut-lane wood-cut-lane-3" aria-hidden="true"></div>
+
+          <div class="shave-edge shave-edge-1" aria-hidden="true"></div>
+          <div class="shave-edge shave-edge-2" aria-hidden="true"></div>
+          <div class="shave-edge shave-edge-3" aria-hidden="true"></div>
+
+          <img class="wood-shaving-img shaving-img-1" src="assets/about/wood-shaving-pass-01.png" alt="" aria-hidden="true">
+          <img class="wood-shaving-img shaving-img-2" src="assets/about/wood-shaving-pass-02.png" alt="" aria-hidden="true">
+          <img class="wood-shaving-img shaving-img-3" src="assets/about/wood-shaving-pass-03.png" alt="" aria-hidden="true">
+
+          <div class="sawdust-bed" aria-hidden="true"></div>
+
+          <img
+            class="wood-plane"
+            src="assets/about/wood-plane-cut.png"
+            data-plane-fallback="assets/wood-plane-top.png.png"
+            alt=""
+            aria-hidden="true"
+          >
         </div>
       </div>
     </section>
-
     <section class="tools-photo-section" id="tools" data-section-name="TOOLS" data-section-index="A-02" data-section-title="TOOL BOARD">
       <div class="tools-photo-stage">
         <img class="tools-board-photo" src="assets/tools/tools_board_empty.png" alt="Tools board background" />
 
         <div class="tools-board-title">
           <strong>TOOLS</strong>
-          <span>Measured Skill Board</span>
+          <span>Measured Tool Board</span>
         </div>
 
         <div class="tools-board-meta tools-board-meta-left">
           <span>A-02</span>
-          <span>Skills</span>
+          <span>Tools</span>
         </div>
 
         <div class="tools-board-meta tools-board-meta-right">
@@ -191,50 +365,82 @@
           <article class="tools-card-text" data-tool-info="javascript">
             <strong>JavaScript</strong>
             <span>Interaction</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
-          </article>
-          <article class="tools-card-text" data-tool-info="photoshop">
-            <strong>Photoshop</strong>
-            <span>Visual Edit</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
-          </article>
-          <article class="tools-card-text" data-tool-info="illustrator">
-            <strong>Illustrator</strong>
-            <span>Vector System</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
-          </article>
-          <article class="tools-card-text" data-tool-info="figma">
-            <strong>Figma</strong>
-            <span>UI/UX</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
+            <div class="tools-proficiency" style="--level:80%">
+              <small>LEVEL</small>
+              <b>80%</b>
+              <span aria-hidden="true"></span>
+            </div>            <em>USE</em>
+            <i>Motion · DOM</i>
           </article>
           <article class="tools-card-text" data-tool-info="vscode">
             <strong>VS Code</strong>
             <span>Frontend</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
-          </article>
-          <article class="tools-card-text" data-tool-info="aitools">
-            <strong>AI Tools</strong>
-            <span>Workflow</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
-          </article>
-          <article class="tools-card-text" data-tool-info="autocad">
-            <strong>AutoCAD</strong>
-            <span>Drafting</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
+            <div class="tools-proficiency" style="--level:85%">
+              <small>LEVEL</small>
+              <b>85%</b>
+              <span aria-hidden="true"></span>
+            </div>            <em>USE</em>
+            <i>Build · Debug</i>
           </article>
           <article class="tools-card-text" data-tool-info="react">
             <strong>React</strong>
             <span>Component</span>
-            <em>숙련도</em>
-            <i>□□□□□□□□</i>
+            <div class="tools-proficiency" style="--level:70%">
+              <small>LEVEL</small>
+              <b>70%</b>
+              <span aria-hidden="true"></span>
+            </div>            <em>USE</em>
+            <i>UI · State</i>
+          </article>
+          <article class="tools-card-text" data-tool-info="figma">
+            <strong>Figma</strong>
+            <span>UI/UX</span>
+            <div class="tools-proficiency" style="--level:90%">
+              <small>LEVEL</small>
+              <b>90%</b>
+              <span aria-hidden="true"></span>
+            </div>            <em>USE</em>
+            <i>IA · Prototype</i>
+          </article>
+          <article class="tools-card-text" data-tool-info="photoshop">
+            <strong>Photoshop</strong>
+            <span>Visual Edit</span>
+            <div class="tools-proficiency" style="--level:78%">
+              <small>LEVEL</small>
+              <b>78%</b>
+              <span aria-hidden="true"></span>
+            </div>            <em>USE</em>
+            <i>Image · Tone</i>
+          </article>
+          <article class="tools-card-text" data-tool-info="illustrator">
+            <strong>Illustrator</strong>
+            <span>Vector System</span>
+            <div class="tools-proficiency" style="--level:76%">
+              <small>LEVEL</small>
+              <b>76%</b>
+              <span aria-hidden="true"></span>
+            </div>            <em>USE</em>
+            <i>Vector · Line</i>
+          </article>
+          <article class="tools-card-text" data-tool-info="aitools">
+            <strong>AI Tools</strong>
+            <span>Workflow</span>
+            <div class="tools-proficiency" style="--level:88%">
+              <small>LEVEL</small>
+              <b>88%</b>
+              <span aria-hidden="true"></span>
+            </div>            <em>USE</em>
+            <i>Ideation · Assist</i>
+          </article>
+          <article class="tools-card-text" data-tool-info="autocad">
+            <strong>AutoCAD</strong>
+            <span>Drafting</span>
+            <div class="tools-proficiency" style="--level:72%">
+              <small>LEVEL</small>
+              <b>72%</b>
+              <span aria-hidden="true"></span>
+            </div>            <em>USE</em>
+            <i>Plan · Measure</i>
           </article>
         </div>
 
@@ -242,10 +448,10 @@
       </div>
     </section>
 
-    <section id="merge" class="project-axis-section" aria-label="A-02 Project Axis" data-section-name="PROJECT AXIS" data-section-index="A-03" data-section-title="PROJECT AXIS">
+    <section id="merge" class="project-axis-section" aria-label="A-03 Project Axis" data-section-name="PROJECT AXIS" data-section-index="A-03" data-section-title="PROJECT AXIS">
       <div class="project-axis-stage">
         <div class="axis-sheet" aria-hidden="true">
-          <span class="axis-label axis-label-a">A-02 PROJECT AXIS</span>
+          <span class="axis-label axis-label-a">A-03 PROJECT AXIS</span>
           <span class="axis-label axis-label-b">3 WORKS / ONE PILLAR</span>
           <span class="axis-label axis-label-c">GROUP MOVE</span>
           <span class="axis-label axis-label-d">READ · REFINE · CONNECT</span>
@@ -272,23 +478,43 @@
           </div>
           <div class="axis-handoff-card axis-handoff-character">
             <span>03</span>
-            <strong>Character Design</strong>
+            <strong>GRO App</strong>
           </div>
         </div>
 
-        <div class="axis-card-track" aria-label="Project cards">
-          <article class="axis-card axis-card-kia">
-            <img src="assets/kia-thumb.webp" alt="KIA Website">
-            <span>01 / KIA Website</span>
-          </article>
-          <article class="axis-card axis-card-gunit">
-            <img src="assets/work-03-placeholder.svg" alt="GUNIT App">
-            <span>02 / GUNIT App</span>
-          </article>
-          <article class="axis-card axis-card-character">
-            <img src="assets/work-03-placeholder.svg" alt="Character Design">
-            <span>03 / Character Design</span>
-          </article>
+        <div class="axis-3d-stack-scene">
+          <div class="axis-card-stack" aria-label="Project stack cards">
+            <button class="axis-stack-card axis-stack-card-kia" type="button" data-stack-card="0" data-axis-project="kia" aria-label="KIA Website 상세 보기">
+              <img src="assets/kia-thumb.webp" alt="KIA Website">
+              <span>01 / KIA Website</span>
+              <em class="axis-card-cta">VIEW DETAIL</em>
+            </button>
+
+            <button class="axis-stack-card axis-stack-card-gunit" type="button" data-stack-card="1" data-axis-project="gunit" aria-label="GUNIT App 상세 보기">
+              <img src="assets/gunit-thumb.png" alt="GUNIT App">
+              <span>02 / GUNIT App</span>
+              <em class="axis-card-cta">VIEW DETAIL</em>
+            </button>
+
+            <button class="axis-stack-card axis-stack-card-character" type="button" data-stack-card="2" data-axis-project="gro" aria-label="GRO App 상세 보기">
+              <img src="assets/GRO-project-thumb.png" alt="GRO App">
+              <span>03 / GRO App</span>
+              <em class="axis-card-cta">VIEW DETAIL</em>
+            </button>
+          </div>
+
+          <div class="axis-press-frame" aria-hidden="true">
+            <div class="press-bar press-bar-top"></div>
+            <div class="press-bar press-bar-bottom"></div>
+            <span>PORTFOLIO PRESS</span>
+          </div>
+
+          <div class="axis-composite-board" aria-hidden="true">
+            <div class="board-layer board-kia"></div>
+            <div class="board-layer board-gunit"></div>
+            <div class="board-layer board-character"></div>
+            <span>COMPOSITE BOARD</span>
+          </div>
         </div>
 
         <div class="axis-composite-pillar" aria-hidden="true">
@@ -371,7 +597,7 @@
 
     <section class="works-display" id="works" data-section-name="WORKS" data-section-index="A-04" data-section-title="SELECTED WORKS">
       <div class="works-canvas">
-        <img class="works-bg" src="assets/works-pegboard-bg.webp" alt="" aria-hidden="true">
+        <img class="works-bg" src="assets/works-pegboard-bg.png" alt="" aria-hidden="true">
 
         <div class="works-copy">
           <div class="works-copy-meta">
@@ -380,75 +606,114 @@
           </div>
           <div class="works-inspector" data-works-inspector>
             <div class="works-inspector-panel is-active" data-inspector-panel="default">
-              <p class="eyebrow">04 / Selected Works</p>
-              <h2>역할, 목표, 결과물을<br>중심으로 정리한<br>대표 작업입니다.</h2>
-              <p>오른쪽 프로젝트를 선택하면 각 작업의 목표와 역할을 확인할 수 있습니다.</p>
-            </div>
-
-            <div class="works-inspector-panel" data-inspector-panel="kia">
-              <p class="eyebrow">01 / Web Design · UI/UX</p>
-              <h2>KIA Website</h2>
-              <dl>
-                <div><dt>Goal</dt><dd>브랜드 메시지와 차량 정보를 명확한 웹 경험으로 재구성</dd></div>
-                <div><dt>Role</dt><dd>UI Design · Web Layout · Visual Direction</dd></div>
-                <div><dt>Output</dt><dd>Main Page · Detail Section · Responsive Layout</dd></div>
-              </dl>
-            </div>
-
-            <div class="works-inspector-panel" data-inspector-panel="gunit">
-              <p class="eyebrow">02 / App Design · UX Flow</p>
-              <h2>GUNIT App</h2>
-              <dl>
-                <div><dt>Goal</dt><dd>에어소프트 팀 매칭과 커뮤니티 활동을 연결하는 앱 서비스 UX 설계</dd></div>
-                <div><dt>Role</dt><dd>UX Structure · App UI · Screen Flow</dd></div>
-                <div><dt>Output</dt><dd>Home · Profile · Community · Event Screens</dd></div>
-              </dl>
+              <p class="eyebrow">04 / Supporting Works</p>
+              <h2>Hover a board,<br>read the work,<br>inspect the result.</h2>
+              <p>오른쪽 보드에 마우스를 올리면 왼쪽 종이에 이미지와 설명이 함께 표시됩니다.</p>
             </div>
 
             <div class="works-inspector-panel" data-inspector-panel="character">
-              <p class="eyebrow">03 / Character · Visual System</p>
+              <figure class="works-inspector-visual">
+                <img src="assets/character-crop.png" alt="Character Design board">
+              </figure>
+              <p class="eyebrow">01 / Character · Illustration · 3D Application</p>
               <h2>Character Design</h2>
               <dl>
-                <div><dt>Goal</dt><dd>캐릭터의 성격과 브랜드 무드를 시각 시스템으로 정리</dd></div>
-                <div><dt>Role</dt><dd>Concept · Character Style · Application</dd></div>
-                <div><dt>Output</dt><dd>Main Character · Expression · Variation</dd></div>
+                <div><dt>Goal</dt><dd>캐릭터의 컨셉, 장면, 입체 적용 가능성을 하나의 보드로 정리</dd></div>
+                <div><dt>Range</dt><dd>캐릭터 컨셉, 장면 일러스트, 3D 스탠디, 비주얼 시스템 구성</dd></div>
+                <div><dt>Role</dt><dd>Character Design · Illustration · 3D Application</dd></div>
+                <div><dt>Output</dt><dd>Poster Board · Scene Illustration · Standee Concept</dd></div>
               </dl>
             </div>
 
-            <div class="works-inspector-panel" data-inspector-panel="modeling">
-              <p class="eyebrow">04 / 3D Modeling · Rendering</p>
-              <h2>3D Modeling</h2>
+            <div class="works-inspector-panel" data-inspector-panel="residential">
+              <figure class="works-inspector-visual">
+                <img src="assets/modeling-residential-board.png" alt="Residential House Project board">
+              </figure>
+              <p class="eyebrow">02 / 3D Modeling · Residential Space</p>
+              <h2>Residential House</h2>
               <dl>
-                <div><dt>Goal</dt><dd>형태, 재질, 조명을 정리해 현실감 있는 3D 렌더링 완성</dd></div>
-                <div><dt>Role</dt><dd>Modeling · Material Setup · Lighting</dd></div>
-                <div><dt>Output</dt><dd>Object Modeling · Detail Rendering · Final Image</dd></div>
+                <div><dt>Goal</dt><dd>좁은 필지 주거 공간의 구조와 생활 동선을 3D 보드로 시각화</dd></div>
+                <div><dt>Range</dt><dd>외관 렌더링, 실내 투시도, 평면, 단면, exploded view 구성</dd></div>
+                <div><dt>Role</dt><dd>3D Modeling · Rendering · Space Visualization</dd></div>
+                <div><dt>Output</dt><dd>Residential Board · Exterior · Interior · Plan / Section</dd></div>
+              </dl>
+            </div>
+
+            <div class="works-inspector-panel" data-inspector-panel="pavilion">
+              <figure class="works-inspector-visual">
+                <img src="assets/modeling-pavilion-board.png" alt="Wood Pavilion Architectural Space Study board">
+              </figure>
+              <p class="eyebrow">03 / 3D Modeling · Wood Pavilion</p>
+              <h2>Wood Pavilion</h2>
+              <dl>
+                <div><dt>Goal</dt><dd>목구조 공간의 재료감, 빛, 내부 동선을 건축 보드처럼 정리</dd></div>
+                <div><dt>Range</dt><dd>외관 렌더링, 내부 장면, 평면/단면, 자연광과 재료 스터디</dd></div>
+                <div><dt>Role</dt><dd>3D Modeling · Architectural Rendering · Material Study</dd></div>
+                <div><dt>Output</dt><dd>Wood Pavilion Board · Exterior · Interior · Plan / Section</dd></div>
               </dl>
             </div>
           </div>
         </div>
 
+        <div class="project-filter-row" aria-label="Project category filter">
+          <button type="button" data-project-filter="all" aria-pressed="true">All</button>
+          <button type="button" data-project-filter="visual" aria-pressed="false">Visual</button>
+          <button type="button" data-project-filter="3d" aria-pressed="false">3D</button>
+        </div>
+
         <nav class="works-hanging-list" aria-label="Selected projects">
-          <button class="works-hanging-card project-open" type="button" data-project="kia" data-inspector-target="kia" data-preview-image="assets/kia-thumb.webp" data-preview-title="KIA Website" data-cursor-label="PREVIEW">
+          <button class="works-hanging-card project-open" type="button" data-project="character" data-project-category="visual" data-inspector-target="character" data-cursor-label="OPEN">
             <span class="work-no">01</span>
-            <strong>KIA Website</strong>
-            <span class="work-type">WEB DESIGN · UI/UX</span>
-          </button>
-          <button class="works-hanging-card project-open" type="button" data-project="gunit" data-inspector-target="gunit" data-preview-image="assets/work-03-placeholder.svg" data-preview-title="GUNIT App" data-cursor-label="PREVIEW">
-            <span class="work-no">02</span>
-            <strong>GUNIT App</strong>
-            <span class="work-type">APP DESIGN · UX FLOW</span>
-          </button>
-          <button class="works-hanging-card project-open" type="button" data-project="character" data-inspector-target="character" data-preview-image="assets/work-03-placeholder.svg" data-preview-title="Character Design" data-cursor-label="PREVIEW">
-            <span class="work-no">03</span>
             <strong>Character Design</strong>
-            <span class="work-type">CHARACTER · VISUAL SYSTEM</span>
+            <span class="work-type">CHARACTER · ILLUSTRATION · 3D APPLICATION</span>
           </button>
-          <button class="works-hanging-card project-open" type="button" data-project="modeling" data-inspector-target="modeling" data-preview-image="assets/modeling-thumb.webp" data-preview-title="3D Modeling" data-cursor-label="PREVIEW">
-            <span class="work-no">04</span>
-            <strong>3D Modeling</strong>
-            <span class="work-type">3D MODELING · RENDERING</span>
+          <button class="works-hanging-card project-open" type="button" data-project="residential" data-project-category="3d" data-inspector-target="residential" data-cursor-label="OPEN">
+            <span class="work-no">02</span>
+            <strong>Residential House</strong>
+            <span class="work-type">3D MODELING · SPACE VISUALIZATION · RENDERING</span>
+          </button>
+          <button class="works-hanging-card project-open" type="button" data-project="pavilion" data-project-category="3d" data-inspector-target="pavilion" data-cursor-label="OPEN">
+            <span class="work-no">03</span>
+            <strong>Wood Pavilion</strong>
+            <span class="work-type">3D MODELING · WOOD STRUCTURE · LIGHT STUDY</span>
           </button>
         </nav>
+      </div>
+    </section>
+
+    <section class="contact" id="contact" data-section-name="CONTACT" data-section-index="A-05" data-section-title="CONTACT">
+      <div class="contact-inner">
+        <p class="eyebrow">Contact</p>
+        <h2>APPLICATION<br>INFO</h2>
+        <p class="contact-copy">
+          환경을 읽고, 구조를 정리하고,<br>
+          정확하게 맞물리는 경험을 설계하는 디자이너 김재혁입니다.<br>
+          포트폴리오 검토나 채용 관련 연락은 아래 채널로 부탁드립니다.
+        </p>
+        <div class="contact-summary" aria-label="Application summary">
+          <article>
+            <span>지원 분야</span>
+            <strong>UI/UX · Web/App Design</strong>
+          </article>
+          <article>
+            <span>핵심 역량</span>
+            <strong>Information Architecture · Visual System · Interaction</strong>
+          </article>
+          <article>
+            <span>포트폴리오 구성</span>
+            <strong>KIA · GUNIT · GRO · Supporting Works</strong>
+          </article>
+        </div>
+        <div
+          class="contact-line"
+          aria-label="Application links"
+          data-contact-links
+          data-contact-email=""
+          data-resume-url=""
+          data-portfolio-url=""
+        >
+          <a href="https://github.com/jaeking92-lgtm/jaehyuk-portfolio" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
       </div>
     </section>
 </main>
@@ -461,37 +726,40 @@
   <div class="project-modal" id="projectModal" aria-hidden="true">
     <div class="project-modal-backdrop" data-modal-close></div>
 
-    <section class="project-modal-panel" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
-      <button class="project-modal-close" type="button" aria-label="Close project detail" data-modal-close>×</button>
+    <section class="project-modal-panel" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle" aria-describedby="projectModalDesc">
+      <button class="project-modal-close" type="button" aria-label="프로젝트 모달 닫기" data-modal-close>×</button>
 
       <div class="project-modal-visual">
         <img id="projectModalImage" src="" alt="">
+        <div class="project-modal-visual-fallback" id="projectModalImageFallback" hidden>
+          <span id="projectModalFallbackNo"></span>
+          <strong id="projectModalFallbackTitle"></strong>
+        </div>
       </div>
 
       <div class="project-modal-content">
         <span class="project-modal-no" id="projectModalNo"></span>
         <h2 id="projectModalTitle"></h2>
         <p class="project-modal-type" id="projectModalType"></p>
+        <p class="project-modal-desc" id="projectModalDesc"></p>
 
-        <dl class="project-modal-list">
-          <div>
-            <dt>Goal</dt>
-            <dd id="projectModalGoal"></dd>
+        <div class="project-modal-section">
+          <h3>간단한 설명</h3>
+          <ul class="project-modal-points" id="projectModalPoints"></ul>
+        </div>
+
+        <div class="project-modal-section">
+          <label class="project-modal-git-label" id="projectModalGitLabel" for="projectModalGit">Git Address</label>
+          <div class="project-modal-link-row">
+            <input id="projectModalGit" class="project-modal-git-input" type="text" value="" readonly>
+            <a id="projectModalLink" class="project-modal-link-button" href="#" target="_blank" rel="noopener noreferrer">VIEW PROJECT ↗</a>
           </div>
-          <div>
-            <dt>Role</dt>
-            <dd id="projectModalRole"></dd>
-          </div>
-          <div>
-            <dt>Output</dt>
-            <dd id="projectModalOutput"></dd>
-          </div>
-        </dl>
+        </div>
+
+        <div class="project-modal-tags" id="projectModalTags" aria-label="Project tags"></div>
       </div>
     </section>
   </div>
-  <script src="scripts.js?v=merge-direct-20260529"></script>
+  <script src="scripts.js?v=about-partial-shave-20260602"></script>
 </body>
 </html>
-
-

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 160" fill="none" preserveAspectRatio="none" color="#3c1f12">
+  <style>
+    #openingEntryTraceSolid {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: openingEntryTraceDraw 1.05s cubic-bezier(.7, 0, .18, 1) .88s forwards;
+    }
+
+    #openingEntryTraceDashed {
+      stroke-dasharray: .012 .016;
+      stroke-dashoffset: 1;
+      animation: openingEntryTraceDraw 1.05s cubic-bezier(.7, 0, .18, 1) .98s forwards;
+    }
+
+    @keyframes openingEntryTraceDraw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #openingEntryTraceSolid,
+      #openingEntryTraceDashed {
+        animation: none;
+        stroke-dashoffset: 0;
+      }
+    }
+  </style>
+  <path id="openingEntryTraceSolid" pathLength="1" d="M28 102 C162 92 260 104 392 98 C525 92 662 92 800 96 C950 101 1045 92 1172 82" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path id="openingEntryTraceDashed" pathLength="1" d="M28 102 C162 92 260 104 392 98 C525 92 662 92 800 96 C950 101 1045 92 1172 82" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.42"/>
+</svg>

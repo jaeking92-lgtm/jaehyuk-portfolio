@@ -1,13 +1,18 @@
 .chrome-cdp/
 .chrome-profile/
 .chrome-profile-2/
+.chrome-tmp/
+.chrome-a02-check/
 .codex-cdp-screenshots/
+
 stdout
 tools-check-cdp.png
 tools-check.png
+axis-no-duplicate-check.png
+viewport-*.png
 
 .codex-cdp-screenshot.js
-.chrome-tmp/
-.chrome-a02-check/
-.chrome-tmp/
-.chrome-a02-check/
+
+*.ai
+*.psd
+*.pdf

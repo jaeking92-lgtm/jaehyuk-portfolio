@@ -1,38 +1,8 @@
 ﻿const progress = document.querySelector('.progress');
 const revealEls = document.querySelectorAll('.reveal');
-const introScreen = document.getElementById('introScreen');
 const header = document.querySelector('[data-nav]');
 
-document.body.classList.add('intro-active');
-
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const introStorageKey = 'cinematicAtelierIntroPlayed';
-const hasSeenIntro = (() => {
-  try {
-    return sessionStorage.getItem(introStorageKey) === 'true';
-  } catch (error) {
-    return false;
-  }
-})();
-
-function closeIntro(immediate = false) {
-  if (!introScreen) {
-    document.body.classList.remove('intro-active');
-    return;
-  }
-  if (immediate) {
-    introScreen.style.display = 'none';
-  } else {
-    introScreen.classList.add('is-hidden');
-    setTimeout(() => { introScreen.style.display = 'none'; }, 900);
-  }
-  document.body.classList.remove('intro-active');
-  try {
-    sessionStorage.setItem(introStorageKey, 'true');
-  } catch (error) {}
-}
-if (reduceMotion || hasSeenIntro) closeIntro(true);
-else setTimeout(() => closeIntro(false), 820);
 
 const observer = new IntersectionObserver((entries)=>{
   entries.forEach(entry=>{
@@ -77,8 +47,8 @@ function initScrollGuide() {
   if (!guide) return;
 
   guide.addEventListener('click', () => {
-    const profile = document.querySelector('#profile');
-    profile?.scrollIntoView({behavior:'smooth', block:'start'});
+    const nextSection = document.querySelector('#tools');
+    nextSection?.scrollIntoView({behavior:'smooth', block:'start'});
   });
 
   if (character) {
@@ -93,34 +63,295 @@ function initScrollGuide() {
 }
 
 function initHeroIntroInteractions() {
-  setupAtelierOpeningStamp();
+  initSiteIntro();
+  initAtelierLayerFallback();
+  initHeroMainCharacter();
   setupHeroTypographyReveal();
   setupWorkbenchSpotlightCursor();
+  setupHeroWorkbenchCards();
   setupHeroProjectPreview();
   setupHeroScrollGuide();
 }
 
-function setupAtelierOpeningStamp() {
-  const opening = document.querySelector('.atelier-opening');
+function initAtelierLayerFallback() {
+  const scene = document.querySelector('.hero-atelier-scene');
+  const bg = document.querySelector('.hero-atelier-bg');
+  const table = document.querySelector('.hero-atelier-table');
 
-  if (!opening) {
-    document.body.classList.add('hero-intro-done');
+  if (!scene) return;
+
+  const fallbackSrc = 'assets/atelier-wide.webp';
+
+  const useFallback = () => {
+    if (scene.classList.contains('is-fallback')) return;
+
+    scene.classList.add('is-fallback');
+    scene.innerHTML = `
+      <img class="hero-atelier-layer hero-atelier-fallback" src="${fallbackSrc}" alt="">
+    `;
+  };
+
+  [bg, table].forEach((img) => {
+    if (!img) {
+      useFallback();
+      return;
+    }
+
+    img.addEventListener('error', useFallback);
+
+    if (img.complete && img.naturalWidth === 0) {
+      useFallback();
+    }
+  });
+}
+
+function initHeroMainCharacter() {
+  const scene = document.querySelector('.hero-atelier-scene');
+  const characterLayer = document.querySelector('.hero-character-layer');
+  const characterButton = document.querySelector('.hero-character-button');
+  const characterImg = document.querySelector('.hero-character');
+  const bubble = document.querySelector('.hero-character-bubble');
+
+  if (!scene || !characterLayer || !characterButton || !characterImg) return;
+
+  const src = {
+    idle: 'assets/hero/carpenter/carpenter-hero-idle-front.webp',
+    blink: 'assets/hero/carpenter/carpenter-hero-calm-blink.webp',
+    wave: 'assets/hero/carpenter/carpenter-hero-wave.webp',
+    look: 'assets/hero/carpenter/carpenter-hero-look-right.webp'
+  };
+
+  Object.values(src).forEach((url) => {
+    const img = new Image();
+    img.src = url;
+  });
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let bubbleTimer = null;
+  let expressionTimer = null;
+  let poseTimer = null;
+  let scheduleBlink = () => {};
+  let isWaving = false;
+
+  const hideCharacter = () => {
+    characterButton.style.display = 'none';
+  };
+
+  const setCharacter = (nextSrc) => {
+    if (characterImg.getAttribute('src') === nextSrc) return;
+    characterImg.setAttribute('src', nextSrc);
+  };
+
+  const showBubble = (message) => {
+    if (!bubble) return;
+
+    bubble.textContent = message;
+    bubble.classList.add('is-active');
+
+    window.clearTimeout(bubbleTimer);
+    bubbleTimer = window.setTimeout(() => {
+      bubble.classList.remove('is-active');
+    }, 2200);
+  };
+
+  const setCharacterPose = (x = 0, y = 0, rotate = 0) => {
+    characterLayer.style.setProperty('--character-look-x', `${x.toFixed(2)}px`);
+    characterLayer.style.setProperty('--character-look-y', `${y.toFixed(2)}px`);
+    characterLayer.style.setProperty('--character-rotate', `${rotate.toFixed(2)}deg`);
+  };
+
+  const resetCharacterPose = () => {
+    setCharacterPose(0, 0, 0);
+    if (!isWaving) setCharacter(src.idle);
+  };
+
+  const blinkOnce = (duration = 320) => {
+    if (prefersReducedMotion || isWaving) return;
+
+    window.clearTimeout(expressionTimer);
+    window.clearTimeout(poseTimer);
+    isWaving = true;
+    setCharacter(src.blink);
+
+    poseTimer = window.setTimeout(() => {
+      isWaving = false;
+      setCharacter(src.idle);
+      resetCharacterPose();
+      scheduleBlink();
+    }, duration);
+  };
+
+  const waveOnce = (message = 'CONNECT THE EXPERIENCE') => {
+    showBubble(message);
+
+    if (prefersReducedMotion) return;
+
+    window.clearTimeout(expressionTimer);
+    window.clearTimeout(poseTimer);
+    isWaving = true;
+    setCharacterPose(3, -1, 1.4);
+    setCharacter(src.wave);
+
+    poseTimer = window.setTimeout(() => {
+      isWaving = false;
+      setCharacter(src.idle);
+      resetCharacterPose();
+      scheduleBlink();
+    }, 1450);
+  };
+
+  characterImg.addEventListener('error', hideCharacter);
+
+  if (characterImg.complete && characterImg.naturalWidth === 0) {
+    hideCharacter();
     return;
   }
 
-  if (reduceMotion) {
-    document.body.classList.add('hero-intro-done');
-    opening.remove();
+  window.addEventListener('heroWorkbenchActive', (event) => {
+    const work = event.detail?.work || 'kia';
+    const messages = {
+      kia: 'READ THE STRUCTURE',
+      gunit: 'REFINE THE FLOW',
+      gro: 'CONNECT THE EXPERIENCE'
+    };
+
+    showBubble(messages[work] || messages.kia);
+
+    if (prefersReducedMotion) return;
+
+    window.clearTimeout(poseTimer);
+
+    if (work === 'gunit') {
+      setCharacter(src.look);
+      setCharacterPose(4, -1, 1.6);
+      poseTimer = window.setTimeout(resetCharacterPose, 950);
+      return;
+    }
+
+    if (work === 'gro') {
+      setCharacterPose(2, -1, .8);
+      blinkOnce(260);
+      return;
+    }
+
+    resetCharacterPose();
+  });
+
+  window.addEventListener('heroWorkbenchSelect', () => {
+    waveOnce('SELECTED FROM THE WORK BAR');
+  });
+
+  if (!prefersReducedMotion) {
+    scene.addEventListener('mousemove', (event) => {
+      const rect = scene.getBoundingClientRect();
+
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+      const lookX = Math.max(-6, Math.min(6, x * 10));
+      const lookY = Math.max(-5, Math.min(5, y * 8));
+      const rotate = Math.max(-4, Math.min(4, x * 5));
+
+      setCharacterPose(lookX, lookY, rotate);
+
+      if (!isWaving && x > 0.12) {
+        setCharacter(src.look);
+      } else if (!isWaving && x <= 0.12) {
+        setCharacter(src.idle);
+      }
+    });
+
+    scene.addEventListener('mouseleave', () => {
+      resetCharacterPose();
+    });
+
+    scheduleBlink = () => {
+      window.clearTimeout(expressionTimer);
+
+      expressionTimer = window.setTimeout(() => {
+        if (isWaving) {
+          scheduleBlink();
+          return;
+        }
+
+        setCharacter(src.blink);
+
+        window.setTimeout(() => {
+          if (!isWaving) setCharacter(src.idle);
+          scheduleBlink();
+        }, 520);
+      }, 4200);
+    };
+
+    scheduleBlink();
+  }
+
+  characterButton.addEventListener('mouseenter', () => {
+    showBubble('SELECT A WORK BELOW');
+  });
+
+  characterButton.addEventListener('click', () => {
+    waveOnce('READ · REFINE · CONNECT');
+  });
+}
+
+function initSiteIntro() {
+  const intro = document.querySelector('[data-site-intro]');
+  if (!intro) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let timer = null;
+
+  const cleanup = () => {
+    window.removeEventListener('wheel', onSkip);
+    window.removeEventListener('touchstart', onSkip);
+    window.removeEventListener('keydown', onKeyDown);
+  };
+
+  const hideIntro = () => {
+    if (intro.classList.contains('is-hidden')) return;
+
+    intro.classList.add('is-hidden');
+    intro.setAttribute('aria-hidden', 'true');
+    cleanup();
+
+    window.setTimeout(() => {
+      intro.remove();
+    }, prefersReducedMotion ? 0 : 850);
+  };
+
+  function skip() {
+    window.clearTimeout(timer);
+    hideIntro();
+  }
+
+  function onSkip() {
+    skip();
+  }
+
+  function onKeyDown(event) {
+    if (
+      event.key === 'ArrowDown' ||
+      event.key === 'PageDown' ||
+      event.key === ' ' ||
+      event.key === 'Enter' ||
+      event.key === 'Escape'
+    ) {
+      skip();
+    }
+  }
+
+  if (prefersReducedMotion) {
+    hideIntro();
     return;
   }
 
-  window.setTimeout(() => {
-    document.body.classList.add('hero-intro-done');
-  }, 950);
+  timer = window.setTimeout(hideIntro, 2350);
 
-  window.setTimeout(() => {
-    opening.remove();
-  }, 1500);
+  window.addEventListener('wheel', onSkip, {once: true, passive: true});
+  window.addEventListener('touchstart', onSkip, {once: true, passive: true});
+  window.addEventListener('keydown', onKeyDown);
 }
 
 function setupHeroTypographyReveal() {
@@ -141,10 +372,32 @@ function setupHeroTypographyReveal() {
   }
 
   const letters = title.querySelectorAll('span');
+  const heroStage = document.querySelector('.hero-stage');
+  let overlapShift = 0;
+
+  const updateTitleOverlap = () => {
+    if (!heroStage || window.innerWidth <= 1100) {
+      title.style.setProperty('--hero-title-overlap-start', '100%');
+      return;
+    }
+
+    const titleRect = title.getBoundingClientRect();
+    const stageRect = heroStage.getBoundingClientRect();
+
+    if (!titleRect.width) return;
+
+    const overlapStart = ((stageRect.left - titleRect.left) / titleRect.width) * 100;
+    const clamped = Math.max(0, Math.min(100, overlapStart + overlapShift));
+    title.style.setProperty('--hero-title-overlap-start', `${clamped.toFixed(2)}%`);
+  };
 
   letters.forEach((letter, index) => {
     letter.style.transitionDelay = `${index * 42}ms`;
   });
+
+  updateTitleOverlap();
+  window.addEventListener('resize', updateTitleOverlap, {passive: true});
+  window.addEventListener('scroll', updateTitleOverlap, {passive: true});
 
   title.addEventListener('mousemove', (event) => {
     const rect = title.getBoundingClientRect();
@@ -152,6 +405,8 @@ function setupHeroTypographyReveal() {
     const y = (event.clientY - rect.top) / rect.height - 0.5;
 
     title.classList.add('is-magnetic');
+    overlapShift = x * -5;
+    updateTitleOverlap();
 
     letters.forEach((letter, index) => {
       const direction = index - (letters.length - 1) / 2;
@@ -165,6 +420,8 @@ function setupHeroTypographyReveal() {
 
   title.addEventListener('mouseleave', () => {
     title.classList.remove('is-magnetic');
+    overlapShift = 0;
+    updateTitleOverlap();
 
     letters.forEach((letter) => {
       letter.style.setProperty('--letter-x', '0px');
@@ -201,6 +458,49 @@ function setupWorkbenchSpotlightCursor() {
     visual.style.setProperty('--atelier-parallax-x', '0px');
     visual.style.setProperty('--atelier-parallax-y', '0px');
   });
+}
+
+function setupHeroWorkbenchCards() {
+  const cards = Array.from(document.querySelectorAll('.hero-desk-card[data-hero-work]'));
+  const triggers = Array.from(document.querySelectorAll('.hero-work-rail [data-hero-preview]'));
+
+  if (!cards.length || !triggers.length) return;
+
+  const setActiveWork = (work = 'kia', announce = true) => {
+    cards.forEach((card) => {
+      card.classList.toggle('is-active', card.dataset.heroWork === work);
+    });
+
+    triggers.forEach((trigger) => {
+      trigger.classList.toggle('is-active', trigger.dataset.heroPreview === work);
+    });
+
+    if (announce) {
+      window.dispatchEvent(new CustomEvent('heroWorkbenchActive', {
+        detail: {work}
+      }));
+    }
+  };
+
+  triggers.forEach((trigger) => {
+    const work = trigger.dataset.heroPreview || 'kia';
+
+    trigger.addEventListener('mouseenter', () => setActiveWork(work));
+    trigger.addEventListener('focus', () => setActiveWork(work));
+
+    trigger.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('heroWorkbenchSelect', {
+        detail: {work}
+      }));
+    });
+  });
+
+  cards.forEach((card) => {
+    const work = card.dataset.heroWork || 'kia';
+    card.addEventListener('mouseenter', () => setActiveWork(work));
+  });
+
+  setActiveWork('kia', false);
 }
 
 function setupHeroProjectPreview() {
@@ -254,9 +554,25 @@ function setupHeroProjectPreview() {
 
     trigger.addEventListener('focus', () => {
       const title = trigger.dataset.previewTitle || trigger.textContent.trim();
+      const image = trigger.dataset.previewImage || '';
       const rect = trigger.getBoundingClientRect();
 
       if (previewTitle) previewTitle.textContent = title;
+
+      if (previewImg) {
+        if (image) {
+          previewImg.style.display = 'block';
+          previewImg.style.visibility = 'hidden';
+          previewImg.src = image;
+
+          if (previewImg.complete && previewImg.naturalWidth > 0) {
+            previewImg.style.visibility = 'visible';
+          }
+        } else {
+          previewImg.removeAttribute('src');
+          previewImg.style.display = 'none';
+        }
+      }
 
       preview.classList.add('is-active');
       preview.style.setProperty('--preview-x', `${rect.left + rect.width / 2}px`);
@@ -265,6 +581,32 @@ function setupHeroProjectPreview() {
 
     trigger.addEventListener('blur', () => {
       preview.classList.remove('is-active');
+    });
+
+    trigger.addEventListener('click', (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+        return;
+      }
+
+      const projectKey = trigger.dataset.heroPreview;
+      const targetCard = projectKey
+        ? document.querySelector(`.project-open[data-project="${projectKey}"]`)
+        : null;
+
+      if (!targetCard) return;
+
+      event.preventDefault();
+      preview.classList.remove('is-active');
+
+      document.querySelector('#works')?.scrollIntoView({
+        behavior: reduceMotion ? 'auto' : 'smooth',
+        block: 'start'
+      });
+
+      window.setTimeout(() => {
+        targetCard.focus({preventScroll: true});
+        targetCard.click();
+      }, reduceMotion ? 0 : 420);
     });
   });
 
@@ -285,10 +627,7 @@ function setupHeroScrollGuide() {
   if (!guide) return;
 
   guide.addEventListener('click', () => {
-    const nextSection =
-      document.querySelector('#profile') ||
-      document.querySelector('.profile') ||
-      document.querySelector('[data-section-index="A-01"]');
+    const nextSection = document.querySelector('#tools');
 
     if (!nextSection) return;
 
@@ -352,77 +691,8 @@ function initCursorToolSystem() {
 
 function initWorksPreviewCursor() {
   const preview = document.querySelector('.works-preview-card');
-  const previewImg = preview?.querySelector('img');
-  const previewTitle = preview?.querySelector('span');
-  const cards = document.querySelectorAll('.works-hanging-card[data-preview-title]');
-  const isTouchLike = window.matchMedia('(hover: none), (pointer: coarse)').matches;
-
-  if (!preview || !cards.length || isTouchLike || reduceMotion) return;
-
-  if (previewImg) {
-    previewImg.removeAttribute('src');
-  }
-
-  const movePreview = (event) => {
-    preview.style.setProperty('--works-preview-x', `${event.clientX}px`);
-    preview.style.setProperty('--works-preview-y', `${event.clientY}px`);
-  };
-
-  const showPreview = (card, event) => {
-    if (previewTitle) {
-      previewTitle.textContent = card.dataset.previewTitle || card.textContent.trim();
-    }
-
-    if (previewImg) {
-      const image = card.dataset.previewImage || '';
-
-      if (image) {
-        previewImg.style.display = 'block';
-        previewImg.style.visibility = 'hidden';
-        previewImg.src = image;
-
-        if (previewImg.complete && previewImg.naturalWidth > 0) {
-          previewImg.style.visibility = 'visible';
-        }
-      } else {
-        previewImg.removeAttribute('src');
-        previewImg.style.display = 'none';
-      }
-    }
-
-    preview.classList.add('is-active');
-
-    if (event) {
-      movePreview(event);
-    } else {
-      const rect = card.getBoundingClientRect();
-      preview.style.setProperty('--works-preview-x', `${rect.left + rect.width / 2}px`);
-      preview.style.setProperty('--works-preview-y', `${rect.top}px`);
-    }
-  };
-
-  const hidePreview = () => {
-    preview.classList.remove('is-active');
-  };
-
-  cards.forEach((card) => {
-    card.addEventListener('mouseenter', (event) => showPreview(card, event));
-    card.addEventListener('mousemove', movePreview);
-    card.addEventListener('mouseleave', hidePreview);
-    card.addEventListener('focus', () => showPreview(card));
-    card.addEventListener('blur', hidePreview);
-  });
-
-  if (previewImg) {
-    previewImg.addEventListener('load', () => {
-      previewImg.style.visibility = 'visible';
-    });
-
-    previewImg.addEventListener('error', () => {
-      previewImg.style.display = 'none';
-      previewImg.style.visibility = 'hidden';
-    });
-  }
+  preview?.classList.remove('is-active');
+  preview?.setAttribute('hidden', '');
 }
 
 function initToolsPegboardInteraction() {
@@ -623,46 +893,165 @@ function initProfileLayoutFormation() {
   observer.observe(profile);
 }
 
-function initProfilePaperResponse() {
-  const profile = document.querySelector('.profile');
-  const isTouchLike = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+function initPartialWoodShaveReveal() {
+  const section = document.querySelector('.about-shave-reveal');
+  const board = document.querySelector('[data-shave-board]');
+  if (!section || !board) return;
 
-  if (!profile || isTouchLike || reduceMotion) return;
+  const plane = board.querySelector('.wood-plane');
+  const shavingImages = board.querySelectorAll('.wood-shaving-img');
+  const mobileFallback = window.matchMedia('(max-width: 640px)').matches;
+  const clamp = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max);
+  const segment = (value, start, end) => clamp((value - start) / (end - start));
+  const lerp = (from, to, amount) => from + (to - from) * amount;
+  const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
 
-  const updatePaper = (event) => {
-    const rect = profile.getBoundingClientRect();
-    const x = clamp01((event.clientX - rect.left) / Math.max(rect.width, 1));
-    const y = clamp01((event.clientY - rect.top) / Math.max(rect.height, 1));
-    const tiltX = (x - 0.5) * 3.2;
-    const tiltY = (0.5 - y) * 2.6;
-
-    profile.classList.add('is-paper-probing');
-    profile.style.setProperty('--profile-paper-x', `${(x * 100).toFixed(2)}%`);
-    profile.style.setProperty('--profile-paper-y', `${(y * 100).toFixed(2)}%`);
-    profile.style.setProperty('--profile-tilt-x', `${tiltX.toFixed(2)}deg`);
-    profile.style.setProperty('--profile-tilt-y', `${tiltY.toFixed(2)}deg`);
-    profile.style.setProperty('--profile-soft-tilt-x', `${(tiltX * 0.45).toFixed(2)}deg`);
-    profile.style.setProperty('--profile-soft-tilt-y', `${(tiltY * 0.45).toFixed(2)}deg`);
-    profile.style.setProperty('--profile-shadow-x', `${(tiltX * -4).toFixed(2)}px`);
-    profile.style.setProperty('--profile-shadow-y', `${(Math.abs(tiltY) * 4 + 18).toFixed(2)}px`);
-    profile.style.setProperty('--profile-copy-x', `${(tiltX * 0.48).toFixed(2)}px`);
-    profile.style.setProperty('--profile-copy-y', `${(tiltY * -0.42).toFixed(2)}px`);
+  const setNumber = (name, value) => {
+    board.style.setProperty(name, String(Number(value).toFixed(3)));
   };
 
-  const resetPaper = () => {
-    profile.classList.remove('is-paper-probing');
-    profile.style.setProperty('--profile-tilt-x', '0deg');
-    profile.style.setProperty('--profile-tilt-y', '0deg');
-    profile.style.setProperty('--profile-soft-tilt-x', '0deg');
-    profile.style.setProperty('--profile-soft-tilt-y', '0deg');
-    profile.style.setProperty('--profile-shadow-x', '0px');
-    profile.style.setProperty('--profile-shadow-y', '18px');
-    profile.style.setProperty('--profile-copy-x', '0px');
-    profile.style.setProperty('--profile-copy-y', '0px');
+  const setPercent = (name, value) => {
+    board.style.setProperty(name, `${Number(value).toFixed(2)}%`);
   };
 
-  profile.addEventListener('pointermove', updatePaper);
-  profile.addEventListener('pointerleave', resetPaper);
+  const revealStatic = () => {
+    setNumber('--p1-scale', 0);
+    setNumber('--p2-scale', 0);
+    setNumber('--p3-scale', 0);
+    setNumber('--p1-num', 1);
+    setNumber('--p2-num', 1);
+    setNumber('--p3-num', 1);
+    setNumber('--dust-progress', .72);
+    setNumber('--plane-opacity', 0);
+    board.classList.add('is-shave-complete');
+    board.classList.remove('is-shave-ready');
+    board.removeAttribute('data-active-shave-pass');
+  };
+
+  if (plane) {
+    plane.addEventListener('error', () => {
+      const fallback = plane.dataset.planeFallback;
+      if (fallback && plane.src.indexOf(fallback) === -1) {
+        plane.src = fallback;
+        return;
+      }
+
+      plane.hidden = true;
+      board.classList.add('is-plane-missing');
+    });
+  }
+
+  shavingImages.forEach((image) => {
+    image.addEventListener('error', () => {
+      image.classList.add('is-missing');
+    }, {once:true});
+  });
+
+  if (reduceMotion || mobileFallback) {
+    revealStatic();
+    return;
+  }
+
+  board.classList.add('is-shave-ready');
+
+  let ticking = false;
+
+  const update = () => {
+    ticking = false;
+
+    const rect = section.getBoundingClientRect();
+    const scrollable = Math.max(section.offsetHeight - window.innerHeight, 1);
+    const progress = clamp(-rect.top / scrollable);
+
+    const p1 = easeOutCubic(segment(progress, .04, .32));
+    const p2 = easeOutCubic(segment(progress, .34, .64));
+    const p3 = easeOutCubic(segment(progress, .66, .92));
+
+    setNumber('--p1-scale', 1 - p1);
+    setNumber('--p2-scale', 1 - p2);
+    setNumber('--p3-scale', 1 - p3);
+    setNumber('--p1-num', p1);
+    setNumber('--p2-num', p2);
+    setNumber('--p3-num', p3);
+    setNumber('--dust-progress', clamp((p1 * .25) + (p2 * .3) + (p3 * .45)));
+
+    let activePass = 1;
+    let local = p1;
+    let x = lerp(-8, 108, p1);
+    let y = lerp(28, 31, p1);
+    let rotate = lerp(3, -2, p1);
+    let flip = 1;
+    let edgeRot = -1.2;
+
+    if (progress >= .34 && progress < .66) {
+      activePass = 2;
+      local = p2;
+      x = lerp(108, -8, p2);
+      y = lerp(49, 53, p2);
+      rotate = lerp(-4, 2, p2);
+      flip = -1;
+      edgeRot = .9;
+    }
+
+    if (progress >= .66) {
+      activePass = 3;
+      local = p3;
+      x = lerp(-8, 104, p3);
+      y = lerp(72, 75, p3);
+      rotate = lerp(4, -1, p3);
+      flip = 1;
+      edgeRot = -.5;
+    }
+
+    const wiggle = Math.sin(local * Math.PI) * 2.2;
+    const planeY = y + wiggle;
+    const planeOpacity = progress > .96 ? .34 : progress < .015 ? .95 : 1;
+
+    setPercent('--plane-x', x);
+    setPercent('--plane-y', planeY);
+    board.style.setProperty('--plane-rotate', `${rotate.toFixed(2)}deg`);
+    board.style.setProperty('--plane-flip', String(flip));
+    setNumber('--plane-opacity', planeOpacity);
+    setPercent('--active-edge-x', x);
+    setPercent('--active-edge-y', planeY + .8);
+    board.style.setProperty('--active-edge-rot', `${edgeRot}deg`);
+
+    setNumber('--shaving1-opacity', clamp(p1 * 1.35));
+    setNumber('--shaving1-scale', .65 + (p1 * .35));
+    setNumber('--shaving2-opacity', clamp(p2 * 1.35));
+    setNumber('--shaving2-scale', .65 + (p2 * .35));
+    setNumber('--shaving3-opacity', clamp(p3 * 1.35));
+    setNumber('--shaving3-scale', .65 + (p3 * .35));
+
+    if (activePass === 1) {
+      setPercent('--shaving1-x', clamp(x - 10, 7, 82));
+      setPercent('--shaving1-y', planeY + 4);
+    } else if (activePass === 2) {
+      setPercent('--shaving2-x', clamp(x + 8, 12, 84));
+      setPercent('--shaving2-y', planeY + 4);
+    } else {
+      setPercent('--shaving3-x', clamp(x - 10, 10, 82));
+      setPercent('--shaving3-y', planeY + 4);
+    }
+
+    if (progress > .015 && progress < .94 && local > .02 && local < .985) {
+      board.dataset.activeShavePass = String(activePass);
+    } else {
+      board.removeAttribute('data-active-shave-pass');
+    }
+
+    board.classList.toggle('is-shave-complete', progress >= .92);
+  };
+
+  const requestUpdate = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  };
+
+  update();
+  window.addEventListener('scroll', requestUpdate, {passive:true});
+  window.addEventListener('resize', requestUpdate);
 }
 
 function initPageContinuity() {
@@ -764,7 +1153,7 @@ function initPageContinuity() {
 }
 
 function initSectionReveal() {
-  const revealSections = document.querySelectorAll('.section-reveal:not(.hero):not(.project-axis-section), .profile, .tools-photo-section, .works-display');
+  const revealSections = document.querySelectorAll('.section-reveal:not(.hero):not(.project-axis-section), .about-shave-reveal, .about-standard, .profile, .tools-photo-section, .works-display, .contact');
   if (!revealSections.length) return;
 
   if (reduceMotion) {
@@ -788,7 +1177,7 @@ function initSectionReveal() {
 }
 
 function initTitleReveal() {
-  const titleTargets = document.querySelectorAll('.hero-title, .profile h2, .tools-board-title, .works-copy h2');
+  const titleTargets = document.querySelectorAll('.hero-title, .profile h2, .tools-board-title, .works-copy h2, .contact h2');
   if (!titleTargets.length) return;
 
   titleTargets.forEach((title) => {
@@ -830,11 +1219,13 @@ initTitleReveal();
 initHeroIntroInteractions();
 initCursorToolSystem();
 initWorksInspector();
+initProjectFilters();
+initContactLinks();
 initWorksPreviewCursor();
 initToolsPegboardInteraction();
 initSectionStageIndicator();
 initProfileLayoutFormation();
-initProfilePaperResponse();
+initPartialWoodShaveReveal();
 
 const sections = [...document.querySelectorAll('section[id]')];
 const navLinks = [...document.querySelectorAll('.nav a')];
@@ -881,13 +1272,13 @@ if (isToolsCalibrateMode && toolsStage) {
   const calibrationKey = 'toolsCalibrationV2';
   const pinOrder = [
     'tool-pin-js',
+    'tool-pin-vscode',
+    'tool-pin-react',
+    'tool-pin-figma',
     'tool-pin-ps',
     'tool-pin-ai',
-    'tool-pin-figma',
-    'tool-pin-vscode',
     'tool-pin-aitools',
-    'tool-pin-autocad',
-    'tool-pin-react'
+    'tool-pin-autocad'
   ];
   const targetOrder = [
     ...pinOrder,
@@ -1322,91 +1713,234 @@ if (isToolsCalibrateMode && toolsStage) {
   updatePanel();
 }
 
-const projectDetails = {
+const projectModalData = {
   kia: {
-    no: 'Project 01',
+    no: '01 / MAIN PROJECT',
     title: 'KIA Website',
-    type: 'Web Design · UI/UX · Brand Experience',
-    image: 'assets/kia-hero.webp',
-    alt: 'KIA website project visual',
-    goal: '기아의 브랜드 메시지와 차량 정보를 명확한 웹 경험으로 재구성한 UI 디자인입니다.',
-    role: 'UI Design / Web Layout / Visual Direction',
-    output: 'Main Page / Detail Section / Responsive Layout'
+    type: '기아 공식 웹사이트 리뉴얼 프로젝트',
+    image: 'assets/kia-thumb.webp',
+    alt: 'KIA Website project board',
+    desc: '브랜드 경험을 디지털로 확장한 공식 웹사이트 리뉴얼 프로젝트입니다.',
+    points: [
+      '차량 정보 구조와 탐색 흐름을 정리해 사용자가 핵심 정보를 빠르게 찾도록 설계',
+      '시네마틱 비주얼과 직관적 인터랙션으로 브랜드 이미지를 강화',
+      'PC 중심 화면에서 반응형 흐름까지 이어지는 웹 UI 구조를 구성'
+    ],
+    git: '',
+    tags: ['UI/UX', 'Frontend', 'Responsive Web']
   },
   gunit: {
-    no: 'Project 02',
+    no: '02 / MAIN PROJECT',
     title: 'GUNIT App',
-    type: 'App Design · UX Flow · Service Concept',
-    image: 'assets/work-03-placeholder.svg',
-    alt: 'GUNIT app project visual',
-    goal: '에어소프트 팀 매칭과 커뮤니티 활동을 연결하는 앱 서비스 UX를 설계했습니다.',
-    role: 'UX Structure / App UI / Screen Flow',
-    output: 'Home / Profile / Community / Event Screens'
+    type: '에어소프트 입문자를 첫 경기까지 연결하는 온보딩 기반 커뮤니티 서비스',
+    image: 'assets/gunit-thumb.png',
+    alt: 'GUNIT App project board',
+    desc: 'GUNIT은 에어소프트 입문자가 정보 탐색에서 멈추지 않고, 실제 첫 참여까지 이어질 수 있도록 설계한 서비스입니다. AI 가이드, 버디 매칭, 경기·필드 탐색, 장비 안내를 하나의 흐름으로 연결해 초보자의 진입 부담을 낮추는 것을 목표로 했습니다.',
+    points: [
+      '입문자의 첫 참여 장벽을 낮추는 서비스',
+      '정보 탐색 → 준비 → 경기 참여까지 연결',
+      'AI 가이드, 버디 매칭, 경기/필드 탐색 기능 구성',
+      '초보자도 안전하게 시작할 수 있는 온보딩 UX 설계'
+    ],
+    gitLabel: 'LIVE SITE',
+    git: 'https://airsoft-nine.vercel.app/',
+    gitDisplay: 'https://airsoft-nine.vercel.app/',
+    tags: ['APP DESIGN', 'UX/UI', 'ONBOARDING', 'COMMUNITY', 'AI GUIDE', 'BUDDY MATCHING']
+  },
+  gro: {
+    no: '03 / MAIN PROJECT',
+    title: 'GRO App',
+    type: '반려식물 루틴 관리 앱 프로젝트',
+    image: 'assets/GRO-project-thumb.png',
+    alt: 'GRO App project board',
+    desc: '식물 관리 루틴을 쉽게 기록하고 반복할 수 있도록 정리한 앱 프로젝트입니다.',
+    points: [
+      '물 주기, 빛 환경, 성장 상태를 쉽게 기록하는 반려식물 관리 흐름 설계',
+      '초보 사용자도 식물 상태를 이해할 수 있도록 정보 구조를 단순화',
+      '차분한 그린 톤 UI와 반복 루틴 중심의 화면 설계로 일상적인 관리 경험 제공'
+    ],
+    git: '',
+    tags: ['App Design', 'Routine', 'Plant Care']
   },
   character: {
-    no: 'Project 03',
+    no: '01 / SUPPORTING WORK',
     title: 'Character Design',
-    type: 'Character · Visual System · Brand Mood',
-    image: 'assets/work-03-placeholder.svg',
-    alt: 'Character design project visual',
-    goal: 'Milo & Pippa 캐릭터의 성격과 브랜드 무드를 시각 시스템으로 정리했습니다.',
-    role: 'Concept / Character Style / Application',
-    output: 'Main Character / Expression / Color Variation'
+    type: '캐릭터 시스템과 3D 적용 보드',
+    image: 'assets/character-crop.png',
+    alt: 'Character Design board',
+    desc: '캐릭터 컨셉과 장면 일러스트, 3D 스탠디 적용 방향을 하나의 보드로 정리한 작업입니다.',
+    points: [
+      '빵랑자 캐릭터의 성격과 세계관을 한눈에 읽히는 포스터 보드로 구성',
+      '장면 일러스트, 표정, 키 모티프, 컬러 팔레트를 하나의 캐릭터 시스템으로 정리',
+      '2D 캐릭터가 3D 스탠디와 굿즈 형태로 확장될 수 있는 적용 방향 제안'
+    ],
+    git: '',
+    tags: ['Character', 'Illustration', '3D Application']
   },
-  modeling: {
-    no: 'Project 04',
-    title: '3D Modeling',
-    type: '3D Modeling · Material · Rendering',
-    image: 'assets/modeling-hero.webp',
-    alt: '3D modeling project visual',
-    goal: '목재 의자의 형태, 재질, 조명을 정리해 현실감 있는 3D 렌더링으로 완성했습니다.',
-    role: 'Modeling / Material Setup / Lighting',
-    output: 'Object Modeling / Detail Rendering / Final Image'
+  residential: {
+    no: '02 / 3D WORK',
+    title: 'Residential House',
+    type: '협소 대지 주거 공간 3D 시각화',
+    image: 'assets/modeling-residential-board.png',
+    alt: 'Residential House Project board',
+    desc: '좁은 필지의 주거 공간을 외관, 내부, 평면, 단면 정보가 함께 읽히도록 구성한 3D 보드입니다.',
+    points: [
+      '협소 대지 조건에서 수직 동선과 채광 구조가 드러나도록 공간을 모델링',
+      '외관 렌더링, interior perspective, floor plan, section을 한 장의 보드로 정리',
+      'exploded view를 통해 층별 구조와 내부 연결 방식을 이해하기 쉽게 표현'
+    ],
+    git: '',
+    tags: ['3D Modeling', 'Rendering', 'Architecture']
+  },
+  pavilion: {
+    no: '03 / 3D WORK',
+    title: 'Wood Pavilion',
+    type: '목구조 파빌리온 공간 렌더링 보드',
+    image: 'assets/modeling-pavilion-board.png',
+    alt: 'Wood Pavilion Architectural Space Study board',
+    desc: '목재 구조와 자연광, 내부 체류 경험을 건축 보드 형식으로 정리한 3D 공간 시각화 작업입니다.',
+    points: [
+      '목구조의 반복 리듬과 재료감을 외관 및 내부 렌더링으로 표현',
+      'plan / section과 interior view를 함께 배치해 공간의 구조와 사용 흐름을 설명',
+      '따뜻한 우드 톤과 빛의 방향을 중심으로 차분한 체류 공간의 분위기 구성'
+    ],
+    git: '',
+    tags: ['3D Modeling', 'Wood Space', 'Light Study']
   }
 };
 
 const projectModal = document.getElementById('projectModal');
 const projectModalImage = document.getElementById('projectModalImage');
+const projectModalFallback = document.getElementById('projectModalImageFallback');
+const projectModalFallbackNo = document.getElementById('projectModalFallbackNo');
+const projectModalFallbackTitle = document.getElementById('projectModalFallbackTitle');
 const projectModalNo = document.getElementById('projectModalNo');
 const projectModalTitle = document.getElementById('projectModalTitle');
 const projectModalType = document.getElementById('projectModalType');
-const projectModalGoal = document.getElementById('projectModalGoal');
-const projectModalRole = document.getElementById('projectModalRole');
-const projectModalOutput = document.getElementById('projectModalOutput');
+const projectModalDesc = document.getElementById('projectModalDesc');
+const projectModalPoints = document.getElementById('projectModalPoints');
+const projectModalGitLabel = document.getElementById('projectModalGitLabel');
+const projectModalGit = document.getElementById('projectModalGit');
+const projectModalLink = document.getElementById('projectModalLink');
+const projectModalTags = document.getElementById('projectModalTags');
 const projectOpenButtons = document.querySelectorAll('.project-open');
+const axisProjectButtons = document.querySelectorAll('[data-axis-project]');
 let pinnedWorksCard = null;
+let lastFocusedProjectTrigger = null;
 
-function openProjectModal(projectKey) {
-  const data = projectDetails[projectKey];
-  if (!data || !projectModal || !projectModalImage) return;
+function showProjectImageFallback(data) {
+  if (projectModalImage) {
+    projectModalImage.hidden = true;
+    projectModalImage.removeAttribute('src');
+    projectModalImage.alt = '';
+  }
 
-  projectModalImage.src = data.image;
-  projectModalImage.alt = data.alt;
+  if (projectModalFallback) {
+    projectModalFallback.hidden = false;
+  }
+  if (projectModalFallbackNo) projectModalFallbackNo.textContent = data.no;
+  if (projectModalFallbackTitle) projectModalFallbackTitle.textContent = data.title;
+}
+
+function setProjectModalImage(data) {
+  if (!projectModalImage) return;
+
+  projectModalImage.onload = () => {
+    projectModalImage.hidden = false;
+    if (projectModalFallback) projectModalFallback.hidden = true;
+  };
+
+  projectModalImage.onerror = () => {
+    showProjectImageFallback(data);
+  };
+
+  if (data.image) {
+    projectModalImage.hidden = false;
+    projectModalImage.alt = data.alt || data.title;
+    projectModalImage.src = data.image;
+  } else {
+    showProjectImageFallback(data);
+  }
+}
+
+function openProjectModal(projectKey, trigger = null) {
+  const data = projectModalData[projectKey];
+  if (!data || !projectModal) return;
+
+  lastFocusedProjectTrigger = trigger || document.activeElement;
+
+  setProjectModalImage(data);
+
   if (projectModalNo) projectModalNo.textContent = data.no;
   if (projectModalTitle) projectModalTitle.textContent = data.title;
   if (projectModalType) projectModalType.textContent = data.type;
-  if (projectModalGoal) projectModalGoal.textContent = data.goal;
-  if (projectModalRole) projectModalRole.textContent = data.role;
-  if (projectModalOutput) projectModalOutput.textContent = data.output;
+  if (projectModalDesc) projectModalDesc.textContent = data.desc;
+
+  if (projectModalPoints) {
+    projectModalPoints.replaceChildren(...data.points.map((point) => {
+      const item = document.createElement('li');
+      item.textContent = point;
+      return item;
+    }));
+  }
+
+  if (projectModalGit) {
+    projectModalGit.value = data.gitDisplay || data.git || '';
+  }
+
+  if (projectModalGitLabel) {
+    projectModalGitLabel.textContent = data.gitLabel || 'Git Address';
+  }
+
+  if (projectModalLink) {
+    if (data.git) {
+      projectModalLink.href = data.git;
+      projectModalLink.target = '_blank';
+      projectModalLink.rel = 'noopener noreferrer';
+      projectModalLink.hidden = false;
+      projectModalLink.setAttribute('aria-disabled', 'false');
+    } else {
+      projectModalLink.removeAttribute('href');
+      projectModalLink.hidden = true;
+      projectModalLink.setAttribute('aria-disabled', 'true');
+    }
+  }
+
+  if (projectModalTags) {
+    projectModalTags.replaceChildren(...data.tags.map((tag) => {
+      const item = document.createElement('span');
+      item.textContent = tag;
+      return item;
+    }));
+  }
 
   projectModal.classList.add('is-open');
   projectModal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
+  document.body.classList.add('modal-open');
+
+  window.setTimeout(() => {
+    projectModal.querySelector('[data-modal-close]')?.focus();
+  }, 0);
 }
 
 function closeProjectModal() {
-  if (!projectModal) return;
+  if (!projectModal || !projectModal.classList.contains('is-open')) return;
 
   projectModal.classList.remove('is-open');
   projectModal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
+  document.body.classList.remove('modal-open');
 
   pinnedWorksCard?.classList.remove('is-pinned');
   pinnedWorksCard = null;
+  lastFocusedProjectTrigger?.focus?.();
+  lastFocusedProjectTrigger = null;
 }
 
 projectOpenButtons.forEach((button) => {
   button.addEventListener('click', () => {
+    const projectKey = button.dataset.project;
+    if (!projectModalData[projectKey]) return;
+
     pinnedWorksCard?.classList.remove('is-pinned');
     pinnedWorksCard = button;
     button.classList.add('is-pressing');
@@ -1414,8 +1948,17 @@ projectOpenButtons.forEach((button) => {
 
     window.setTimeout(() => {
       button.classList.remove('is-pressing');
-      openProjectModal(button.dataset.project);
+      openProjectModal(projectKey, button);
     }, 130);
+  });
+});
+
+axisProjectButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const projectKey = button.dataset.axisProject;
+    if (!projectModalData[projectKey]) return;
+
+    openProjectModal(projectKey, button);
   });
 });
 
@@ -1424,8 +1967,30 @@ document.querySelectorAll('[data-modal-close]').forEach((button) => {
 });
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && projectModal?.classList.contains('is-open')) {
+  if (!projectModal?.classList.contains('is-open')) return;
+
+  if (event.key === 'Escape') {
     closeProjectModal();
+    return;
+  }
+
+  if (event.key === 'Tab') {
+    const focusable = Array.from(projectModal.querySelectorAll(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    )).filter((element) => element.offsetParent !== null);
+
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 });
 
@@ -1495,10 +2060,93 @@ function initWorksInspector() {
   resetPanel();
 }
 
+function initProjectFilters() {
+  if (initProjectFilters.isInitialized) return;
+
+  const filters = document.querySelectorAll('[data-project-filter]');
+  const cards = document.querySelectorAll('.works-hanging-card[data-project-category]');
+
+  if (!filters.length || !cards.length) return;
+
+  initProjectFilters.isInitialized = true;
+
+  const setFilter = (filterName) => {
+    filters.forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.projectFilter === filterName));
+    });
+
+    cards.forEach((card) => {
+      const isVisible = filterName === 'all' || card.dataset.projectCategory === filterName;
+      card.classList.toggle('is-filtered-out', !isVisible);
+    });
+  };
+
+  filters.forEach((button) => {
+    button.addEventListener('click', () => {
+      setFilter(button.dataset.projectFilter || 'all');
+    });
+  });
+
+  setFilter('all');
+}
+
+async function initContactLinks() {
+  if (initContactLinks.isInitialized) return;
+
+  const linkArea = document.querySelector('[data-contact-links]');
+  if (!linkArea) return;
+
+  initContactLinks.isInitialized = true;
+
+  const email = (linkArea.dataset.contactEmail || '').trim();
+  const resumeUrl = (linkArea.dataset.resumeUrl || '').trim();
+  const portfolioUrl = (linkArea.dataset.portfolioUrl || '').trim();
+  const githubUrl = 'https://github.com/jaeking92-lgtm/jaehyuk-portfolio';
+
+  const canLoad = async (url) => {
+    if (!url) return false;
+
+    try {
+      const response = await fetch(url, {method: 'HEAD', cache: 'no-store'});
+      return response.ok;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const candidates = [
+    email
+      ? {label: 'Email', href: `mailto:${email}`}
+      : null,
+    resumeUrl && await canLoad(resumeUrl)
+      ? {label: 'Resume', href: resumeUrl, external: true}
+      : null,
+    portfolioUrl && await canLoad(portfolioUrl)
+      ? {label: 'Portfolio PDF', href: portfolioUrl, external: true}
+      : null,
+    {label: 'GitHub', href: githubUrl, external: true},
+  ].filter(Boolean);
+
+  linkArea.replaceChildren(...candidates.map((item) => {
+    const link = document.createElement('a');
+    link.textContent = item.label;
+    link.href = item.href;
+
+    if (item.external) {
+      link.target = '_blank';
+      link.rel = 'noreferrer';
+    }
+
+    return link;
+  }));
+}
+
 initWorksInspector();
+initProjectFilters();
+initContactLinks();
 
 
-/* A-02 Project Axis: card stack assembly and manual foundation fitting. */
+/* A-03 Project Axis: card stack assembly and manual foundation fitting. */
 function clamp01(value) {
   return Math.min(1, Math.max(0, value));
 }
@@ -1549,8 +2197,8 @@ const MAGNET_OUT = 52;
 const MAX_FORWARD_JUMP = 18;
 const AXIS_CUT_COMPLETE_FALLBACK_PROGRESS = 0.92;
 const AXIS_CUT_COMPLETE_MARGIN = 0.018;
-const AXIS_CONTACT_HOLD_START_PROGRESS = 0.92;
-const AXIS_CONTACT_HOLD_RESET_PROGRESS = 0.89;
+const AXIS_CONTACT_HOLD_START_PROGRESS = 0.89;
+const AXIS_CONTACT_HOLD_RESET_PROGRESS = 0.84;
 const AXIS_STABILITY_WHEEL_RESISTANCE = 0.68;
 const AXIS_PILLAR_SEAT_ANCHOR_RATIO = 0.18;
 const AXIS_PILLAR_CUT_SEAT_COMPENSATION = 44;
@@ -1583,7 +2231,7 @@ const AXIS_STABILITY_DRAG_RESISTANCE = 96;
 const AXIS_STABILITY_MAX_X = 13;
 const AXIS_STABILITY_MAX_ROTATION = 3.2;
 function setupAxisImageLoadingCheck() {
-  document.querySelectorAll('.axis-card img').forEach((img) => {
+  document.querySelectorAll('.axis-card img, .axis-stack-card img').forEach((img) => {
     const markMissing = () => {
       img.closest('.axis-card')?.classList.add('is-image-missing');
     };
@@ -2460,37 +3108,35 @@ function resetManualCutState() {
 function updateAxisInteraction() {
   const axisSection = document.querySelector('.project-axis-section');
   const axisStage = document.querySelector('.project-axis-stage');
-  const axisCards = document.querySelectorAll('.axis-card');
+  const axisCards = document.querySelectorAll('.axis-stack-card');
 
   if (!axisSection || !axisStage || !axisCards.length) return;
 
   const rect = axisSection.getBoundingClientRect();
   const scrollable = axisSection.offsetHeight - window.innerHeight;
   const globalProgress = clamp01((-rect.top) / Math.max(scrollable, 1));
-  const worksHandoffProgress = smooth(range(globalProgress, 0.02, 0.18));
-  const worksHandoffFade = 1 - smooth(range(globalProgress, 0.22, 0.40));
 
   const stageRect = axisStage.getBoundingClientRect();
   const stageW = stageRect.width;
   const stageH = stageRect.height;
 
-  const moveProgress = smooth(range(globalProgress, 0.00, 0.34));
-  const alignProgress = smooth(range(globalProgress, 0.28, 0.46));
-  const gatherProgress = smooth(range(globalProgress, 0.58, 0.66));
-  const stackProgress = smooth(range(globalProgress, 0.64, 0.74));
-  const pressProgress = smooth(range(globalProgress, 0.70, 0.735));
-  const pillarProgress = smooth(range(globalProgress, 0.705, 0.79));
-  const rawFoundationProgress = smooth(range(globalProgress, 0.88, 0.92));
-  const rawContactProgress = smooth(range(globalProgress, 0.91, 0.945));
-  const rawMismatchProgress = smooth(range(globalProgress, 0.935, 0.965));
-  const rawBounceProgress = smooth(range(globalProgress, 0.945, 0.970));
-  const rawContourDrawProgress = smooth(range(globalProgress, 0.965, 0.982));
-  const rawOverlayProgress = smooth(range(globalProgress, 0.978, 0.992));
+  const entryProgress = smooth(range(globalProgress, 0.00, 0.24));
+  const holdProgress = smooth(range(globalProgress, 0.24, 0.36));
+  const gatherProgress = smooth(range(globalProgress, 0.36, 0.54));
+  const stackProgress = smooth(range(globalProgress, 0.50, 0.68));
+  const pressProgress = smooth(range(globalProgress, 0.64, 0.80));
+  const boardProgress = smooth(range(globalProgress, 0.74, 0.84));
+  const pillarProgress = smooth(range(globalProgress, 0.78, 0.88));
+  const rawFoundationProgress = smooth(range(globalProgress, 0.855, 0.885));
+  const rawContactProgress = smooth(range(globalProgress, 0.880, 0.912));
+  const rawMismatchProgress = smooth(range(globalProgress, 0.900, 0.948));
+  const rawBounceProgress = smooth(range(globalProgress, 0.936, 0.962));
+  const rawContourDrawProgress = smooth(range(globalProgress, 0.958, 0.978));
+  const rawOverlayProgress = smooth(range(globalProgress, 0.974, 0.990));
 
-  setAxisVar('--axis-handoff-progress', worksHandoffProgress.toFixed(3));
-  setAxisVar('--axis-handoff-opacity', (worksHandoffProgress * worksHandoffFade).toFixed(3));
-  setAxisVar('--axis-handoff-y', `${lerp(48, -10, worksHandoffProgress).toFixed(2)}px`);
-  setAxisVar('--axis-handoff-scale', lerp(.94, 1, worksHandoffProgress).toFixed(3));
+  setAxisVar('--axis-handoff-opacity', '0');
+  setAxisVar('--axis-handoff-y', '0px');
+  setAxisVar('--axis-handoff-scale', '1');
 
   if (
     globalProgress < AXIS_CONTACT_HOLD_RESET_PROGRESS &&
@@ -2502,47 +3148,17 @@ function updateAxisInteraction() {
     axisManualCutState.contactHoldScrollY = null;
   }
 
-  const sideMargin = Math.max(36, stageW * 0.04);
-  const cardGap = Math.min(Math.max(stageW * 0.022, 22), 40);
-  const availableW = stageW - sideMargin * 2;
-  const fitCardW = (availableW - cardGap * 2) / 3;
-  const desiredCardW = stageW < 760
-    ? stageW * 0.72
-    : stageW * 0.35;
-  const minCardW = stageW < 760
-    ? Math.min(280, fitCardW)
-    : Math.min(360, fitCardW);
-  const cardW = Math.max(
-    minCardW,
-    Math.min(desiredCardW, fitCardW)
-  );
-  const cardH = Math.min(
-    stageH * (stageW < 760 ? 0.38 : 0.42),
-    cardW * 0.62
-  );
-  const totalCardsW = cardW * 3 + cardGap * 2;
-  const startGroupLeft = stageW * 0.42;
-  const alignedGroupLeft = (stageW - totalCardsW) / 2;
-  const movingGroupLeft = lerp(startGroupLeft, alignedGroupLeft, moveProgress);
-  const groupLeft = lerp(movingGroupLeft, alignedGroupLeft, alignProgress);
-  const visibleCenters = [
-    groupLeft + cardW / 2,
-    groupLeft + cardW + cardGap + cardW / 2,
-    groupLeft + cardW * 2 + cardGap * 2 + cardW / 2
-  ];
-  const firstCardLeft = visibleCenters[0] - cardW / 2;
-  const thirdCardRight = visibleCenters[2] + cardW / 2;
-  const fullyVisibleTolerance = 1;
-  const allCardsFullyVisible =
-    firstCardLeft >= sideMargin * 0.25 - fullyVisibleTolerance &&
-    thirdCardRight <= stageW - sideMargin * 0.25 + fullyVisibleTolerance;
-  const hasHoldCompleted = globalProgress >= 0.58;
-  const canStartAssembly = allCardsFullyVisible && hasHoldCompleted;
-  const safeGatherProgress = canStartAssembly ? gatherProgress : 0;
-  const safeStackProgress = canStartAssembly ? stackProgress : 0;
-  const safePressProgress = canStartAssembly ? pressProgress : 0;
-  const safePillarProgress = canStartAssembly ? pillarProgress : 0;
-  const pillarComplete = safePillarProgress >= 0.98;
+  const allCardsFullyVisible = globalProgress >= 0.32;
+  const canGather = allCardsFullyVisible && globalProgress >= 0.36;
+  const canStartAssembly = canGather;
+  const safeGatherProgress = canGather ? gatherProgress : 0;
+  const safeStackProgress = canGather ? stackProgress : 0;
+  const safePressProgress = canGather ? pressProgress : 0;
+  const safeBoardProgress = canGather ? boardProgress : 0;
+  const safePillarProgress = canGather ? pillarProgress : 0;
+  const standProgress = canGather ? smooth(range(globalProgress, .76, .86)) : 0;
+  const pillarHandoffProgress = canGather ? smooth(range(globalProgress, .835, .865)) : 0;
+  const pillarComplete = pillarHandoffProgress >= 0.98;
   const canShowFoundation = pillarComplete;
   const foundationProgress = canShowFoundation ? rawFoundationProgress : 0;
   const foundationVisible = foundationProgress >= 0.9;
@@ -2589,90 +3205,170 @@ function updateAxisInteraction() {
   }
 
   axisStage.dataset.axisFitStage = axisFitStage;
-  const gatheredCenters = [
-    stageW * 0.50 - cardW * 0.18,
-    stageW * 0.50,
-    stageW * 0.50 + cardW * 0.18
+  let hasClickableAxisCards = false;
+
+  const start = [
+    { x: stageW * 0.58, y: 0, z: -120, rx: 0, ry: -8, rz: -2 },
+    { x: stageW * 0.92, y: 0, z: -180, rx: 0, ry: -10, rz: 1 },
+    { x: stageW * 1.26, y: 0, z: -240, rx: 0, ry: -12, rz: 3 }
   ];
+  const visible = [
+    { x: -stageW * 0.26, y: 0, z: 0, rx: 0, ry: 0, rz: -1 },
+    { x: 0, y: 0, z: 40, rx: 0, ry: 0, rz: 0 },
+    { x: stageW * 0.26, y: 0, z: 0, rx: 0, ry: 0, rz: 1 }
+  ];
+  const stacked = [
+    { x: -28, y: -18, z: 80, rx: 6, ry: -4, rz: -3 },
+    { x: 0, y: 0, z: 120, rx: 4, ry: 0, rz: 0 },
+    { x: 28, y: 18, z: 160, rx: 6, ry: 4, rz: 3 }
+  ];
+  const standing = [
+    { x: 0, y: stageH * 0.045, z: 0, rx: 0, ry: 0, rz: -.35 },
+    { x: 0, y: stageH * 0.045, z: 10, rx: 0, ry: 0, rz: 0 },
+    { x: 0, y: stageH * 0.045, z: 20, rx: 0, ry: 0, rz: .35 }
+  ];
+  const baseClip = [
+    [0, 0],
+    [100, 0],
+    [100, 100],
+    [0, 100]
+  ];
+  const standingClips = [
+    [[0, 0], [46, 0], [42, 100], [0, 100]],
+    [[31, 0], [74, 0], [70, 100], [27, 100]],
+    [[55, 0], [100, 0], [100, 100], [59, 100]]
+  ];
+  const standingImageOpacity = [.68, .36, .48];
+  const morphClipPath = (points, progress) => {
+    const clipProgress = smooth(range(progress, .04, .92));
+    const coordinates = points.map(([x, y], pointIndex) => {
+      const [fromX, fromY] = baseClip[pointIndex];
+      return `${lerp(fromX, x, clipProgress).toFixed(2)}% ${lerp(fromY, y, clipProgress).toFixed(2)}%`;
+    });
+    return `polygon(${coordinates.join(', ')})`;
+  };
+  const baseStackCardW = stageW < 760
+    ? Math.min(stageW * 0.94, 430)
+    : Math.min(stageW * 0.52, 720);
+  const baseStackCardH = stageW < 760
+    ? Math.min(stageH * 0.40, 320)
+    : Math.min(stageH * 0.42, 430);
+  const pillarCardW = stageW < 760
+    ? Math.min(stageW * 0.54, 300)
+    : Math.min(Math.max(stageW * 0.18, 280), 420);
+  const pillarCardH = Math.min(stageH * 0.50, 540);
+  const pressedStackCardH = lerp(
+    baseStackCardH,
+    Math.max(baseStackCardH * .44, stageW < 760 ? 132 : 180),
+    safePressProgress
+  );
+  const stackCardW = lerp(baseStackCardW, pillarCardW, standProgress);
+  const stackCardH = lerp(pressedStackCardH, pillarCardH, standProgress);
+
+  setAxisVar('--stack-card-w', `${stackCardW.toFixed(2)}px`);
+  setAxisVar('--stack-card-h', `${stackCardH.toFixed(2)}px`);
 
   axisCards.forEach((card, index) => {
-    const visibleX = visibleCenters[index];
-    const gatherX = lerp(visibleX, gatheredCenters[index], safeGatherProgress);
-    const stackOffsets = [-20, 0, 20];
-    const stackX = lerp(gatherX, stageW * 0.50 + stackOffsets[index], safeStackProgress);
-    const stackY = lerp(stageH * 0.38, stageH * 0.43 + index * 8, safeStackProgress);
-    const cardOpacity = 1 - smooth(range(Math.max(safeStackProgress, safePressProgress), 0.42, 0.72));
+    const from = start[index];
+    const mid = visible[index];
+    const to = stacked[index];
+    const standTo = standing[index];
 
-    card.style.setProperty('--card-left', `${stackX.toFixed(2)}px`);
-    card.style.setProperty('--card-top', `${stackY.toFixed(2)}px`);
-    card.style.setProperty('--card-w', `${cardW.toFixed(2)}px`);
-    card.style.setProperty('--card-h', `${cardH.toFixed(2)}px`);
-    card.style.setProperty('--card-opacity', cardOpacity.toFixed(3));
-    card.style.setProperty('--card-label-opacity', cardOpacity.toFixed(3));
-    card.style.setProperty('--card-rot', '0deg');
+    if (!from || !mid || !to || !standTo) return;
+
+    let x = lerp(from.x, mid.x, entryProgress);
+    let y = lerp(from.y, mid.y, entryProgress);
+    let z = lerp(from.z, mid.z, entryProgress);
+    let rx = lerp(from.rx, mid.rx, entryProgress);
+    let ry = lerp(from.ry, mid.ry, entryProgress);
+    let rz = lerp(from.rz, mid.rz, entryProgress);
+
+    x = lerp(x, to.x, safeGatherProgress);
+    y = lerp(y, to.y, safeGatherProgress);
+    z = lerp(z, to.z, safeStackProgress);
+    rx = lerp(rx, to.rx, safeStackProgress);
+    ry = lerp(ry, to.ry, safeStackProgress);
+    rz = lerp(rz, to.rz, safeStackProgress);
+
+    x = lerp(x, standTo.x, standProgress);
+    y = lerp(y, standTo.y, standProgress);
+    z = lerp(z, standTo.z, standProgress);
+    rx = lerp(rx, standTo.rx, standProgress);
+    ry = lerp(ry, standTo.ry, standProgress);
+    rz = lerp(rz, standTo.rz, standProgress);
+
+    const compressedScale = 1;
+    const opacity = 1 - pillarHandoffProgress;
+    const cardCanClick = opacity > .18 && !canStartManualCut;
+    const surfaceProgress = smooth(range(standProgress, .18, 1));
+
+    if ('disabled' in card) {
+      card.disabled = !cardCanClick;
+    }
+    hasClickableAxisCards = hasClickableAxisCards || cardCanClick;
+
+    card.style.setProperty('--card-x', `${x.toFixed(2)}px`);
+    card.style.setProperty('--card-y', `${y.toFixed(2)}px`);
+    card.style.setProperty('--card-z', `${z.toFixed(2)}px`);
+    card.style.setProperty('--card-rx', `${rx.toFixed(2)}deg`);
+    card.style.setProperty('--card-ry', `${ry.toFixed(2)}deg`);
+    card.style.setProperty('--card-rz', `${rz.toFixed(2)}deg`);
+    card.style.setProperty('--card-scale', compressedScale.toFixed(3));
+    card.style.setProperty('--card-opacity', opacity.toFixed(3));
+    card.style.setProperty('--card-label-opacity', (1 - standProgress).toFixed(3));
+    card.style.setProperty(
+      '--card-image-opacity',
+      lerp(1, standingImageOpacity[index] ?? .7, surfaceProgress).toFixed(3)
+    );
+    card.style.setProperty('--card-paper-glaze', lerp(0, .52, surfaceProgress).toFixed(3));
+    card.style.setProperty('--card-image-saturate', lerp(.92, .62, surfaceProgress).toFixed(3));
+    card.style.setProperty('--card-image-contrast', lerp(.96, .84, surfaceProgress).toFixed(3));
+    card.style.setProperty('--card-image-brightness', lerp(.94, 1.04, surfaceProgress).toFixed(3));
+    card.style.setProperty('--card-image-blur', `${lerp(0, .18, surfaceProgress).toFixed(2)}px`);
+    card.style.setProperty('--card-image-scale', lerp(1, 1.025, surfaceProgress).toFixed(3));
+    card.style.clipPath = morphClipPath(standingClips[index], standProgress);
+    card.style.zIndex = String(10 + index);
   });
 
-  const stackCollapseProgress = smooth(range(safePressProgress, 0.02, 0.52));
-  const stackFade = 1 - smooth(range(globalProgress, 0.695, 0.72));
-  const stackSpread = 1 - stackCollapseProgress;
-  const stackBaseScale = lerp(.96, 1, safeStackProgress);
-  const stackOpacity = safeStackProgress * stackFade;
-  const stackY = lerp(24, 0, safeStackProgress) + lerp(0, stageH * 0.07, stackCollapseProgress);
+  axisStage.classList.toggle('has-clickable-axis-cards', hasClickableAxisCards);
 
-  setAxisVar('--stack-opacity', stackOpacity.toFixed(3));
-  setAxisVar('--stack-scale', stackBaseScale.toFixed(3));
-  setAxisVar('--stack-scale-x', lerp(1, .94, stackCollapseProgress).toFixed(3));
-  setAxisVar('--stack-scale-y', lerp(1, .92, stackCollapseProgress).toFixed(3));
-  setAxisVar('--stack-y', `${stackY.toFixed(2)}px`);
-  setAxisVar('--stack-kia-x', `${(-18 * stackSpread).toFixed(2)}px`);
-  setAxisVar('--stack-kia-y', `${(-16 * stackSpread).toFixed(2)}px`);
-  setAxisVar('--stack-kia-rot', `${(-2 * stackSpread).toFixed(2)}deg`);
-  setAxisVar('--stack-gunit-x', '0px');
-  setAxisVar('--stack-gunit-y', '0px');
-  setAxisVar('--stack-gunit-rot', `${(.6 * stackSpread).toFixed(2)}deg`);
-  setAxisVar('--stack-character-x', `${(18 * stackSpread).toFixed(2)}px`);
-  setAxisVar('--stack-character-y', `${(16 * stackSpread).toFixed(2)}px`);
-  setAxisVar('--stack-character-rot', `${(2 * stackSpread).toFixed(2)}deg`);
+  const sceneRx = lerp(lerp(0, 6, safeStackProgress), 0, standProgress);
+  const sceneRy = lerp(lerp(0, -4, safeStackProgress), 0, standProgress);
 
-  const slabStartW = Math.min(Math.max(stageW * 0.24, 300), 430);
-  const slabStartH = Math.min(stageH * 0.48, 460);
-  const pillarFinalW = Math.min(Math.max(stageW * 0.14, 230), 380);
-  const pillarFinalH = stageH * 0.54;
-  const standProgress = safePillarProgress;
-  const slabToPillarW = lerp(slabStartW, pillarFinalW, standProgress);
-  const slabToPillarH = lerp(slabStartH, pillarFinalH, standProgress);
-  const slabPressScaleX = 1;
-  const slabPressScaleY = 1;
-  const pillarReveal = smooth(range(standProgress, .02, .42));
-  const layerSlotProgress = smooth(range(safePressProgress, .08, .82));
-  const layerSideOffset = Math.min(slabStartW * .34, 138);
+  setAxisVar('--stack-scene-rotate-x', `${sceneRx.toFixed(2)}deg`);
+  setAxisVar('--stack-scene-rotate-y', `${sceneRy.toFixed(2)}deg`);
+  const pressFrameOpacity =
+    smooth(range(globalProgress, .48, .64)) *
+    (1 - smooth(range(globalProgress, .82, .94)));
+  setAxisVar('--press-frame-opacity', pressFrameOpacity.toFixed(3));
+  setAxisVar('--press-top-y', `${lerp(0, 92, safePressProgress).toFixed(2)}px`);
+  setAxisVar('--press-bottom-y', `${lerp(0, 92, safePressProgress).toFixed(2)}px`);
+  setAxisVar('--board-opacity', '0');
+  setAxisVar('--board-scale', lerp(.96, 1, safeBoardProgress).toFixed(3));
+  setAxisVar('--board-h', `${lerp(20, 8, safePressProgress).toFixed(2)}vh`);
+  setAxisVar('--fusion-flow-opacity', '0');
+  setAxisVar('--fusion-flow-draw', '0');
+  setAxisVar('--fusion-block-opacity', '0');
 
-  setAxisVar('--slab-w', `${slabToPillarW.toFixed(2)}px`);
-  setAxisVar('--slab-h', `${slabToPillarH.toFixed(2)}px`);
-  setAxisVar('--slab-y', `${lerp(0, -stageH * 0.02, standProgress).toFixed(2)}px`);
+  const pillarW = `${pillarCardW.toFixed(2)}px`;
+  const pillarH = `${pillarCardH.toFixed(2)}px`;
+
+  setAxisVar('--stack-opacity', '0');
+  setAxisVar('--stack-scale', '1');
+  setAxisVar('--stack-scale-x', '1');
+  setAxisVar('--stack-scale-y', '1');
+  setAxisVar('--stack-y', '0px');
+  setAxisVar('--slab-w', '0px');
+  setAxisVar('--slab-h', '0px');
+  setAxisVar('--slab-y', '0px');
   setAxisVar('--slab-opacity', '0');
-  setAxisVar('--slab-scale-x', lerp(slabPressScaleX, 1, standProgress).toFixed(3));
-  setAxisVar('--slab-scale-y', lerp(slabPressScaleY, 1, standProgress).toFixed(3));
-  setAxisVar('--slab-label-opacity', (1 - smooth(range(standProgress, .12, .45))).toFixed(3));
-  setAxisVar('--slab-layer-scale-y', lerp(.94, 1, layerSlotProgress).toFixed(3));
-  setAxisVar('--slab-layer-gap', `${lerp(26, 0, layerSlotProgress).toFixed(2)}px`);
-  setAxisVar('--slab-layer-depth', `${lerp(34, 0, layerSlotProgress).toFixed(2)}px`);
-  setAxisVar('--slab-kia-x', `${lerp(-layerSideOffset, 0, layerSlotProgress).toFixed(2)}px`);
-  setAxisVar('--slab-kia-y', `${lerp(26, 0, layerSlotProgress).toFixed(2)}px`);
-  setAxisVar('--slab-kia-rot', `${lerp(-7.5, 0, layerSlotProgress).toFixed(2)}deg`);
-  setAxisVar('--slab-kia-tilt', `${lerp(11, 0, layerSlotProgress).toFixed(2)}deg`);
-  setAxisVar('--slab-gunit-x', '0px');
-  setAxisVar('--slab-gunit-y', `${lerp(-16, 0, layerSlotProgress).toFixed(2)}px`);
-  setAxisVar('--slab-gunit-rot', `${lerp(.9, 0, layerSlotProgress).toFixed(2)}deg`);
-  setAxisVar('--slab-character-x', `${lerp(layerSideOffset, 0, layerSlotProgress).toFixed(2)}px`);
-  setAxisVar('--slab-character-y', `${lerp(26, 0, layerSlotProgress).toFixed(2)}px`);
-  setAxisVar('--slab-character-rot', `${lerp(7.5, 0, layerSlotProgress).toFixed(2)}deg`);
-  setAxisVar('--slab-character-tilt', `${lerp(-11, 0, layerSlotProgress).toFixed(2)}deg`);
-
-  setAxisVar('--pillar-opacity', pillarReveal.toFixed(3));
-  setAxisVar('--pillar-scale', lerp(.985, 1, pillarReveal).toFixed(3));
-  setAxisVar('--pillar-w', `${slabToPillarW.toFixed(2)}px`);
-  setAxisVar('--pillar-h', `${slabToPillarH.toFixed(2)}px`);
+  setAxisVar('--slab-scale-x', '1');
+  setAxisVar('--slab-scale-y', '1');
+  setAxisVar('--slab-label-opacity', '0');
+  setAxisVar('--pillar-opacity', pillarHandoffProgress.toFixed(3));
+  setAxisVar('--pillar-scale', lerp(.985, 1, safePillarProgress).toFixed(3));
+  setAxisVar('--pillar-w', pillarW);
+  setAxisVar('--pillar-h', pillarH);
   setAxisVar('--foundation-opacity', foundationProgress.toFixed(3));
   setAxisVar('--foundation-y', `${lerp(34, 0, foundationProgress).toFixed(2)}px`);
 
@@ -2822,7 +3518,7 @@ function updateAxisInteraction() {
   setAxisVar('--final-opacity', finalProgress.toFixed(3));
   setAxisVar('--stability-hint-opacity', (settleProgress >= 1 ? 1 : 0).toFixed(3));
 
-  if (globalProgress < 0.86 && axisManualCutState.cutProgress > 0) {
+  if (globalProgress < AXIS_CONTACT_HOLD_RESET_PROGRESS && axisManualCutState.cutProgress > 0) {
     resetManualCutState();
   }
 
@@ -2963,3 +3659,4 @@ window.addEventListener('load', () => {
   measureFoundationTrace();
   requestAxisUpdate();
 });
+

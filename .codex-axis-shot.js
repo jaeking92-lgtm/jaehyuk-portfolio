@@ -61,14 +61,15 @@ const fs = require('fs');
     expression: `
       (() => {
         const stage = document.querySelector('.project-axis-stage');
-        const style = getComputedStyle(stage);
-        const stack = getComputedStyle(document.querySelector('.axis-card-stack'));
-        const slab = getComputedStyle(document.querySelector('.axis-pressed-slab'));
+        const stack = document.querySelector('.axis-card-stack');
+        const slab = document.querySelector('.axis-pressed-slab');
+        const style = stage ? getComputedStyle(stage) : null;
+        const readDisplay = (element) => element ? getComputedStyle(element).display : 'missing';
         return {
-          label: document.querySelector('.axis-label-c').textContent,
-          stackDisplay: stack.display,
-          slabDisplay: slab.display,
-          pillarOpacity: style.getPropertyValue('--pillar-opacity').trim()
+          label: document.querySelector('.axis-label-c')?.textContent || '',
+          stackDisplay: readDisplay(stack),
+          slabDisplay: readDisplay(slab),
+          pillarOpacity: style?.getPropertyValue('--pillar-opacity').trim() || ''
         };
       })()
     `,
@@ -76,6 +77,9 @@ const fs = require('fs');
   });
   const capture = await send('Page.captureScreenshot', {format: 'png', fromSurface: true});
   fs.writeFileSync('axis-no-duplicate-check.png', Buffer.from(capture.data, 'base64'));
+  if (metrics.exceptionDetails) {
+    throw new Error(metrics.exceptionDetails.text || 'Runtime evaluation failed');
+  }
   console.log(JSON.stringify(metrics.result.value, null, 2));
   ws.close();
 })().catch((error) => {
