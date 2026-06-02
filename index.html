@@ -17,7 +17,7 @@
   <link rel="preload" as="image" href="assets/hero/carpenter/carpenter-hero-idle-front.webp">
   <link rel="preload" as="image" href="assets/hero/carpenter/carpenter-hero-calm-blink.webp">
   <link rel="preload" as="image" href="assets/kia-hero.webp">
-  <link rel="stylesheet" href="styles.css?v=designer-personal-info-20260602" />
+  <link rel="stylesheet" href="styles.css?v=large-plane-scratch-20260602" />
 </head>
 <body id="top">
   <a class="skip-link" href="#mainContent">본문 바로가기</a>
@@ -115,7 +115,7 @@
           <span aria-hidden="true">I</span>
           <span aria-hidden="true">O</span>
         </h1>
-        <p class="hero-copy">흐름을 읽고, 구조를 다듬어<br>브랜드에 맞는 디지털 경험으로 연결합니다.</p>
+        <p class="hero-copy">흐름을 읽고 구조를 다듬어,<br>브랜드에 맞는 디지털 경험으로 연결합니다.</p>
         <div class="hero-actions" aria-label="Portfolio shortcuts">
           <a href="#works">대표 작업 보기</a>
           <a href="#contact">연락 정보 보기</a>
@@ -228,7 +228,7 @@
       data-section-title="DESIGNER INFO"
     >
       <div class="about-shave-stage">
-        <div class="about-shave-board reveal" data-shave-board>
+        <div class="about-scratch-board reveal" data-scratch-board>
           <div class="about-shave-rail" aria-hidden="true"></div>
 
           <div class="designer-info-card">
@@ -284,7 +284,7 @@
               <article>
                 <span>01</span>
                 <strong>READ</strong>
-                <p>사용자의 목적과 정보 우선순위를 읽습니다.</p>
+                <p>사용자의 목적과 정보 우선순위를 먼저 읽습니다.</p>
               </article>
               <article>
                 <span>02</span>
@@ -299,32 +299,26 @@
             </div>
           </div>
 
-          <div class="wood-residue wood-residue-top" aria-hidden="true"></div>
-          <div class="wood-residue wood-residue-middle" aria-hidden="true"></div>
-          <div class="wood-residue wood-residue-bottom" aria-hidden="true"></div>
-          <div class="wood-residue wood-residue-left" aria-hidden="true"></div>
+          <canvas class="wood-scratch-canvas" data-wood-scratch-canvas aria-hidden="true"></canvas>
 
-          <div class="wood-cut-lane wood-cut-lane-1" aria-hidden="true"></div>
-          <div class="wood-cut-lane wood-cut-lane-2" aria-hidden="true"></div>
-          <div class="wood-cut-lane wood-cut-lane-3" aria-hidden="true"></div>
+          <div class="wood-residue-layer" aria-hidden="true"></div>
+          <div class="sawdust-particle-layer" aria-hidden="true"></div>
 
-          <div class="shave-edge shave-edge-1" aria-hidden="true"></div>
-          <div class="shave-edge shave-edge-2" aria-hidden="true"></div>
-          <div class="shave-edge shave-edge-3" aria-hidden="true"></div>
-
-          <img class="wood-shaving-img shaving-img-1" src="assets/about/wood-shaving-pass-01.png.png" alt="" aria-hidden="true">
-          <img class="wood-shaving-img shaving-img-2" src="assets/about/wood-shaving-pass-02.png.png" alt="" aria-hidden="true">
-          <img class="wood-shaving-img shaving-img-3" src="assets/about/wood-shaving-pass-03.png.png" alt="" aria-hidden="true">
+          <img class="wood-shaving-drop shaving-drop-1" src="assets/about/wood-shaving-pass-01.png.png" alt="" aria-hidden="true">
+          <img class="wood-shaving-drop shaving-drop-2" src="assets/about/wood-shaving-pass-02.png.png" alt="" aria-hidden="true">
+          <img class="wood-shaving-drop shaving-drop-3" src="assets/about/wood-shaving-pass-03.png.png" alt="" aria-hidden="true">
 
           <div class="sawdust-bed" aria-hidden="true"></div>
 
           <img
-            class="wood-plane"
-            src="assets/about/wood-plane-cut.png"
+            class="plane-cursor"
+            src="assets/wood-plane-top.png.png"
             data-plane-fallback="assets/wood-plane-top.png.png"
             alt=""
             aria-hidden="true"
           >
+
+          <button class="scratch-skip-button" type="button">정보 바로 보기</button>
         </div>
       </div>
     </section>
@@ -603,7 +597,7 @@
 
         <div class="axis-final-copy">
           <h2>READ · REFINE · CONNECT</h2>
-          <p>세 개의 작업은 하나의 기준 위에서 다듬어지고 연결됩니다.</p>
+          <p>세 개의 작업을 하나의 기준 위에 쌓고, 압축하고, 연결해 포트폴리오의 방향성을 보여줍니다.</p>
         </div>
 
         <div class="axis-stability-hint" aria-hidden="true">
@@ -626,7 +620,7 @@
             <div class="works-inspector-panel is-active" data-inspector-panel="default">
               <p class="eyebrow">04 / Supporting Works</p>
               <h2>Hover a board,<br>read the work,<br>inspect the result.</h2>
-              <p>오른쪽 보드에 마우스를 올리면 왼쪽 종이에 이미지와 설명이 함께 표시됩니다.</p>
+              <p>오른쪽 보드에 마우스를 올리면 왼쪽 종이에 이미지와 작업 요약이 함께 표시됩니다.</p>
             </div>
 
             <div class="works-inspector-panel" data-inspector-panel="character">
@@ -636,8 +630,8 @@
               <p class="eyebrow">01 / Character · Illustration · 3D Application</p>
               <h2>Character Design</h2>
               <dl>
-                <div><dt>Goal</dt><dd>캐릭터의 컨셉, 장면, 입체 적용 가능성을 하나의 보드로 정리</dd></div>
-                <div><dt>Range</dt><dd>캐릭터 컨셉, 장면 일러스트, 3D 스탠디, 비주얼 시스템 구성</dd></div>
+                <div><dt>Goal</dt><dd>캐릭터의 콘셉트, 장면, 입체 적용 가능성을 하나의 보드로 정리</dd></div>
+                <div><dt>Range</dt><dd>캐릭터 콘셉트, 장면 일러스트, 3D 스탠디, 비주얼 시스템 구성</dd></div>
                 <div><dt>Role</dt><dd>Character Design · Illustration · 3D Application</dd></div>
                 <div><dt>Output</dt><dd>Poster Board · Scene Illustration · Standee Concept</dd></div>
               </dl>
@@ -650,8 +644,8 @@
               <p class="eyebrow">02 / 3D Modeling · Residential Space</p>
               <h2>Residential House</h2>
               <dl>
-                <div><dt>Goal</dt><dd>좁은 필지 주거 공간의 구조와 생활 동선을 3D 보드로 시각화</dd></div>
-                <div><dt>Range</dt><dd>외관 렌더링, 실내 투시도, 평면, 단면, exploded view 구성</dd></div>
+                <div><dt>Goal</dt><dd>좁은 필지의 주거 공간 구조와 생활 동선을 3D 보드로 시각화</dd></div>
+                <div><dt>Range</dt><dd>외관 렌더링, 내부 투시도, 평면, 단면, exploded view 구성</dd></div>
                 <div><dt>Role</dt><dd>3D Modeling · Rendering · Space Visualization</dd></div>
                 <div><dt>Output</dt><dd>Residential Board · Exterior · Interior · Plan / Section</dd></div>
               </dl>
@@ -704,8 +698,8 @@
         <p class="eyebrow">Contact</p>
         <h2>APPLICATION<br>INFO</h2>
         <p class="contact-copy">
-          환경을 읽고, 구조를 정리하고,<br>
-          정확하게 맞물리는 경험을 설계하는 디자이너 김재혁입니다.<br>
+          흐름을 읽고, 구조를 정리하고,<br>
+          목적까지 자연스럽게 연결되는 화면을 설계하는 디자이너 김재혁입니다.<br>
           포트폴리오 검토나 채용 관련 연락은 아래 채널로 부탁드립니다.
         </p>
         <div class="contact-summary" aria-label="Application summary">
@@ -726,10 +720,11 @@
           class="contact-line"
           aria-label="Application links"
           data-contact-links
-          data-contact-email=""
+          data-contact-email="zp92@naver.com"
           data-resume-url=""
           data-portfolio-url=""
         >
+          <a href="mailto:zp92@naver.com">Email</a>
           <a href="https://github.com/jaeking92-lgtm/jaehyuk-portfolio" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </div>
@@ -743,7 +738,6 @@
 
   <div class="project-modal" id="projectModal" aria-hidden="true">
     <div class="project-modal-backdrop" data-modal-close></div>
-
     <section class="project-modal-panel" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle" aria-describedby="projectModalDesc">
       <button class="project-modal-close" type="button" aria-label="프로젝트 모달 닫기" data-modal-close>×</button>
 
@@ -760,14 +754,13 @@
         <h2 id="projectModalTitle"></h2>
         <p class="project-modal-type" id="projectModalType"></p>
         <p class="project-modal-desc" id="projectModalDesc"></p>
-
         <div class="project-modal-section">
-          <h3>간단한 설명</h3>
+          <h3>간단 설명</h3>
           <ul class="project-modal-points" id="projectModalPoints"></ul>
         </div>
 
-        <div class="project-modal-section">
-          <label class="project-modal-git-label" id="projectModalGitLabel" for="projectModalGit">Git Address</label>
+        <div class="project-modal-section project-modal-link-section" id="projectModalLinkSection">
+          <label class="project-modal-git-label" id="projectModalGitLabel" for="projectModalGit">Project Link</label>
           <div class="project-modal-link-row">
             <input id="projectModalGit" class="project-modal-git-input" type="text" value="" readonly>
             <a id="projectModalLink" class="project-modal-link-button" href="#" target="_blank" rel="noopener noreferrer">VIEW PROJECT ↗</a>
@@ -778,6 +771,6 @@
       </div>
     </section>
   </div>
-  <script src="scripts.js?v=shave-drop-works-photo-fix-20260602"></script>
+  <script src="scripts.js?v=large-plane-scratch-20260602"></script>
 </body>
 </html>

@@ -893,187 +893,436 @@ function initProfileLayoutFormation() {
   observer.observe(profile);
 }
 
-function initPartialWoodShaveReveal() {
-  const section = document.querySelector('.about-shave-reveal');
-  const board = document.querySelector('[data-shave-board]');
-  if (!section || !board) return;
+function initPlaneCursorScratchReveal() {
+  const board = document.querySelector('[data-scratch-board]');
+  const canvas = document.querySelector('[data-wood-scratch-canvas]');
+  if (!board || !canvas) return;
 
-  const plane = board.querySelector('.wood-plane');
-  const shavingImages = board.querySelectorAll('.wood-shaving-img');
-  const mobileFallback = window.matchMedia('(max-width: 640px)').matches;
+  const ctx = canvas.getContext('2d', {willReadFrequently:true});
+  const maskCanvas = document.createElement('canvas');
+  const maskCtx = maskCanvas.getContext('2d', {willReadFrequently:true});
+  const plane = board.querySelector('.plane-cursor');
+  const skipButton = board.querySelector('.scratch-skip-button');
+  const particleLayer = board.querySelector('.sawdust-particle-layer');
+  const drops = [
+    board.querySelector('.shaving-drop-1'),
+    board.querySelector('.shaving-drop-2'),
+    board.querySelector('.shaving-drop-3')
+  ];
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mobileFallback = window.matchMedia('(max-width: 760px)').matches;
+  const thresholds = [.18, .38, .58];
+  const completeThreshold = .7;
   const clamp = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max);
-  const segment = (value, start, end) => clamp((value - start) / (end - start));
-  const lerp = (from, to, amount) => from + (to - from) * amount;
-  const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
 
-  const setNumber = (name, value) => {
-    board.style.setProperty(name, String(Number(value).toFixed(3)));
-  };
+  let isPointerDown = false;
+  let lastPoint = null;
+  let erasedRatio = 0;
+  let dropIndex = 0;
+  let complete = false;
+  let progressRaf = null;
+  let coverReady = false;
+  let eraseEnergy = 0;
+  let particleAnimationFrame = null;
 
-  const setPercent = (name, value) => {
-    board.style.setProperty(name, `${Number(value).toFixed(2)}%`);
+  const particles = [];
+  const landedParticles = [];
+  const shavingSources = [
+    'assets/about/wood-shaving-pass-01.png.png',
+    'assets/about/wood-shaving-pass-02.png.png',
+    'assets/about/wood-shaving-pass-03.png.png'
+  ];
+  const maxParticles = mobileFallback ? 32 : 80;
+  const maxLandedParticles = mobileFallback ? 32 : 80;
+
+  const woodImage = new Image();
+  woodImage.src = 'assets/about/wood-grain-light.jpg.png';
+
+  const dropShaving = (index) => {
+    const drop = drops[index];
+    if (!drop || drop.classList.contains('is-dropped') || drop.classList.contains('is-missing')) return;
+    drop.classList.add('is-missing');
   };
 
   const revealStatic = () => {
-    setNumber('--p1-scale', 0);
-    setNumber('--p2-scale', 0);
-    setNumber('--p3-scale', 0);
-    setNumber('--p1-num', 1);
-    setNumber('--p2-num', 1);
-    setNumber('--p3-num', 1);
-    setNumber('--dust-progress', .72);
-    setNumber('--plane-opacity', 0);
-    board.classList.add('is-shave-complete');
-    board.classList.remove('is-shave-ready');
-    board.removeAttribute('data-active-shave-pass');
+    const rect = board.getBoundingClientRect();
+    ctx.clearRect(0, 0, rect.width, rect.height);
+    maskCtx.clearRect(0, 0, rect.width, rect.height);
+    if (particleAnimationFrame) {
+      cancelAnimationFrame(particleAnimationFrame);
+      particleAnimationFrame = null;
+    }
+    particles.splice(0).forEach((particle) => particle.el?.remove());
+    landedParticles.length = 0;
+    board.style.setProperty('--dust-opacity', '.46');
+    board.style.setProperty('--dust-bed-opacity', '.58');
+    board.style.setProperty('--dust-bed-scale', '.86');
+    drops.forEach((_, index) => dropShaving(index));
+    board.classList.add('is-complete', 'is-static-reveal');
+    complete = true;
+  };
+
+  const drawWoodCover = () => {
+    const rect = board.getBoundingClientRect();
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.clearRect(0, 0, rect.width, rect.height);
+    maskCtx.globalCompositeOperation = 'source-over';
+    maskCtx.clearRect(0, 0, rect.width, rect.height);
+    maskCtx.fillStyle = '#000';
+    maskCtx.fillRect(0, 0, rect.width, rect.height);
+
+    ctx.fillStyle = '#e8c58f';
+    ctx.fillRect(0, 0, rect.width, rect.height);
+
+    if (woodImage.complete && woodImage.naturalWidth > 0) {
+      const pattern = ctx.createPattern(woodImage, 'repeat');
+      ctx.fillStyle = pattern || '#e8c58f';
+      ctx.fillRect(0, 0, rect.width, rect.height);
+    }
+
+    ctx.fillStyle = 'rgba(255,238,203,.18)';
+    ctx.fillRect(0, 0, rect.width, rect.height);
+
+    ctx.fillStyle = 'rgba(119,69,22,.1)';
+    for (let x = 0; x < rect.width; x += 8) {
+      ctx.fillRect(x, 0, 1, rect.height);
+    }
+
+    coverReady = true;
+  };
+
+  const resizeCanvas = () => {
+    if (complete) return;
+    const rect = board.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+    canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+    maskCanvas.width = canvas.width;
+    maskCanvas.height = canvas.height;
+    canvas.style.width = `${rect.width}px`;
+    canvas.style.height = `${rect.height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    maskCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawWoodCover();
+  };
+
+  const getLocalPoint = (event) => {
+    const rect = board.getBoundingClientRect();
+    return {
+      x: clamp(event.clientX - rect.left, 0, rect.width),
+      y: clamp(event.clientY - rect.top, 0, rect.height)
+    };
+  };
+
+  const movePlane = (point, previousPoint) => {
+    if (!plane) return;
+    plane.style.left = `${point.x}px`;
+    plane.style.top = `${point.y}px`;
+    plane.style.setProperty('--plane-rotate', '0deg');
+  };
+
+  const hasWoodAt = (x, y) => {
+    const rect = board.getBoundingClientRect();
+    const dpr = maskCanvas.width / Math.max(1, rect.width);
+    const sampleSize = Math.max(8, Math.round(12 * dpr));
+    const sampleX = Math.round(clamp(x * dpr - sampleSize / 2, 0, Math.max(0, maskCanvas.width - sampleSize)));
+    const sampleY = Math.round(clamp(y * dpr - sampleSize / 2, 0, Math.max(0, maskCanvas.height - sampleSize)));
+    const data = maskCtx.getImageData(sampleX, sampleY, sampleSize, sampleSize).data;
+
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] > 30) return true;
+    }
+
+    return false;
+  };
+
+  const hasWoodOnPath = (point, previousPoint) => {
+    if (!previousPoint) return hasWoodAt(point.x, point.y);
+    const distance = Math.hypot(point.x - previousPoint.x, point.y - previousPoint.y);
+    const steps = Math.max(1, Math.ceil(distance / 30));
+
+    for (let i = 0; i <= steps; i += 1) {
+      const t = i / steps;
+      const x = previousPoint.x + (point.x - previousPoint.x) * t;
+      const y = previousPoint.y + (point.y - previousPoint.y) * t;
+      if (hasWoodAt(x, y)) return true;
+    }
+
+    return false;
+  };
+
+  const eraseStamp = (targetCtx, x, y, brushW, brushH, angle) => {
+    targetCtx.save();
+    targetCtx.translate(x, y);
+    targetCtx.rotate(angle);
+    targetCtx.beginPath();
+    targetCtx.ellipse(0, 0, brushW, brushH, 0, 0, Math.PI * 2);
+    targetCtx.fill();
+    targetCtx.restore();
+  };
+
+  const eraseAt = (point, previousPoint) => {
+    if (!coverReady) return false;
+    const rect = board.getBoundingClientRect();
+    const brushW = Math.max(38, rect.width * .045);
+    const brushH = Math.max(88, rect.height * .12);
+    const distance = previousPoint ? Math.hypot(point.x - previousPoint.x, point.y - previousPoint.y) : 12;
+    const removedWood = hasWoodOnPath(point, previousPoint);
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-out';
+    maskCtx.save();
+    maskCtx.globalCompositeOperation = 'destination-out';
+
+    if (previousPoint) {
+      const steps = Math.max(1, Math.ceil(distance / 18));
+
+      for (let i = 0; i <= steps; i += 1) {
+        const t = i / steps;
+        const x = previousPoint.x + (point.x - previousPoint.x) * t;
+        const y = previousPoint.y + (point.y - previousPoint.y) * t;
+        const angle = Math.sin((x + y) * .018) * .025;
+        eraseStamp(ctx, x, y, brushW, brushH, angle);
+        eraseStamp(maskCtx, x, y, brushW, brushH, angle);
+      }
+    } else {
+      eraseStamp(ctx, point.x, point.y, brushW, brushH, 0);
+      eraseStamp(maskCtx, point.x, point.y, brushW, brushH, 0);
+    }
+
+    maskCtx.restore();
+    ctx.restore();
+    if (removedWood) {
+      eraseEnergy = clamp(eraseEnergy + clamp(distance / Math.max(rect.width, 1), .008, .035));
+    }
+
+    return removedWood;
+  };
+
+  const removeParticle = (particle) => {
+    particle?.el?.remove();
+    const particleIndex = particles.indexOf(particle);
+    if (particleIndex > -1) particles.splice(particleIndex, 1);
+    const landedIndex = landedParticles.indexOf(particle);
+    if (landedIndex > -1) landedParticles.splice(landedIndex, 1);
+  };
+
+  const updateSawdustBed = () => {
+    const landedAccumulation = clamp(landedParticles.length / maxLandedParticles);
+    const eraseAccumulation = clamp(erasedRatio * .45);
+    const accumulation = clamp(Math.max(landedAccumulation, eraseAccumulation));
+    board.style.setProperty('--dust-bed-opacity', String((.14 + accumulation * .52).toFixed(3)));
+    board.style.setProperty('--dust-bed-scale', String((.22 + accumulation * .82).toFixed(3)));
+  };
+
+  const spawnSawdust = (point, previousPoint) => {
+    if (!particleLayer) return;
+
+    const dx = previousPoint ? point.x - previousPoint.x : 1;
+    const dy = previousPoint ? point.y - previousPoint.y : 0;
+    const distance = Math.hypot(dx, dy);
+    const motion = clamp(distance / 54, .2, 1);
+    const count = Math.max(1, Math.round(motion * (mobileFallback ? 1.3 : 2.2)));
+    const direction = distance > 0 ? {x:dx / distance, y:dy / distance} : {x:1, y:0};
+
+    for (let i = 0; i < count; i += 1) {
+      if (particles.length >= maxParticles) {
+        const airborne = particles.find((particle) => !particle.landed);
+        if (!airborne) return;
+        removeParticle(airborne);
+      }
+
+      const el = document.createElement('img');
+      el.className = 'shaving-particle';
+      el.src = shavingSources[Math.floor(Math.random() * shavingSources.length)];
+      el.alt = '';
+      el.setAttribute('aria-hidden', 'true');
+
+      const size = (mobileFallback ? 54 : 74) + Math.random() * (mobileFallback ? 30 : 58);
+      const opacity = .84 + Math.random() * .14;
+      el.style.setProperty('--shaving-size', `${size.toFixed(2)}px`);
+      el.style.setProperty('--shaving-opacity', String(opacity.toFixed(2)));
+      particleLayer.appendChild(el);
+
+      particles.push({
+        el,
+        x: point.x - direction.x * (22 + Math.random() * 34) + (Math.random() - .5) * 34,
+        y: point.y + 24 + Math.random() * 18,
+        vx: (Math.random() - .5) * 1.65 + direction.x * .28,
+        vy: .65 + Math.random() * 1.05 + Math.max(0, direction.y) * .18,
+        gravity: .045 + Math.random() * .026,
+        opacity,
+        rotation: -32 + Math.random() * 64,
+        spin: (Math.random() - .5) * 1.55,
+        scale: .72 + Math.random() * .3,
+        landed:false
+      });
+    }
+  };
+
+  const animateParticles = () => {
+    const rect = board.getBoundingClientRect();
+    const floorY = rect.height + Math.min(110, Math.max(64, rect.height * .1));
+
+    for (let i = particles.length - 1; i >= 0; i -= 1) {
+      const particle = particles[i];
+      if (!particle) continue;
+
+      if (!particle.landed) {
+        particle.vy += particle.gravity;
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.rotation += particle.spin;
+
+        if (particle.y >= floorY - Math.random() * 18) {
+          const stackLift = Math.min(72, landedParticles.length * 2.1);
+          particle.y = floorY - stackLift - Math.random() * 18;
+          particle.rotation += -12 + Math.random() * 24;
+          particle.vx *= .16;
+          particle.vy = 0;
+          particle.spin = 0;
+          particle.landed = true;
+          landedParticles.push(particle);
+
+          updateSawdustBed();
+        }
+      }
+
+      particle.el.style.left = `${particle.x.toFixed(2)}px`;
+      particle.el.style.top = `${particle.y.toFixed(2)}px`;
+      particle.el.style.opacity = String(particle.opacity.toFixed(3));
+      particle.el.style.transform = `translate(-50%,-50%) rotate(${particle.rotation.toFixed(1)}deg) scale(${particle.landed ? particle.scale * .92 : particle.scale})`;
+    }
+
+    particleAnimationFrame = requestAnimationFrame(animateParticles);
+  };
+
+  const estimateErasedRatio = () => {
+    const sampleSize = 72;
+    const sampleCanvas = document.createElement('canvas');
+    sampleCanvas.width = sampleSize;
+    sampleCanvas.height = sampleSize;
+    const sampleCtx = sampleCanvas.getContext('2d', {willReadFrequently:true});
+    sampleCtx.drawImage(maskCanvas, 0, 0, sampleSize, sampleSize);
+    let data;
+
+    try {
+      data = sampleCtx.getImageData(0, 0, sampleSize, sampleSize).data;
+    } catch (error) {
+      return clamp(Math.max(erasedRatio, eraseEnergy));
+    }
+
+    let transparent = 0;
+
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] < 45) transparent += 1;
+    }
+
+    return transparent / (sampleSize * sampleSize);
+  };
+
+  const updateProgressEffects = () => {
+    progressRaf = null;
+    erasedRatio = estimateErasedRatio();
+    board.style.setProperty('--dust-opacity', String(Math.min(erasedRatio * .95, .68).toFixed(3)));
+    updateSawdustBed();
+
+    if (dropIndex < thresholds.length && erasedRatio >= thresholds[dropIndex]) {
+      dropShaving(dropIndex);
+      dropIndex += 1;
+    }
+
+    if (!complete && erasedRatio >= completeThreshold) {
+      complete = true;
+      board.classList.add('is-complete');
+    }
+  };
+
+  const requestProgressUpdate = () => {
+    if (progressRaf) return;
+    progressRaf = requestAnimationFrame(updateProgressEffects);
+  };
+
+  const handlePointerMove = (event) => {
+    const point = getLocalPoint(event);
+    board.classList.add('is-hovering');
+    movePlane(point, lastPoint);
+
+    if (isPointerDown || event.pointerType === 'mouse') {
+      const removedWood = eraseAt(point, lastPoint);
+      if (removedWood) {
+        spawnSawdust(point, lastPoint);
+      }
+      requestProgressUpdate();
+    }
+
+    lastPoint = point;
   };
 
   if (plane) {
     plane.addEventListener('error', () => {
       const fallback = plane.dataset.planeFallback;
-      if (fallback && plane.src.indexOf(fallback) === -1) {
+      if (fallback && !plane.dataset.fallbackApplied) {
+        plane.dataset.fallbackApplied = 'true';
         plane.src = fallback;
         return;
       }
-
       plane.hidden = true;
-      board.classList.add('is-plane-missing');
-    });
+    }, {once:false});
   }
 
-  shavingImages.forEach((image) => {
-    image.addEventListener('error', () => {
-      image.classList.add('is-missing');
+  drops.forEach((drop) => {
+    drop?.addEventListener('error', () => {
+      drop.classList.add('is-missing');
     }, {once:true});
   });
 
-  if (reduceMotion || mobileFallback) {
+  if (reduced || mobileFallback) {
     revealStatic();
     return;
   }
 
-  board.classList.add('is-shave-ready');
+  woodImage.addEventListener('load', resizeCanvas, {once:true});
+  woodImage.addEventListener('error', () => {
+    drawWoodCover();
+  }, {once:true});
 
-  let ticking = false;
+  board.addEventListener('pointerenter', (event) => {
+    board.classList.add('is-hovering');
+    document.body.classList.add('is-scratch-cursor');
+    lastPoint = getLocalPoint(event);
+    movePlane(lastPoint, null);
+  });
 
-  const update = () => {
-    ticking = false;
+  board.addEventListener('pointerleave', () => {
+    board.classList.remove('is-hovering');
+    document.body.classList.remove('is-scratch-cursor');
+    isPointerDown = false;
+    lastPoint = null;
+  });
 
-    const rect = section.getBoundingClientRect();
-    const scrollable = Math.max(section.offsetHeight - window.innerHeight, 1);
-    const progress = clamp(-rect.top / scrollable);
+  board.addEventListener('pointerdown', (event) => {
+    isPointerDown = true;
+    board.setPointerCapture?.(event.pointerId);
+    handlePointerMove(event);
+  });
 
-    const p1 = easeOutCubic(segment(progress, .04, .32));
-    const p2 = easeOutCubic(segment(progress, .34, .64));
-    const p3 = easeOutCubic(segment(progress, .66, .92));
+  board.addEventListener('pointermove', handlePointerMove);
 
-    setNumber('--p1-scale', 1 - p1);
-    setNumber('--p2-scale', 1 - p2);
-    setNumber('--p3-scale', 1 - p3);
-    setNumber('--p1-num', p1);
-    setNumber('--p2-num', p2);
-    setNumber('--p3-num', p3);
-    setNumber('--dust-progress', clamp((p1 * .25) + (p2 * .3) + (p3 * .45)));
+  board.addEventListener('pointerup', (event) => {
+    isPointerDown = false;
+    try {
+      board.releasePointerCapture?.(event.pointerId);
+    } catch (error) {}
+  });
 
-    let activePass = 1;
-    let local = p1;
-    let x = lerp(-8, 108, p1);
-    let y = lerp(28, 31, p1);
-    let rotate = lerp(3, -2, p1);
-    let flip = 1;
-    let edgeRot = -1.2;
+  skipButton?.addEventListener('click', revealStatic);
+  window.addEventListener('resize', resizeCanvas);
 
-    if (progress >= .34 && progress < .66) {
-      activePass = 2;
-      local = p2;
-      x = lerp(108, -8, p2);
-      y = lerp(49, 53, p2);
-      rotate = lerp(-4, 2, p2);
-      flip = -1;
-      edgeRot = .9;
-    }
-
-    if (progress >= .66) {
-      activePass = 3;
-      local = p3;
-      x = lerp(-8, 104, p3);
-      y = lerp(72, 75, p3);
-      rotate = lerp(4, -1, p3);
-      flip = 1;
-      edgeRot = -.5;
-    }
-
-    const wiggle = Math.sin(local * Math.PI) * 2.2;
-    const planeY = y + wiggle;
-    const planeOpacity = progress > .96 ? .34 : progress < .015 ? .95 : 1;
-
-    setPercent('--plane-x', x);
-    setPercent('--plane-y', planeY);
-    board.style.setProperty('--plane-rotate', `${rotate.toFixed(2)}deg`);
-    board.style.setProperty('--plane-flip', String(flip));
-    setNumber('--plane-opacity', planeOpacity);
-    setPercent('--active-edge-x', x);
-    setPercent('--active-edge-y', planeY + .8);
-    board.style.setProperty('--active-edge-rot', `${edgeRot}deg`);
-
-    setNumber('--shaving1-opacity', clamp(p1 * 1.35));
-    setNumber('--shaving1-scale', .65 + (p1 * .35));
-    setNumber('--shaving2-opacity', clamp(p2 * 1.35));
-    setNumber('--shaving2-scale', .65 + (p2 * .35));
-    setNumber('--shaving3-opacity', clamp(p3 * 1.35));
-    setNumber('--shaving3-scale', .65 + (p3 * .35));
-
-    const falling = (passProgress, followX, followY, targetX, targetY) => {
-      const drop = easeOutCubic(segment(passProgress, .52, 1));
-      return {
-        x: lerp(followX, targetX, drop),
-        y: lerp(followY, targetY, drop) + Math.sin(drop * Math.PI) * 2.4,
-        rotate: lerp(-8, 18, drop),
-        scale: .72 + (passProgress * .22) + (drop * .12),
-        opacity: clamp(passProgress * 1.4) * (1 - drop * .12)
-      };
-    };
-
-    const shaving1 = falling(p1, clamp(lerp(-18, 98, p1) - 8, 8, 88), lerp(31, 36, p1), 34, 87);
-    const shaving2 = falling(p2, clamp(lerp(118, 2, p2) + 8, 12, 92), lerp(52, 57, p2), 58, 89);
-    const shaving3 = falling(p3, clamp(lerp(-16, 98, p3) - 8, 8, 88), lerp(75, 79, p3), 78, 88);
-
-    setPercent('--shaving1-x', shaving1.x);
-    setPercent('--shaving1-y', shaving1.y);
-    board.style.setProperty('--shaving1-rotate', `${shaving1.rotate.toFixed(2)}deg`);
-    setNumber('--shaving1-scale', shaving1.scale);
-    setNumber('--shaving1-opacity', shaving1.opacity);
-
-    setPercent('--shaving2-x', shaving2.x);
-    setPercent('--shaving2-y', shaving2.y);
-    board.style.setProperty('--shaving2-rotate', `${(shaving2.rotate + 10).toFixed(2)}deg`);
-    setNumber('--shaving2-scale', shaving2.scale);
-    setNumber('--shaving2-opacity', shaving2.opacity);
-
-    setPercent('--shaving3-x', shaving3.x);
-    setPercent('--shaving3-y', shaving3.y);
-    board.style.setProperty('--shaving3-rotate', `${(shaving3.rotate - 4).toFixed(2)}deg`);
-    setNumber('--shaving3-scale', shaving3.scale);
-    setNumber('--shaving3-opacity', shaving3.opacity);
-
-    if (progress > .015 && progress < .94 && local > .02 && local < .985) {
-      board.dataset.activeShavePass = String(activePass);
-    } else {
-      board.removeAttribute('data-active-shave-pass');
-    }
-
-    board.classList.toggle('is-shave-complete', progress >= .92);
-  };
-
-  const requestUpdate = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(update);
-  };
-
-  update();
-  window.addEventListener('scroll', requestUpdate, {passive:true});
-  window.addEventListener('resize', requestUpdate);
+  resizeCanvas();
+  if (particleLayer) {
+    animateParticles();
+  }
 }
 
 function initPageContinuity() {
@@ -1247,7 +1496,7 @@ initWorksPreviewCursor();
 initToolsPegboardInteraction();
 initSectionStageIndicator();
 initProfileLayoutFormation();
-initPartialWoodShaveReveal();
+initPlaneCursorScratchReveal();
 
 const sections = [...document.querySelectorAll('section[id]')];
 const navLinks = [...document.querySelectorAll('.nav a')];
@@ -1841,6 +2090,7 @@ const projectModalTitle = document.getElementById('projectModalTitle');
 const projectModalType = document.getElementById('projectModalType');
 const projectModalDesc = document.getElementById('projectModalDesc');
 const projectModalPoints = document.getElementById('projectModalPoints');
+const projectModalLinkSection = document.getElementById('projectModalLinkSection');
 const projectModalGitLabel = document.getElementById('projectModalGitLabel');
 const projectModalGit = document.getElementById('projectModalGit');
 const projectModalLink = document.getElementById('projectModalLink');
@@ -1911,7 +2161,11 @@ function openProjectModal(projectKey, trigger = null) {
   }
 
   if (projectModalGitLabel) {
-    projectModalGitLabel.textContent = data.gitLabel || 'Git Address';
+    projectModalGitLabel.textContent = data.gitLabel || 'Project Link';
+  }
+
+  if (projectModalLinkSection) {
+    projectModalLinkSection.hidden = !data.git;
   }
 
   if (projectModalLink) {
@@ -2697,7 +2951,7 @@ function getAxisPillarContactTargetY() {
   const foundationTopY = foundationRect.top + foundationRect.height * 0.08;
   const contactInset = Math.min(8, pillarRect.height * 0.018);
   const targetY = foundationTopY - pillarBottomWithoutMotion + contactInset;
-  const maxTargetY = Math.min(106, stageRect.height * 0.105);
+  const maxTargetY = Math.min(260, stageRect.height * 0.34);
 
   return Math.min(maxTargetY, Math.max(44, targetY));
 }
@@ -2728,7 +2982,7 @@ function getAxisPillarSettleTargetY() {
     stageRect.height * 0.085
   );
   const geometricTarget = foundationTopY - pillarBottomWithoutSettle + cutSeatCompensation;
-  const maxTarget = Math.min(240, stageRect.height * 0.23);
+  const maxTarget = Math.min(360, stageRect.height * 0.42);
 
   if (geometricTarget > 1) {
     return Math.min(geometricTarget, maxTarget);
@@ -3365,9 +3619,17 @@ function updateAxisInteraction() {
   setAxisVar('--press-frame-opacity', pressFrameOpacity.toFixed(3));
   setAxisVar('--press-top-y', `${lerp(0, 92, safePressProgress).toFixed(2)}px`);
   setAxisVar('--press-bottom-y', `${lerp(0, 92, safePressProgress).toFixed(2)}px`);
-  setAxisVar('--board-opacity', '0');
+  const boardStandProgress = smooth(range(globalProgress, .80, .87));
+  const boardVisibleProgress =
+    safeBoardProgress *
+    (1 - smooth(range(pillarHandoffProgress, .12, .92)));
+  setAxisVar('--board-opacity', boardVisibleProgress.toFixed(3));
   setAxisVar('--board-scale', lerp(.96, 1, safeBoardProgress).toFixed(3));
-  setAxisVar('--board-h', `${lerp(20, 8, safePressProgress).toFixed(2)}vh`);
+  setAxisVar('--board-w', `${lerp(baseStackCardW, pillarCardW, boardStandProgress).toFixed(2)}px`);
+  setAxisVar('--board-h', `${lerp(Math.max(baseStackCardH * .34, 120), pillarCardH, boardStandProgress).toFixed(2)}px`);
+  setAxisVar('--board-rx', `${lerp(0, 0, boardStandProgress).toFixed(2)}deg`);
+  setAxisVar('--board-ry', `${lerp(0, 0, boardStandProgress).toFixed(2)}deg`);
+  setAxisVar('--board-rz', `${lerp(0, 0, boardStandProgress).toFixed(2)}deg`);
   setAxisVar('--fusion-flow-opacity', '0');
   setAxisVar('--fusion-flow-draw', '0');
   setAxisVar('--fusion-block-opacity', '0');
@@ -3597,18 +3859,21 @@ function updateAxisBuildLabel(globalProgress, gates, settleProgress) {
   let activeAxisStep = 'stack';
 
   if (globalProgress < 0.46) {
-    label = 'GROUP MOVE';
+    label = 'KIA / GUNIT / GRO ENTER';
   } else if (globalProgress < 0.58) {
-    label = 'ALL CARDS VISIBLE HOLD';
+    label = 'ALIGN TO BASELINE';
   } else if (!canStartAssembly) {
     label = 'WAITING FOR RIGHT CARD';
   } else if (globalProgress < 0.70) {
-    label = globalProgress < 0.66 ? 'GATHER' : 'STACK';
+    label = globalProgress < 0.66 ? 'GATHER CARDS' : '3 CARD STACK';
   } else if (globalProgress < 0.735) {
-    label = 'MERGE TO PILLAR';
+    label = 'PRESS / COMPRESS';
+    activeAxisStep = 'press';
+  } else if (globalProgress < 0.82) {
+    label = 'COMPOSITE BOARD';
     activeAxisStep = 'press';
   } else if (!pillarComplete) {
-    label = 'RAISE INTO PILLAR';
+    label = 'BOARD STANDS INTO PILLAR';
     activeAxisStep = 'press';
   } else if (canShowFoundation && !foundationVisible) {
     label = 'FOUNDATION APPEAR';
@@ -3626,10 +3891,10 @@ function updateAxisBuildLabel(globalProgress, gates, settleProgress) {
     label = 'TRANSFER GUIDE TO PILLAR';
     activeAxisStep = 'fit';
   } else if (canStartManualCut && !axisManualCutState.cutComplete) {
-    label = axisManualCutState.isSnapped ? 'USER MANUAL CUT / SNAP ON' : 'FOLLOW THE DOTTED LINE';
+    label = axisManualCutState.isSnapped ? 'GRANGI TRACE / SNAP ON' : 'FOLLOW CONTOUR TRACE';
     activeAxisStep = 'cut';
   } else if (axisManualCutState.cutReady && !axisManualCutState.cutComplete) {
-    label = 'USER MANUAL CUT';
+    label = 'GRANGI TRACE';
     activeAxisStep = 'cut';
   } else if (axisManualCutState.cutComplete && settleProgress < 1) {
     label = 'CUT COMPLETE / SCROLL TO SETTLE';
