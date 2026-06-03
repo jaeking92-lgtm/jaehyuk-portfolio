@@ -17,7 +17,7 @@
   <link rel="preload" as="image" href="assets/hero/carpenter/carpenter-hero-idle-front.webp">
   <link rel="preload" as="image" href="assets/hero/carpenter/carpenter-hero-calm-blink.webp">
   <link rel="preload" as="image" href="assets/kia-hero.webp">
-  <link rel="stylesheet" href="styles.css?v=large-plane-scratch-20260602" />
+  <link rel="stylesheet" href="styles.css?v=axis-fit-rig-aligned-20260603" />
 </head>
 <body id="top">
   <a class="skip-link" href="#mainContent">본문 바로가기</a>
@@ -327,8 +327,8 @@
         <img class="tools-board-photo" src="assets/tools/tools_board_empty.png" alt="Tools board background" />
 
         <div class="tools-board-title">
-          <strong>TOOLS</strong>
-          <span>Measured Tool Board</span>
+          <strong>TOOL BOARD</strong>
+          <span>DESIGN · DEVELOPMENT</span>
         </div>
 
         <div class="tools-board-meta tools-board-meta-left">
@@ -465,18 +465,19 @@
         <div class="axis-sheet" aria-hidden="true">
           <span class="axis-label axis-label-a">A-03 PROJECT AXIS</span>
           <span class="axis-label axis-label-b">3 WORKS / ONE PILLAR</span>
-          <span class="axis-label axis-label-c">GROUP MOVE</span>
+          <span class="axis-label axis-label-c">3 WORKS ENTER</span>
           <span class="axis-label axis-label-d">READ · REFINE · CONNECT</span>
         </div>
 
         <div class="axis-boundary" aria-hidden="true"></div>
+        <div class="axis-contact-veil" aria-hidden="true"></div>
 
         <div class="axis-stage-ruler" aria-hidden="true">
-          <span data-axis-step="stack">STACK</span>
-          <span data-axis-step="press">MERGE</span>
-          <span data-axis-step="fit">FIT</span>
-          <span data-axis-step="cut">CUT</span>
-          <span data-axis-step="settle">SETTLE</span>
+          <span data-axis-step="stack">WORKS</span>
+          <span data-axis-step="press">BOARD</span>
+          <span data-axis-step="fit">PILLAR</span>
+          <span data-axis-step="cut">GRANGI</span>
+          <span data-axis-step="settle">CONNECT</span>
         </div>
 
         <div class="axis-works-handoff" aria-hidden="true">
@@ -488,7 +489,7 @@
             <span>02</span>
             <strong>GUNIT App</strong>
           </div>
-          <div class="axis-handoff-card axis-handoff-character">
+          <div class="axis-handoff-card axis-handoff-gro">
             <span>03</span>
             <strong>GRO App</strong>
           </div>
@@ -508,7 +509,7 @@
               <em class="axis-card-cta">VIEW DETAIL</em>
             </button>
 
-            <button class="axis-stack-card axis-stack-card-character" type="button" data-stack-card="2" data-axis-project="gro" aria-label="GRO App 상세 보기">
+            <button class="axis-stack-card axis-stack-card-gro" type="button" data-stack-card="2" data-axis-project="gro" aria-label="GRO App 상세 보기">
               <img src="assets/GRO-project-thumb.png" alt="GRO App">
               <span>03 / GRO App</span>
               <em class="axis-card-cta">VIEW DETAIL</em>
@@ -524,74 +525,80 @@
           <div class="axis-composite-board" aria-hidden="true">
             <div class="board-layer board-kia"></div>
             <div class="board-layer board-gunit"></div>
-            <div class="board-layer board-character"></div>
+            <div class="board-layer board-gro"></div>
             <span>COMPOSITE BOARD</span>
           </div>
         </div>
 
-        <div class="axis-composite-pillar" aria-hidden="true">
-          <div class="pillar-layer pillar-kia"></div>
-          <div class="pillar-layer pillar-gunit"></div>
-          <div class="pillar-layer pillar-character"></div>
-          <div class="pillar-glaze"></div>
-          <span>COMPOSITE PILLAR</span>
-        </div>
-
-        <div class="axis-fit-gap" aria-hidden="true"></div>
-
-        <div class="axis-contact-dots" aria-hidden="true">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-
-        <div class="axis-fit-label" aria-hidden="true">
-          <span class="fit-label-main">CONTACT CHECK</span>
-          <span class="fit-label-state">CHECKING</span>
-        </div>
-
-        <div class="axis-foundation-stone" aria-hidden="true">
-          <img src="assets/axis/foundation-stone.png" alt="">
-        </div>
-
-        <div class="axis-fitting-trace" data-axis-trace-zone data-cursor-label="CUT" aria-hidden="true">
-          <svg class="foundation-trace-svg" viewBox="0 0 1000 220" preserveAspectRatio="none">
-            <path
-              id="foundationContourPath"
-              class="foundation-contour-path"
-              d="M80 161 C 88 132, 96 112, 113 96 C 130 80, 153 70, 181 69 C 217 69, 246 79, 276 78 C 318 77, 363 69, 410 62 C 462 54, 510 38, 560 29 C 607 21, 636 25, 668 39 C 699 52, 735 51, 770 50 C 812 49, 849 59, 879 82 C 900 98, 914 126, 920 165"
-            />
-            <path
-              id="foundationTraceDrawPath"
-              class="foundation-trace-draw-path"
-              d="M80 161 C 88 132, 96 112, 113 96 C 130 80, 153 70, 181 69 C 217 69, 246 79, 276 78 C 318 77, 363 69, 410 62 C 462 54, 510 38, 560 29 C 607 21, 636 25, 668 39 C 699 52, 735 51, 770 50 C 812 49, 849 59, 879 82 C 900 98, 914 126, 920 165"
-            />
-            <path
-              id="foundationTraceDashedPath"
-              class="foundation-trace-dashed-path"
-              d="M80 161 C 88 132, 96 112, 113 96 C 130 80, 153 70, 181 69 C 217 69, 246 79, 276 78 C 318 77, 363 69, 410 62 C 462 54, 510 38, 560 29 C 607 21, 636 25, 668 39 C 699 52, 735 51, 770 50 C 812 49, 849 59, 879 82 C 900 98, 914 126, 920 165"
-            />
-            <path
-              id="foundationTraceCutDonePath"
-              class="foundation-trace-cut-done-path"
-              d="M80 161 C 88 132, 96 112, 113 96 C 130 80, 153 70, 181 69 C 217 69, 246 79, 276 78 C 318 77, 363 69, 410 62 C 462 54, 510 38, 560 29 C 607 21, 636 25, 668 39 C 699 52, 735 51, 770 50 C 812 49, 849 59, 879 82 C 900 98, 914 126, 920 165"
-            />
-          </svg>
-
-          <div class="trace-snap-halo" aria-hidden="true"></div>
-
-          <div class="trace-next-point" aria-hidden="true">
-            <span></span>
-            <em>NEXT TRACE POINT</em>
+        <div class="axis-fit-camera axis-fit-rig" data-axis-fit-rig aria-hidden="true">
+          <div class="axis-composite-pillar">
+            <div class="pillar-layer pillar-kia"></div>
+            <div class="pillar-layer pillar-gunit"></div>
+            <div class="pillar-layer pillar-gro"></div>
+            <div class="pillar-glaze"></div>
+            <span>COMPOSITE PILLAR</span>
           </div>
 
-          <div class="foundation-trace-label">
-            <span class="trace-label-main">TRACE TO CUT</span>
-            <span class="trace-label-state">WAITING</span>
+          <div class="axis-fit-gap"></div>
+
+          <div class="axis-contact-dots">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
 
-          <div class="foundation-trace-progress" aria-hidden="true">
-            <span></span>
+          <div class="axis-fit-label">
+            <span class="fit-label-main">CONTACT CHECK</span>
+            <span class="fit-label-state">CHECKING</span>
+          </div>
+
+          <div class="axis-foundation-stone">
+            <img src="assets/axis/foundation-stone.png" alt="">
+          </div>
+
+          <div class="axis-fitting-trace" data-axis-trace-zone data-cursor-label="CUT">
+            <svg class="foundation-trace-svg" viewBox="0 0 1000 220" preserveAspectRatio="none">
+              <path
+                id="foundationContourPath"
+                class="foundation-contour-path"
+                d="M80 160 C 88 126, 96 94, 114 80 C 132 68, 156 69, 182 70 C 218 70, 246 80, 276 78 C 318 76, 362 69, 410 63 C 464 55, 510 38, 560 30 C 606 22, 636 38, 668 45 C 700 52, 735 50, 770 51 C 812 52, 848 58, 879 80 C 900 96, 914 128, 920 164"
+              />
+              <path
+                id="foundationTraceDrawPath"
+                class="foundation-trace-draw-path"
+                d="M80 160 C 88 126, 96 94, 114 80 C 132 68, 156 69, 182 70 C 218 70, 246 80, 276 78 C 318 76, 362 69, 410 63 C 464 55, 510 38, 560 30 C 606 22, 636 38, 668 45 C 700 52, 735 50, 770 51 C 812 52, 848 58, 879 80 C 900 96, 914 128, 920 164"
+              />
+              <path
+                id="foundationTraceDashedPath"
+                class="foundation-trace-dashed-path"
+                d="M80 160 C 88 126, 96 94, 114 80 C 132 68, 156 69, 182 70 C 218 70, 246 80, 276 78 C 318 76, 362 69, 410 63 C 464 55, 510 38, 560 30 C 606 22, 636 38, 668 45 C 700 52, 735 50, 770 51 C 812 52, 848 58, 879 80 C 900 96, 914 128, 920 164"
+              />
+              <path
+                id="foundationTraceCutDonePath"
+                class="foundation-trace-cut-done-path"
+                d="M80 160 C 88 126, 96 94, 114 80 C 132 68, 156 69, 182 70 C 218 70, 246 80, 276 78 C 318 76, 362 69, 410 63 C 464 55, 510 38, 560 30 C 606 22, 636 38, 668 45 C 700 52, 735 50, 770 51 C 812 52, 848 58, 879 80 C 900 96, 914 128, 920 164"
+              />
+            </svg>
+
+            <div class="trace-snap-halo" aria-hidden="true"></div>
+
+            <div class="trace-next-point" aria-hidden="true">
+              <span></span>
+              <em>NEXT TRACE POINT</em>
+            </div>
+
+            <div class="foundation-trace-label">
+              <span class="trace-label-main">TRACE TO CUT</span>
+              <span class="trace-label-state">WAITING</span>
+            </div>
+
+            <div class="foundation-trace-progress" aria-hidden="true">
+              <span></span>
+            </div>
+          </div>
+
+          <div class="axis-stability-hint" aria-hidden="true">
+            <span>WHEEL OR DRAG TO TEST FIT</span>
           </div>
         </div>
 
@@ -600,9 +607,6 @@
           <p>세 개의 작업을 하나의 기준 위에 쌓고, 압축하고, 연결해 포트폴리오의 방향성을 보여줍니다.</p>
         </div>
 
-        <div class="axis-stability-hint" aria-hidden="true">
-          <span>WHEEL OR DRAG TO TEST FIT</span>
-        </div>
       </div>
     </section>
 
@@ -771,6 +775,6 @@
       </div>
     </section>
   </div>
-  <script src="scripts.js?v=large-plane-scratch-20260602"></script>
+  <script src="scripts.js?v=axis-fit-rig-aligned-20260603"></script>
 </body>
 </html>

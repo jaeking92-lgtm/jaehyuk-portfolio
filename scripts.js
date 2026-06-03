@@ -983,11 +983,6 @@ function initPlaneCursorScratchReveal() {
     ctx.fillStyle = 'rgba(255,238,203,.18)';
     ctx.fillRect(0, 0, rect.width, rect.height);
 
-    ctx.fillStyle = 'rgba(119,69,22,.1)';
-    for (let x = 0; x < rect.width; x += 8) {
-      ctx.fillRect(x, 0, 1, rect.height);
-    }
-
     coverReady = true;
   };
 
@@ -1064,8 +1059,8 @@ function initPlaneCursorScratchReveal() {
   const eraseAt = (point, previousPoint) => {
     if (!coverReady) return false;
     const rect = board.getBoundingClientRect();
-    const brushW = Math.max(38, rect.width * .045);
-    const brushH = Math.max(88, rect.height * .12);
+    const brushW = Math.max(54, rect.width * .064);
+    const brushH = Math.max(118, rect.height * .165);
     const distance = previousPoint ? Math.hypot(point.x - previousPoint.x, point.y - previousPoint.y) : 12;
     const removedWood = hasWoodOnPath(point, previousPoint);
 
@@ -2099,6 +2094,14 @@ const projectOpenButtons = document.querySelectorAll('.project-open');
 const axisProjectButtons = document.querySelectorAll('[data-axis-project]');
 let pinnedWorksCard = null;
 let lastFocusedProjectTrigger = null;
+let centeredAxisProjectButton = null;
+let axisProjectModalTimer = null;
+
+function refreshAxisCardPositions() {
+  window.requestAnimationFrame(() => {
+    updateAxisInteraction();
+  });
+}
 
 function showProjectImageFallback(data) {
   if (projectModalImage) {
@@ -2234,7 +2237,14 @@ axisProjectButtons.forEach((button) => {
     const projectKey = button.dataset.axisProject;
     if (!projectModalData[projectKey]) return;
 
-    openProjectModal(projectKey, button);
+    centeredAxisProjectButton = button;
+    button.classList.add('is-axis-centered');
+    refreshAxisCardPositions();
+
+    window.clearTimeout(axisProjectModalTimer);
+    axisProjectModalTimer = window.setTimeout(() => {
+      openProjectModal(projectKey, button);
+    }, 420);
   });
 });
 
@@ -2468,18 +2478,18 @@ const axisManualCutState = {
 };
 
 const TRACE_SAMPLE_COUNT = 220;
-const MAGNET_IN = 34;
-const MAGNET_OUT = 52;
-const MAX_FORWARD_JUMP = 18;
+const MAGNET_IN = 58;
+const MAGNET_OUT = 88;
+const MAX_FORWARD_JUMP = TRACE_SAMPLE_COUNT;
 const AXIS_CUT_COMPLETE_FALLBACK_PROGRESS = 0.92;
 const AXIS_CUT_COMPLETE_MARGIN = 0.018;
 const AXIS_CONTACT_HOLD_START_PROGRESS = 0.89;
 const AXIS_CONTACT_HOLD_RESET_PROGRESS = 0.84;
 const AXIS_STABILITY_WHEEL_RESISTANCE = 0.68;
-const AXIS_PILLAR_SEAT_ANCHOR_RATIO = 0.18;
-const AXIS_PILLAR_CUT_SEAT_COMPENSATION = 44;
+const AXIS_PILLAR_SEAT_ANCHOR_RATIO = 0.055;
+const AXIS_PILLAR_CUT_SEAT_COMPENSATION = 6;
 const AXIS_TRACE_VIEWBOX_H = 220;
-const AXIS_TRACE_BOTTOM_ANCHOR_Y = 165;
+const AXIS_TRACE_BOTTOM_ANCHOR_Y = 160;
 const AxisFitStage = {
   PILLAR_READY: 'PILLAR_READY',
   FOUNDATION_APPEAR: 'FOUNDATION_APPEAR',
@@ -2633,7 +2643,7 @@ function measureFoundationTrace() {
 }
 
 function findClosestTraceSample(clientX, clientY) {
-  syncFoundationTraceSamples();
+  syncFoundationTraceSamples(true);
 
   const samples = axisManualCutState.traceSamples;
   if (!samples.length) return null;
@@ -2786,7 +2796,7 @@ function initAxisPillarStabilityDrag() {
 
     window.setTimeout(() => {
       axisStage.classList.remove('is-stability-returning');
-      if (fitLabelMain) fitLabelMain.textContent = 'CONTACT CHECK';
+      if (fitLabelMain) fitLabelMain.textContent = 'FINAL CONTACT';
       if (fitLabelState) fitLabelState.textContent = 'FITTED';
     }, 820);
   };
@@ -2932,14 +2942,14 @@ function getAxisPillarContactTargetY() {
   const pillar = document.querySelector('.axis-composite-pillar');
   const foundation = document.querySelector('.axis-foundation-stone');
 
-  if (!axisStage || !pillar || !foundation) return 82;
+  if (!axisStage || !pillar || !foundation) return 22;
 
   const stageRect = axisStage.getBoundingClientRect();
   const pillarRect = pillar.getBoundingClientRect();
   const foundationRect = foundation.getBoundingClientRect();
 
   if (!stageRect.height || !pillarRect.height || !foundationRect.height) {
-    return 82;
+    return 22;
   }
 
   const stageStyle = getComputedStyle(axisStage);
@@ -2948,12 +2958,12 @@ function getAxisPillarContactTargetY() {
   const currentSettleY = parseFloat(stageStyle.getPropertyValue('--pillar-settle-y')) || 0;
   const pillarBottomWithoutMotion =
     pillarRect.bottom - currentContactY - currentBounceY - currentSettleY;
-  const foundationTopY = foundationRect.top + foundationRect.height * 0.08;
-  const contactInset = Math.min(8, pillarRect.height * 0.018);
+  const foundationTopY = foundationRect.top + foundationRect.height * AXIS_PILLAR_SEAT_ANCHOR_RATIO;
+  const contactInset = Math.min(6, pillarRect.height * 0.012);
   const targetY = foundationTopY - pillarBottomWithoutMotion + contactInset;
-  const maxTargetY = Math.min(260, stageRect.height * 0.34);
+  const maxTargetY = Math.min(180, stageRect.height * 0.24);
 
-  return Math.min(maxTargetY, Math.max(44, targetY));
+  return Math.min(maxTargetY, Math.max(0, targetY));
 }
 
 function getAxisPillarSettleTargetY() {
@@ -2961,14 +2971,14 @@ function getAxisPillarSettleTargetY() {
   const pillar = document.querySelector('.axis-composite-pillar');
   const foundation = document.querySelector('.axis-foundation-stone');
 
-  if (!axisStage || !pillar || !foundation) return 42;
+  if (!axisStage || !pillar || !foundation) return 22;
 
   const stageRect = axisStage.getBoundingClientRect();
   const pillarRect = pillar.getBoundingClientRect();
   const foundationRect = foundation.getBoundingClientRect();
 
   if (!stageRect.height || !pillarRect.height || !foundationRect.height) {
-    return 42;
+    return 22;
   }
 
   const currentSettleY = parseFloat(
@@ -2977,18 +2987,11 @@ function getAxisPillarSettleTargetY() {
 
   const foundationTopY = foundationRect.top + foundationRect.height * AXIS_PILLAR_SEAT_ANCHOR_RATIO;
   const pillarBottomWithoutSettle = pillarRect.bottom - currentSettleY;
-  const cutSeatCompensation = Math.min(
-    AXIS_PILLAR_CUT_SEAT_COMPENSATION,
-    stageRect.height * 0.085
-  );
+  const cutSeatCompensation = Math.min(AXIS_PILLAR_CUT_SEAT_COMPENSATION, stageRect.height * 0.012);
   const geometricTarget = foundationTopY - pillarBottomWithoutSettle + cutSeatCompensation;
-  const maxTarget = Math.min(360, stageRect.height * 0.42);
+  const maxTarget = Math.min(180, stageRect.height * 0.24);
 
-  if (geometricTarget > 1) {
-    return Math.min(geometricTarget, maxTarget);
-  }
-
-  return Math.min(Math.max(0, -getAxisTraceOverlayY() + cutSeatCompensation), maxTarget);
+  return Math.min(maxTarget, Math.max(0, geometricTarget));
 }
 
 function updateNextTracePoint() {
@@ -3143,7 +3146,7 @@ function completeAxisStabilityTest() {
   axisStage?.classList.add('is-stability-complete');
   axisStage?.classList.remove('is-stability-dragging');
 
-  if (fitLabelMain) fitLabelMain.textContent = 'CONTACT CHECK';
+  if (fitLabelMain) fitLabelMain.textContent = 'FINAL CONTACT';
   if (fitLabelState) fitLabelState.textContent = 'FITTED';
 
   requestAxisUpdate();
@@ -3493,6 +3496,14 @@ function updateAxisInteraction() {
     { x: 0, y: 0, z: 40, rx: 0, ry: 0, rz: 0 },
     { x: stageW * 0.26, y: 0, z: 0, rx: 0, ry: 0, rz: 1 }
   ];
+  const hoveredAxisIndex = Array.from(axisCards).indexOf(centeredAxisProjectButton);
+  const shouldSwapAxisCards = hoveredAxisIndex === 0 || hoveredAxisIndex === 2;
+  const getVisibleSlotIndex = (index) => {
+    if (!shouldSwapAxisCards || standProgress >= .18) return index;
+    if (index === hoveredAxisIndex) return 1;
+    if (index === 1) return hoveredAxisIndex;
+    return index;
+  };
   const stacked = [
     { x: -28, y: -18, z: 80, rx: 6, ry: -4, rz: -3 },
     { x: 0, y: 0, z: 120, rx: 4, ry: 0, rz: 0 },
@@ -3530,9 +3541,38 @@ function updateAxisInteraction() {
     ? Math.min(stageH * 0.40, 320)
     : Math.min(stageH * 0.42, 430);
   const pillarCardW = stageW < 760
-    ? Math.min(stageW * 0.54, 300)
-    : Math.min(Math.max(stageW * 0.18, 280), 420);
-  const pillarCardH = Math.min(stageH * 0.50, 540);
+    ? Math.min(stageW * 0.50, 260)
+    : Math.min(Math.max(stageW * 0.155, 240), 340);
+  const pillarCardH = stageW < 760
+    ? Math.min(stageH * 0.46, 420)
+    : Math.min(stageH * 0.48, 500);
+  const fitStoneW = stageW < 760
+    ? Math.min(stageW * 0.72, 440)
+    : Math.max(300, Math.min(stageW * 0.30, 460));
+  const fitStoneH = fitStoneW * (2245 / 11217);
+  const fitStoneBottom = stageW < 760
+    ? Math.max(46, Math.min(stageH * 0.12, 82))
+    : Math.max(64, Math.min(stageH * 0.12, 116));
+  const fitTraceH = stageW < 760
+    ? Math.max(58, Math.min(stageW * 0.15, 94))
+    : Math.max(70, Math.min(fitStoneW * 0.22, 104));
+  const fitTraceAnchorY = (AXIS_TRACE_BOTTOM_ANCHOR_Y / AXIS_TRACE_VIEWBOX_H) * fitTraceH;
+  const fitTraceBottom = fitStoneBottom + fitStoneH - fitTraceH + fitTraceAnchorY - 1;
+  const fitContactBottom = fitStoneBottom + fitStoneH - 2;
+  const fitPillarBaseGap = stageW < 760 ? 22 : 28;
+  const fitPillarBaseBottom = fitContactBottom + fitPillarBaseGap;
+  const fitLabelLift = Math.max(stageW < 760 ? 36 : 44, Math.min(58, pillarCardH * 0.12));
+  const fitTraceLabelBottom = (fitStoneBottom - (stageW < 760 ? 24 : 32)) - fitTraceBottom;
+
+  setAxisVar('--axis-stone-width', `${fitStoneW.toFixed(2)}px`);
+  setAxisVar('--axis-stone-height', `${fitStoneH.toFixed(2)}px`);
+  setAxisVar('--axis-stone-bottom', `${fitStoneBottom.toFixed(2)}px`);
+  setAxisVar('--axis-trace-height', `${fitTraceH.toFixed(2)}px`);
+  setAxisVar('--axis-trace-bottom', `${fitTraceBottom.toFixed(2)}px`);
+  setAxisVar('--axis-contact-bottom', `${fitContactBottom.toFixed(2)}px`);
+  setAxisVar('--axis-pillar-base-bottom', `${fitPillarBaseBottom.toFixed(2)}px`);
+  setAxisVar('--axis-fit-label-bottom', `${(fitContactBottom + fitLabelLift).toFixed(2)}px`);
+  setAxisVar('--axis-trace-label-bottom', `${fitTraceLabelBottom.toFixed(2)}px`);
   const pressedStackCardH = lerp(
     baseStackCardH,
     Math.max(baseStackCardH * .44, stageW < 760 ? 132 : 180),
@@ -3546,7 +3586,8 @@ function updateAxisInteraction() {
 
   axisCards.forEach((card, index) => {
     const from = start[index];
-    const mid = visible[index];
+    const visibleSlotIndex = getVisibleSlotIndex(index);
+    const mid = visible[visibleSlotIndex];
     const to = stacked[index];
     const standTo = standing[index];
 
@@ -3586,6 +3627,8 @@ function updateAxisInteraction() {
     card.style.setProperty('--card-x', `${x.toFixed(2)}px`);
     card.style.setProperty('--card-y', `${y.toFixed(2)}px`);
     card.style.setProperty('--card-z', `${z.toFixed(2)}px`);
+    const isSwappedCenter = cardCanClick && centeredAxisProjectButton === card && shouldSwapAxisCards && standProgress < .18;
+    card.classList.toggle('is-axis-centered', isSwappedCenter);
     card.style.setProperty('--card-rx', `${rx.toFixed(2)}deg`);
     card.style.setProperty('--card-ry', `${ry.toFixed(2)}deg`);
     card.style.setProperty('--card-rz', `${rz.toFixed(2)}deg`);
@@ -3603,7 +3646,7 @@ function updateAxisInteraction() {
     card.style.setProperty('--card-image-blur', `${lerp(0, .18, surfaceProgress).toFixed(2)}px`);
     card.style.setProperty('--card-image-scale', lerp(1, 1.025, surfaceProgress).toFixed(3));
     card.style.clipPath = morphClipPath(standingClips[index], standProgress);
-    card.style.zIndex = String(10 + index);
+    card.style.zIndex = String(isSwappedCenter ? 40 : 10 + visibleSlotIndex);
   });
 
   axisStage.classList.toggle('has-clickable-axis-cards', hasClickableAxisCards);
@@ -3654,7 +3697,8 @@ function updateAxisInteraction() {
   setAxisVar('--pillar-w', pillarW);
   setAxisVar('--pillar-h', pillarH);
   setAxisVar('--foundation-opacity', foundationProgress.toFixed(3));
-  setAxisVar('--foundation-y', `${lerp(34, 0, foundationProgress).toFixed(2)}px`);
+  const foundationY = lerp(34, 0, foundationProgress);
+  setAxisVar('--foundation-y', `${foundationY.toFixed(2)}px`);
 
   const contactTargetY = getAxisPillarContactTargetY();
   const contactEase = 1 - Math.pow(1 - contactProgress, 2.8);
@@ -3675,7 +3719,7 @@ function updateAxisInteraction() {
     wobbleDamping *
     2.6;
   const contactY = lerp(0, contactTargetY, contactEase) + contactImpactPulse * 8;
-  const bounceY = lerp(0, -42, bounceProgress);
+  const bounceY = lerp(0, -16, bounceProgress);
   setAxisVar('--pillar-contact-y', `${contactY.toFixed(2)}px`);
   setAxisVar('--pillar-bounce-y', `${bounceY.toFixed(2)}px`);
   setAxisVar('--pillar-contact-wobble-rot', `${contactWobble.toFixed(2)}deg`);
@@ -3683,6 +3727,48 @@ function updateAxisInteraction() {
   setAxisVar('--impact-opacity', impactVisibility.toFixed(3));
   setAxisVar('--impact-scale', lerp(.72, 1.18, impactVisibility).toFixed(3));
   setAxisVar('--impact-spread', `${lerp(18, 48, impactVisibility).toFixed(2)}px`);
+  const contactShock = contactImpactPulse *
+    (1 - smooth(range(bounceProgress, .08, .62))) *
+    (axisManualCutState.cutComplete ? 0 : 1);
+  const contactStrike = smooth(range(contactProgress, .30, .58)) *
+    (1 - smooth(range(contactProgress, .74, .96))) *
+    (axisManualCutState.cutComplete ? 0 : 1);
+  const contactImpactEvent = Math.max(contactShock, contactStrike);
+  const contactShockScale = lerp(.64, 1.42, smooth(range(contactProgress, .30, .86)));
+  const contactJolt = Math.sin(contactProgress * Math.PI * 9.2) * contactImpactEvent;
+  const contactVibration =
+    (
+      Math.sin(contactProgress * Math.PI * 38) * .68 +
+      Math.sin(contactProgress * Math.PI * 67) * .32
+    ) *
+    contactImpactEvent;
+  const contactRevealProgress = canFirstContact && !axisManualCutState.cutComplete
+    ? smooth(range(contactProgress, .02, .68))
+    : 1;
+  const contactRevealOpacity = canFirstContact && !axisManualCutState.cutComplete
+    ? (1 - contactRevealProgress) * .62
+    : 0;
+  setAxisVar('--contact-impact-event', contactImpactEvent.toFixed(3));
+  setAxisVar('--contact-shock-opacity', (contactImpactEvent * .86).toFixed(3));
+  setAxisVar('--contact-shock-scale', contactShockScale.toFixed(3));
+  setAxisVar('--contact-floor-opacity', (contactImpactEvent * .70).toFixed(3));
+  setAxisVar('--contact-reveal-opacity', contactRevealOpacity.toFixed(3));
+  setAxisVar('--contact-reveal-scale', lerp(1.035, 1, contactRevealProgress).toFixed(3));
+  setAxisVar('--contact-bg-scale', (contactImpactEvent * .048).toFixed(3));
+  setAxisVar('--contact-bg-y', `${((contactJolt * 8.5) + (contactImpactEvent * 3.2)).toFixed(2)}px`);
+  setAxisVar('--contact-bg-brightness', (1 + contactImpactEvent * .095).toFixed(3));
+  setAxisVar('--contact-bg-contrast', (1 + contactImpactEvent * .06).toFixed(3));
+  setAxisVar('--contact-stage-x', `${(contactJolt * 3.2).toFixed(2)}px`);
+  setAxisVar('--contact-stage-y', `${((contactJolt * -5.2) + (contactImpactEvent * 2.3)).toFixed(2)}px`);
+  setAxisVar('--contact-stage-rot', `${(contactJolt * .15).toFixed(3)}deg`);
+  setAxisVar('--pillar-impact-x', `${(contactVibration * 5.6).toFixed(2)}px`);
+  setAxisVar('--pillar-impact-y', `${((contactImpactEvent * 6.4) + (contactVibration * 2.8)).toFixed(2)}px`);
+  setAxisVar('--pillar-impact-rot', `${(contactVibration * .42).toFixed(3)}deg`);
+  setAxisVar('--pillar-impact-scale', (contactImpactEvent * -.018).toFixed(3));
+  setAxisVar('--foundation-impact-x', `${(contactVibration * -2.4).toFixed(2)}px`);
+  setAxisVar('--foundation-impact-y', `${((contactImpactEvent * 2.8) + (contactVibration * .75)).toFixed(2)}px`);
+  setAxisVar('--foundation-impact-rot', `${(contactVibration * -.12).toFixed(3)}deg`);
+  setAxisVar('--foundation-impact-scale', (contactImpactEvent * .006).toFixed(3));
 
   const mismatchVisibility = axisManualCutState.cutComplete
     ? 0
@@ -3703,7 +3789,7 @@ function updateAxisInteraction() {
 
   const fitLabelMain = document.querySelector('.fit-label-main');
   if (fitLabelMain && !axisManualCutState.cutComplete && contactProgress > .2 && mismatchProgress < .5) {
-    fitLabelMain.textContent = 'FIRST CONTACT';
+    fitLabelMain.textContent = 'FOUNDATION CONTACT';
   } else if (fitLabelMain && !axisManualCutState.cutComplete) {
     fitLabelMain.textContent = 'CONTACT CHECK';
   }
@@ -3738,19 +3824,19 @@ function updateAxisInteraction() {
   setAxisVar('--trace-opacity', traceOpacity.toFixed(3));
   setAxisVar('--trace-draw-opacity', (1 - dashedOpacity).toFixed(3));
   setAxisVar('--trace-dashed-opacity', dashedOpacity.toFixed(3));
-  const traceOverlayY = lerp(0, getAxisTraceOverlayY(), overlayProgress);
+  const traceOverlayY = 0;
   setAxisVar('--trace-overlay-y', `${traceOverlayY.toFixed(2)}px`);
 
   const traceLabelMain = document.querySelector('.trace-label-main');
   if (traceLabelMain) {
     if (canStartManualCut || axisManualCutState.cutReady) {
-      traceLabelMain.textContent = 'TRACE TO CUT';
+      traceLabelMain.textContent = 'GRANGI TRACE';
     } else if (canTransferGuide) {
-      traceLabelMain.textContent = 'TRANSFER GUIDE';
+      traceLabelMain.textContent = 'TRANSFER CONTOUR';
     } else if (canDrawContour) {
-      traceLabelMain.textContent = 'READ CONTOUR';
+      traceLabelMain.textContent = 'READ STONE CONTOUR';
     } else {
-      traceLabelMain.textContent = 'TRACE TO CUT';
+      traceLabelMain.textContent = 'GRANGI TRACE';
     }
   }
 
@@ -3795,6 +3881,29 @@ function updateAxisInteraction() {
   setAxisVar('--pillar-settle-y', `${settleY.toFixed(2)}px`);
 
   axisStage.classList.toggle('is-settled', settleProgress >= 1);
+
+  const fitPullProgress = Math.max(
+    smooth(range(globalProgress, .852, .972)),
+    axisManualCutState.cutComplete ? smooth(range(settleProgress, 0, .58)) : 0
+  );
+  const fitZoomMax = stageW < 760 ? 1.38 : 1.58;
+  const fitZoom = lerp(1, fitZoomMax, fitPullProgress);
+  const fitFocusOpacity = lerp(0, .68, fitPullProgress);
+  const fitPullLineOpacity = lerp(0, .74, fitPullProgress);
+  const axisBgPullScale = lerp(1, 1.22, fitPullProgress);
+  const stoneCenterY = stageH - fitStoneBottom - (fitStoneH * .5) + foundationY;
+  const cameraOriginY = stageH * .88;
+  const targetStoneCenterY = stageH * (stageW < 760 ? .55 : .56);
+  const desiredStoneCenterY = lerp(stoneCenterY, targetStoneCenterY, fitPullProgress);
+  const fitCameraY =
+    desiredStoneCenterY -
+    (cameraOriginY + fitZoom * (stoneCenterY - cameraOriginY));
+
+  setAxisVar('--axis-fit-zoom', fitZoom.toFixed(3));
+  setAxisVar('--axis-fit-camera-y', `${fitCameraY.toFixed(2)}px`);
+  setAxisVar('--axis-fit-focus-opacity', fitFocusOpacity.toFixed(3));
+  setAxisVar('--axis-pull-line-opacity', fitPullLineOpacity.toFixed(3));
+  setAxisVar('--axis-bg-pull-scale', axisBgPullScale.toFixed(3));
 
   const finalProgress = axisManualCutState.cutComplete && axisManualCutState.stabilityComplete
     ? smooth(range(settleProgress, 0.4, 1))
@@ -3855,19 +3964,19 @@ function updateAxisBuildLabel(globalProgress, gates, settleProgress) {
     canStartManualCut
   } = gates;
 
-  let label = 'GROUP MOVE';
+  let label = '3 WORKS ENTER';
   let activeAxisStep = 'stack';
 
   if (globalProgress < 0.46) {
-    label = 'KIA / GUNIT / GRO ENTER';
+    label = '01 KIA / 02 GUNIT / 03 GRO ENTER';
   } else if (globalProgress < 0.58) {
     label = 'ALIGN TO BASELINE';
   } else if (!canStartAssembly) {
-    label = 'WAITING FOR RIGHT CARD';
+    label = 'WORKS READY';
   } else if (globalProgress < 0.70) {
-    label = globalProgress < 0.66 ? 'GATHER CARDS' : '3 CARD STACK';
+    label = globalProgress < 0.66 ? 'OVERLAP THREE WORKS' : 'STACKED WORKS';
   } else if (globalProgress < 0.735) {
-    label = 'PRESS / COMPRESS';
+    label = 'PRESS INTO BOARD';
     activeAxisStep = 'press';
   } else if (globalProgress < 0.82) {
     label = 'COMPOSITE BOARD';
@@ -3876,34 +3985,34 @@ function updateAxisBuildLabel(globalProgress, gates, settleProgress) {
     label = 'BOARD STANDS INTO PILLAR';
     activeAxisStep = 'press';
   } else if (canShowFoundation && !foundationVisible) {
-    label = 'FOUNDATION APPEAR';
+    label = 'FOUNDATION STONE APPEARS';
     activeAxisStep = 'fit';
   } else if (!firstContactComplete) {
-    label = 'FIRST CONTACT';
+    label = 'PILLAR TOUCHES FOUNDATION';
     activeAxisStep = 'fit';
   } else if (!bounceBackComplete) {
-    label = 'MISMATCH CHECK / NOT FITTED';
+    label = 'NOT FITTED REVEAL';
     activeAxisStep = 'fit';
   } else if (canDrawContour && !canShowDashedGuide) {
-    label = 'READ FOUNDATION CONTOUR';
+    label = 'READ STONE CONTOUR';
     activeAxisStep = 'fit';
   } else if (canShowDashedGuide && !dashedGuideOverlayComplete) {
-    label = 'TRANSFER GUIDE TO PILLAR';
+    label = 'TRANSFER CONTOUR TO PILLAR';
     activeAxisStep = 'fit';
   } else if (canStartManualCut && !axisManualCutState.cutComplete) {
-    label = axisManualCutState.isSnapped ? 'GRANGI TRACE / SNAP ON' : 'FOLLOW CONTOUR TRACE';
+    label = axisManualCutState.isSnapped ? 'GRANGI TRACE / SNAP ON' : 'GRANGI / FOLLOW CONTOUR';
     activeAxisStep = 'cut';
   } else if (axisManualCutState.cutReady && !axisManualCutState.cutComplete) {
     label = 'GRANGI TRACE';
     activeAxisStep = 'cut';
   } else if (axisManualCutState.cutComplete && settleProgress < 1) {
-    label = 'CUT COMPLETE / SCROLL TO SETTLE';
+    label = 'CUT COMPLETE';
     activeAxisStep = 'settle';
   } else if (settleProgress >= 1 && !axisManualCutState.stabilityComplete) {
-    label = 'WHEEL OR DRAG TO TEST FIT';
+    label = 'PILLAR SEATED EXACTLY';
     activeAxisStep = 'settle';
   } else if (settleProgress >= 1) {
-    label = 'FINAL / READ REFINE CONNECT';
+    label = 'READ · REFINE · CONNECT';
     activeAxisStep = 'settle';
   }
 
