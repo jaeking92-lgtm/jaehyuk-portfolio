@@ -2483,8 +2483,8 @@ const MAGNET_OUT = 88;
 const MAX_FORWARD_JUMP = TRACE_SAMPLE_COUNT;
 const AXIS_CUT_COMPLETE_FALLBACK_PROGRESS = 0.92;
 const AXIS_CUT_COMPLETE_MARGIN = 0.018;
-const AXIS_CONTACT_HOLD_START_PROGRESS = 0.89;
-const AXIS_CONTACT_HOLD_RESET_PROGRESS = 0.84;
+const AXIS_CONTACT_HOLD_START_PROGRESS = 0.932;
+const AXIS_CONTACT_HOLD_RESET_PROGRESS = 0.884;
 const AXIS_STABILITY_WHEEL_RESISTANCE = 0.68;
 const AXIS_PILLAR_SEAT_ANCHOR_RATIO = 0.055;
 const AXIS_PILLAR_CUT_SEAT_COMPENSATION = 6;
@@ -2494,7 +2494,6 @@ const AxisFitStage = {
   PILLAR_READY: 'PILLAR_READY',
   FOUNDATION_APPEAR: 'FOUNDATION_APPEAR',
   FIRST_CONTACT: 'FIRST_CONTACT',
-  MISMATCH_CHECK: 'MISMATCH_CHECK',
   CONTOUR_DRAW: 'CONTOUR_DRAW',
   TRANSFER_GUIDE: 'TRANSFER_GUIDE',
   USER_MANUAL_CUT: 'USER_MANUAL_CUT',
@@ -3167,6 +3166,7 @@ function handleAxisCutWheelLock(event) {
       : event.deltaMode === 2
         ? event.deltaY * window.innerHeight
         : event.deltaY;
+  const cappedDeltaY = Math.min(normalizedDeltaY, window.innerHeight * 0.032);
   const isAxisActive =
     rect.top < window.innerHeight &&
     rect.bottom > 0 &&
@@ -3193,9 +3193,9 @@ function handleAxisCutWheelLock(event) {
       behavior: 'auto'
     });
 
-    const needed = window.innerHeight * 0.72;
+    const needed = window.innerHeight * 0.28;
     axisManualCutState.contactHoldProgress = clamp01(
-      axisManualCutState.contactHoldProgress + normalizedDeltaY / Math.max(needed, 1)
+      axisManualCutState.contactHoldProgress + cappedDeltaY / Math.max(needed, 1)
     );
 
     if (axisManualCutState.contactHoldProgress >= 1) {
@@ -3236,7 +3236,7 @@ function handleAxisCutWheelLock(event) {
 
     const needed = window.innerHeight * 0.58;
     axisManualCutState.settleProgress = clamp01(
-      axisManualCutState.settleProgress + normalizedDeltaY / Math.max(needed, 1)
+      axisManualCutState.settleProgress + cappedDeltaY / Math.max(needed, 1)
     );
 
     requestAxisUpdate();
@@ -3261,7 +3261,7 @@ function handleAxisCutWheelLock(event) {
 
     axisManualCutState.stabilityWheelProgress = clamp01(
       axisManualCutState.stabilityWheelProgress +
-      normalizedDeltaY / Math.max(window.innerHeight * AXIS_STABILITY_WHEEL_RESISTANCE, 1)
+      cappedDeltaY / Math.max(window.innerHeight * AXIS_STABILITY_WHEEL_RESISTANCE, 1)
     );
 
     const wheelProgress = axisManualCutState.stabilityWheelProgress;
@@ -3393,7 +3393,16 @@ function updateAxisInteraction() {
 
   const rect = axisSection.getBoundingClientRect();
   const scrollable = axisSection.offsetHeight - window.innerHeight;
-  const globalProgress = clamp01((-rect.top) / Math.max(scrollable, 1));
+  const axisProgressRaw = clamp01((-rect.top) / Math.max(scrollable, 1));
+  const maxFrameDelta = 0.004;
+  const rawDelta = axisProgressRaw - axisProgressTarget;
+  axisProgressTarget = clamp01(axisProgressTarget + Math.max(-maxFrameDelta, Math.min(maxFrameDelta, rawDelta)));
+  axisProgressSmoothed = lerp(axisProgressSmoothed, axisProgressTarget, 0.09);
+  const globalProgress = axisProgressSmoothed;
+
+  if (Math.abs(axisProgressRaw - axisProgressTarget) > 0.0002 || Math.abs(axisProgressTarget - axisProgressSmoothed) > 0.0002) {
+    requestAxisUpdate();
+  }
 
   const stageRect = axisStage.getBoundingClientRect();
   const stageW = stageRect.width;
@@ -3406,12 +3415,11 @@ function updateAxisInteraction() {
   const pressProgress = smooth(range(globalProgress, 0.64, 0.80));
   const boardProgress = smooth(range(globalProgress, 0.74, 0.84));
   const pillarProgress = smooth(range(globalProgress, 0.78, 0.88));
-  const rawFoundationProgress = smooth(range(globalProgress, 0.855, 0.885));
-  const rawContactProgress = smooth(range(globalProgress, 0.880, 0.912));
-  const rawMismatchProgress = smooth(range(globalProgress, 0.900, 0.948));
-  const rawBounceProgress = smooth(range(globalProgress, 0.936, 0.962));
-  const rawContourDrawProgress = smooth(range(globalProgress, 0.958, 0.978));
-  const rawOverlayProgress = smooth(range(globalProgress, 0.974, 0.990));
+  const rawFoundationProgress = smooth(range(globalProgress, 0.855, 0.902));
+  const preContactZoomProgress = smooth(range(globalProgress, 0.858, 0.928));
+  const rawContactProgress = smooth(range(globalProgress, 0.934, 0.968));
+  const rawContourDrawProgress = smooth(range(globalProgress, 0.968, 0.988));
+  const rawOverlayProgress = smooth(range(globalProgress, 0.984, 0.990));
 
   setAxisVar('--axis-handoff-opacity', '0');
   setAxisVar('--axis-handoff-y', '0px');
@@ -3437,27 +3445,25 @@ function updateAxisInteraction() {
   const safePillarProgress = canGather ? pillarProgress : 0;
   const standProgress = canGather ? smooth(range(globalProgress, .76, .86)) : 0;
   const pillarHandoffProgress = canGather ? smooth(range(globalProgress, .835, .865)) : 0;
+  const boardToPillarHandoff = smooth(range(pillarHandoffProgress, .30, 1));
   const pillarComplete = pillarHandoffProgress >= 0.98;
   const canShowFoundation = pillarComplete;
   const foundationProgress = canShowFoundation ? rawFoundationProgress : 0;
   const foundationVisible = foundationProgress >= 0.9;
-  const canFirstContact = canShowFoundation && foundationVisible;
+  const canFirstContact = canShowFoundation && foundationVisible && preContactZoomProgress >= 0.985;
   const contactHoldProgress = canFirstContact
     ? (axisManualCutState.contactHoldComplete ? 1 : axisManualCutState.contactHoldProgress)
     : 0;
   const contactProgress = canFirstContact
-    ? Math.max(rawContactProgress, smooth(range(contactHoldProgress, 0, .36)))
+    ? Math.max(rawContactProgress, smooth(range(contactHoldProgress, .12, .62)))
     : 0;
   const firstContactComplete = contactProgress >= 0.95;
-  const mismatchProgress = canFirstContact
-    ? Math.max(rawMismatchProgress, smooth(range(contactHoldProgress, .24, .72)))
+  const bounceProgress = 0;
+  const contactTraceProgress = smooth(range(contactHoldProgress, .70, 1));
+  const canDrawContour = canFirstContact && firstContactComplete;
+  const contourDrawProgress = canDrawContour
+    ? Math.max(rawContourDrawProgress, contactTraceProgress)
     : 0;
-  const bounceProgress = canFirstContact
-    ? Math.max(rawBounceProgress, smooth(range(contactHoldProgress, .62, 1)))
-    : 0;
-  const bounceBackComplete = bounceProgress >= 0.95;
-  const canDrawContour = canFirstContact && bounceBackComplete;
-  const contourDrawProgress = canDrawContour ? rawContourDrawProgress : 0;
   const canTransferGuide = contourDrawProgress >= 0.995;
   const canShowDashedGuide = canTransferGuide;
   const overlayProgress = canTransferGuide ? rawOverlayProgress : 0;
@@ -3475,8 +3481,6 @@ function updateAxisInteraction() {
     axisFitStage = AxisFitStage.TRANSFER_GUIDE;
   } else if (canDrawContour) {
     axisFitStage = AxisFitStage.CONTOUR_DRAW;
-  } else if (bounceProgress > 0 || mismatchProgress > 0) {
-    axisFitStage = AxisFitStage.MISMATCH_CHECK;
   } else if (contactProgress > 0) {
     axisFitStage = AxisFitStage.FIRST_CONTACT;
   } else if (foundationProgress > 0) {
@@ -3559,7 +3563,7 @@ function updateAxisInteraction() {
   const fitTraceAnchorY = (AXIS_TRACE_BOTTOM_ANCHOR_Y / AXIS_TRACE_VIEWBOX_H) * fitTraceH;
   const fitTraceBottom = fitStoneBottom + fitStoneH - fitTraceH + fitTraceAnchorY - 1;
   const fitContactBottom = fitStoneBottom + fitStoneH - 2;
-  const fitPillarBaseGap = stageW < 760 ? 22 : 28;
+  const fitPillarBaseGap = stageW < 760 ? 36 : 48;
   const fitPillarBaseBottom = fitContactBottom + fitPillarBaseGap;
   const fitLabelLift = Math.max(stageW < 760 ? 36 : 44, Math.min(58, pillarCardH * 0.12));
   const fitTraceLabelBottom = (fitStoneBottom - (stageW < 760 ? 24 : 32)) - fitTraceBottom;
@@ -3615,7 +3619,9 @@ function updateAxisInteraction() {
     rz = lerp(rz, standTo.rz, standProgress);
 
     const compressedScale = 1;
-    const opacity = 1 - pillarHandoffProgress;
+    const opacity =
+      (1 - pillarHandoffProgress) *
+      (1 - smooth(range(safeBoardProgress, .24, .82)));
     const cardCanClick = opacity > .18 && !canStartManualCut;
     const surfaceProgress = smooth(range(standProgress, .18, 1));
 
@@ -3662,10 +3668,10 @@ function updateAxisInteraction() {
   setAxisVar('--press-frame-opacity', pressFrameOpacity.toFixed(3));
   setAxisVar('--press-top-y', `${lerp(0, 92, safePressProgress).toFixed(2)}px`);
   setAxisVar('--press-bottom-y', `${lerp(0, 92, safePressProgress).toFixed(2)}px`);
-  const boardStandProgress = smooth(range(globalProgress, .80, .87));
+  const boardStandProgress = smooth(range(globalProgress, .78, .865));
   const boardVisibleProgress =
     safeBoardProgress *
-    (1 - smooth(range(pillarHandoffProgress, .12, .92)));
+    (1 - boardToPillarHandoff);
   setAxisVar('--board-opacity', boardVisibleProgress.toFixed(3));
   setAxisVar('--board-scale', lerp(.96, 1, safeBoardProgress).toFixed(3));
   setAxisVar('--board-w', `${lerp(baseStackCardW, pillarCardW, boardStandProgress).toFixed(2)}px`);
@@ -3673,6 +3679,10 @@ function updateAxisInteraction() {
   setAxisVar('--board-rx', `${lerp(0, 0, boardStandProgress).toFixed(2)}deg`);
   setAxisVar('--board-ry', `${lerp(0, 0, boardStandProgress).toFixed(2)}deg`);
   setAxisVar('--board-rz', `${lerp(0, 0, boardStandProgress).toFixed(2)}deg`);
+  const boardLabel = document.querySelector('.axis-composite-board span');
+  if (boardLabel) {
+    boardLabel.textContent = boardStandProgress > .72 ? 'COMPOSITE PILLAR' : 'COMPOSITE BOARD';
+  }
   setAxisVar('--fusion-flow-opacity', '0');
   setAxisVar('--fusion-flow-draw', '0');
   setAxisVar('--fusion-block-opacity', '0');
@@ -3692,7 +3702,9 @@ function updateAxisInteraction() {
   setAxisVar('--slab-scale-x', '1');
   setAxisVar('--slab-scale-y', '1');
   setAxisVar('--slab-label-opacity', '0');
-  setAxisVar('--pillar-opacity', pillarHandoffProgress.toFixed(3));
+  const visualPillarOpacity = boardToPillarHandoff * pillarHandoffProgress;
+  setAxisVar('--pillar-opacity', visualPillarOpacity.toFixed(3));
+  setAxisVar('--pillar-glaze-opacity', smooth(range(pillarHandoffProgress, 0.62, 1.0)).toFixed(3));
   setAxisVar('--pillar-scale', lerp(.985, 1, safePillarProgress).toFixed(3));
   setAxisVar('--pillar-w', pillarW);
   setAxisVar('--pillar-h', pillarH);
@@ -3701,78 +3713,73 @@ function updateAxisInteraction() {
   setAxisVar('--foundation-y', `${foundationY.toFixed(2)}px`);
 
   const contactTargetY = getAxisPillarContactTargetY();
-  const contactEase = 1 - Math.pow(1 - contactProgress, 2.8);
+  const contactEase = 1 - Math.pow(1 - contactProgress, 3.6);
   const contactImpactPulse =
-    smooth(range(contactProgress, .44, .78)) *
-    (1 - smooth(range(contactProgress, .86, 1)));
+    smooth(range(contactProgress, .84, .925)) *
+    (1 - smooth(range(contactProgress, .955, 1)));
   const contactPressure =
-    smooth(range(contactProgress, .62, 1)) *
+    smooth(range(contactProgress, .88, 1)) *
     (1 - smooth(range(contourDrawProgress, .04, .52)));
-  const impactVisibility = Math.max(contactImpactPulse, contactPressure * .72) *
+  const impactVisibility = Math.max(contactImpactPulse, contactPressure * .44) *
     (1 - smooth(range(bounceProgress, .35, 1)) * .34);
-  const wobbleProgress = smooth(range(contactProgress, .62, 1)) *
+  const wobbleProgress = smooth(range(contactProgress, .86, 1)) *
     (1 - smooth(range(bounceProgress, .28, 1))) *
     (1 - smooth(range(contourDrawProgress, .02, .28)));
   const wobbleDamping = Math.pow(1 - wobbleProgress, .82);
   const contactWobble =
     Math.sin(wobbleProgress * Math.PI * 3.15) *
     wobbleDamping *
-    2.6;
-  const contactY = lerp(0, contactTargetY, contactEase) + contactImpactPulse * 8;
-  const bounceY = lerp(0, -16, bounceProgress);
+    3.6;
+  const contactY = lerp(0, contactTargetY, contactEase) + contactImpactPulse * 18;
+  const bounceY = lerp(0, -22, bounceProgress);
   setAxisVar('--pillar-contact-y', `${contactY.toFixed(2)}px`);
   setAxisVar('--pillar-bounce-y', `${bounceY.toFixed(2)}px`);
   setAxisVar('--pillar-contact-wobble-rot', `${contactWobble.toFixed(2)}deg`);
   setAxisVar('--pillar-contact-wobble-x', `${(contactWobble * -1.8).toFixed(2)}px`);
   setAxisVar('--impact-opacity', impactVisibility.toFixed(3));
-  setAxisVar('--impact-scale', lerp(.72, 1.18, impactVisibility).toFixed(3));
-  setAxisVar('--impact-spread', `${lerp(18, 48, impactVisibility).toFixed(2)}px`);
+  setAxisVar('--impact-scale', lerp(.72, 1.42, impactVisibility).toFixed(3));
+  setAxisVar('--impact-spread', `${lerp(18, 72, impactVisibility).toFixed(2)}px`);
   const contactShock = contactImpactPulse *
     (1 - smooth(range(bounceProgress, .08, .62))) *
     (axisManualCutState.cutComplete ? 0 : 1);
-  const contactStrike = smooth(range(contactProgress, .30, .58)) *
-    (1 - smooth(range(contactProgress, .74, .96))) *
+  const contactStrike = smooth(range(contactProgress, .82, .92)) *
+    (1 - smooth(range(contactProgress, .955, 1))) *
     (axisManualCutState.cutComplete ? 0 : 1);
   const contactImpactEvent = Math.max(contactShock, contactStrike);
-  const contactShockScale = lerp(.64, 1.42, smooth(range(contactProgress, .30, .86)));
-  const contactJolt = Math.sin(contactProgress * Math.PI * 9.2) * contactImpactEvent;
+  const contactShockScale = lerp(.72, 1.48, smooth(range(contactProgress, .82, .96)));
+  const contactJolt = Math.sin(contactProgress * Math.PI * 8.0) * contactImpactEvent * 0.6;
   const contactVibration =
-    (
-      Math.sin(contactProgress * Math.PI * 38) * .68 +
-      Math.sin(contactProgress * Math.PI * 67) * .32
-    ) *
+    Math.sin(contactProgress * Math.PI * 28) * 0.5 *
     contactImpactEvent;
   const contactRevealProgress = canFirstContact && !axisManualCutState.cutComplete
     ? smooth(range(contactProgress, .02, .68))
     : 1;
   const contactRevealOpacity = canFirstContact && !axisManualCutState.cutComplete
-    ? (1 - contactRevealProgress) * .62
+    ? (1 - contactRevealProgress) * .48
     : 0;
   setAxisVar('--contact-impact-event', contactImpactEvent.toFixed(3));
-  setAxisVar('--contact-shock-opacity', (contactImpactEvent * .86).toFixed(3));
+  setAxisVar('--contact-shock-opacity', Math.min(contactImpactEvent * 0.72, 1).toFixed(3));
   setAxisVar('--contact-shock-scale', contactShockScale.toFixed(3));
-  setAxisVar('--contact-floor-opacity', (contactImpactEvent * .70).toFixed(3));
+  setAxisVar('--contact-floor-opacity', Math.min(contactImpactEvent * .62, 1).toFixed(3));
   setAxisVar('--contact-reveal-opacity', contactRevealOpacity.toFixed(3));
-  setAxisVar('--contact-reveal-scale', lerp(1.035, 1, contactRevealProgress).toFixed(3));
-  setAxisVar('--contact-bg-scale', (contactImpactEvent * .048).toFixed(3));
-  setAxisVar('--contact-bg-y', `${((contactJolt * 8.5) + (contactImpactEvent * 3.2)).toFixed(2)}px`);
-  setAxisVar('--contact-bg-brightness', (1 + contactImpactEvent * .095).toFixed(3));
-  setAxisVar('--contact-bg-contrast', (1 + contactImpactEvent * .06).toFixed(3));
-  setAxisVar('--contact-stage-x', `${(contactJolt * 3.2).toFixed(2)}px`);
-  setAxisVar('--contact-stage-y', `${((contactJolt * -5.2) + (contactImpactEvent * 2.3)).toFixed(2)}px`);
-  setAxisVar('--contact-stage-rot', `${(contactJolt * .15).toFixed(3)}deg`);
-  setAxisVar('--pillar-impact-x', `${(contactVibration * 5.6).toFixed(2)}px`);
-  setAxisVar('--pillar-impact-y', `${((contactImpactEvent * 6.4) + (contactVibration * 2.8)).toFixed(2)}px`);
-  setAxisVar('--pillar-impact-rot', `${(contactVibration * .42).toFixed(3)}deg`);
-  setAxisVar('--pillar-impact-scale', (contactImpactEvent * -.018).toFixed(3));
-  setAxisVar('--foundation-impact-x', `${(contactVibration * -2.4).toFixed(2)}px`);
-  setAxisVar('--foundation-impact-y', `${((contactImpactEvent * 2.8) + (contactVibration * .75)).toFixed(2)}px`);
+  setAxisVar('--contact-reveal-scale', lerp(1.02, 1, contactRevealProgress).toFixed(3));
+  setAxisVar('--contact-bg-scale', (contactImpactEvent * .032).toFixed(3));
+  setAxisVar('--contact-bg-y', `${((contactJolt * 6.0) + (contactImpactEvent * 2.8)).toFixed(2)}px`);
+  setAxisVar('--contact-bg-brightness', (1 + contactImpactEvent * .06).toFixed(3));
+  setAxisVar('--contact-bg-contrast', (1 + contactImpactEvent * .04).toFixed(3));
+  setAxisVar('--contact-stage-x', `${(contactJolt * 2.4).toFixed(2)}px`);
+  setAxisVar('--contact-stage-y', `${((contactJolt * -4.2) + (contactImpactEvent * 2.0)).toFixed(2)}px`);
+  setAxisVar('--contact-stage-rot', `${(contactJolt * .12).toFixed(3)}deg`);
+  setAxisVar('--pillar-impact-x', `${(contactVibration * 4.8).toFixed(2)}px`);
+  setAxisVar('--pillar-impact-y', `${((contactImpactEvent * 7.2) + (contactVibration * 2.4)).toFixed(2)}px`);
+  setAxisVar('--pillar-impact-rot', `${(contactVibration * .38).toFixed(3)}deg`);
+  setAxisVar('--pillar-impact-scale', (contactImpactEvent * -.016).toFixed(3));
+  setAxisVar('--foundation-impact-x', `${(contactVibration * -2.2).toFixed(2)}px`);
+  setAxisVar('--foundation-impact-y', `${((contactImpactEvent * 3.0) + (contactVibration * 0.8)).toFixed(2)}px`);
   setAxisVar('--foundation-impact-rot', `${(contactVibration * -.12).toFixed(3)}deg`);
   setAxisVar('--foundation-impact-scale', (contactImpactEvent * .006).toFixed(3));
 
-  const mismatchVisibility = axisManualCutState.cutComplete
-    ? 0
-    : mismatchProgress * (1 - contourDrawProgress * .35);
+  const mismatchVisibility = 0;
   const fitLabelVisibility = axisManualCutState.cutComplete
     ? 1
     : Math.max(mismatchVisibility, smooth(range(contactProgress, .18, .78)) * .88);
@@ -3788,7 +3795,7 @@ function updateAxisInteraction() {
   setAxisVar('--contact-dot-opacity', contactDotVisibility.toFixed(3));
 
   const fitLabelMain = document.querySelector('.fit-label-main');
-  if (fitLabelMain && !axisManualCutState.cutComplete && contactProgress > .2 && mismatchProgress < .5) {
+  if (fitLabelMain && !axisManualCutState.cutComplete && contactProgress > .2) {
     fitLabelMain.textContent = 'FOUNDATION CONTACT';
   } else if (fitLabelMain && !axisManualCutState.cutComplete) {
     fitLabelMain.textContent = 'CONTACT CHECK';
@@ -3798,8 +3805,6 @@ function updateAxisInteraction() {
   if (fitLabelState) {
     if (axisManualCutState.cutComplete) {
       fitLabelState.textContent = 'FITTED';
-    } else if (mismatchProgress > .5) {
-      fitLabelState.textContent = 'NOT FITTED';
     } else {
       fitLabelState.textContent = 'CHECKING';
     }
@@ -3883,7 +3888,7 @@ function updateAxisInteraction() {
   axisStage.classList.toggle('is-settled', settleProgress >= 1);
 
   const fitPullProgress = Math.max(
-    smooth(range(globalProgress, .852, .972)),
+    preContactZoomProgress,
     axisManualCutState.cutComplete ? smooth(range(settleProgress, 0, .58)) : 0
   );
   const fitZoomMax = stageW < 760 ? 1.38 : 1.58;
@@ -3922,7 +3927,6 @@ function updateAxisInteraction() {
     foundationVisible,
     canFirstContact,
     firstContactComplete,
-    bounceBackComplete,
     canDrawContour,
     canShowDashedGuide,
     dashedGuideOverlayComplete,
@@ -3957,7 +3961,6 @@ function updateAxisBuildLabel(globalProgress, gates, settleProgress) {
     canShowFoundation,
     foundationVisible,
     firstContactComplete,
-    bounceBackComplete,
     canDrawContour,
     canShowDashedGuide,
     dashedGuideOverlayComplete,
@@ -3990,9 +3993,6 @@ function updateAxisBuildLabel(globalProgress, gates, settleProgress) {
   } else if (!firstContactComplete) {
     label = 'PILLAR TOUCHES FOUNDATION';
     activeAxisStep = 'fit';
-  } else if (!bounceBackComplete) {
-    label = 'NOT FITTED REVEAL';
-    activeAxisStep = 'fit';
   } else if (canDrawContour && !canShowDashedGuide) {
     label = 'READ STONE CONTOUR';
     activeAxisStep = 'fit';
@@ -4021,6 +4021,8 @@ function updateAxisBuildLabel(globalProgress, gates, settleProgress) {
 }
 
 let axisRaf = null;
+let axisProgressTarget = 0;
+let axisProgressSmoothed = 0;
 
 function requestAxisUpdate() {
   if (axisRaf) return;
