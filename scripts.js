@@ -3416,7 +3416,7 @@ function updateAxisInteraction() {
   const boardProgress = smooth(range(globalProgress, 0.74, 0.84));
   const pillarProgress = smooth(range(globalProgress, 0.78, 0.88));
   const rawFoundationProgress = smooth(range(globalProgress, 0.855, 0.902));
-  const preContactZoomProgress = smooth(range(globalProgress, 0.858, 0.928));
+  const preContactZoomProgress = smooth(range(globalProgress, 0.840, 0.928));
   const rawContactProgress = smooth(range(globalProgress, 0.934, 0.968));
   const rawContourDrawProgress = smooth(range(globalProgress, 0.968, 0.988));
   const rawOverlayProgress = smooth(range(globalProgress, 0.984, 0.990));
@@ -3891,11 +3891,11 @@ function updateAxisInteraction() {
     preContactZoomProgress,
     axisManualCutState.cutComplete ? smooth(range(settleProgress, 0, .58)) : 0
   );
-  const fitZoomMax = stageW < 760 ? 1.38 : 1.58;
+  const fitZoomMax = stageW < 760 ? 1.28 : 1.38;
   const fitZoom = lerp(1, fitZoomMax, fitPullProgress);
-  const fitFocusOpacity = lerp(0, .68, fitPullProgress);
-  const fitPullLineOpacity = lerp(0, .74, fitPullProgress);
-  const axisBgPullScale = lerp(1, 1.22, fitPullProgress);
+  const fitFocusOpacity = lerp(0, .52, fitPullProgress);
+  const fitPullLineOpacity = lerp(0, .58, fitPullProgress);
+  const axisBgPullScale = lerp(1, 1.14, fitPullProgress);
   const stoneCenterY = stageH - fitStoneBottom - (fitStoneH * .5) + foundationY;
   const cameraOriginY = stageH * .88;
   const targetStoneCenterY = stageH * (stageW < 760 ? .55 : .56);
