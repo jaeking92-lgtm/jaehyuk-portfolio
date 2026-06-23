@@ -3,36 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kim Jaehyeok — Cinematic Atelier Portfolio</title>
-  <meta name="description" content="김재혁 UI/UX 포트폴리오. 흐름을 읽고, 구조를 다듬어 브랜드에 맞는 디지털 경험으로 연결하는 웹·앱 디자인 작업을 정리했습니다." />
+  <title>Kim Jaehyeok Portfolio</title>
+  <meta name="description" content="김재혁 UI/UX 포트폴리오. 정보 구조, 시각 시스템, 인터랙션을 기준으로 웹·앱 경험을 설계한 작업을 정리했습니다." />
   <meta name="theme-color" content="#f3e7d2" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Kim Jaehyeok Portfolio" />
   <meta property="og:description" content="READ · REFINE · CONNECT. UI/UX, Web, App Design portfolio by Kim Jaehyeok." />
   <meta property="og:image" content="assets/atelier-wide.webp" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="preload" as="image" href="assets/atelier-wide-bg.png">
-  <link rel="preload" as="image" href="assets/atelier-wide-table.png">
+  <link rel="preload" as="image" href="assets/atelier-wide-bg.webp">
+  <link rel="preload" as="image" href="assets/atelier-wide-table.webp">
   <link rel="preload" as="image" href="assets/atelier-wide.webp">
   <link rel="preload" as="image" href="assets/hero/carpenter/carpenter-hero-idle-front.webp">
   <link rel="preload" as="image" href="assets/hero/carpenter/carpenter-hero-calm-blink.webp">
   <link rel="preload" as="image" href="assets/kia-hero.webp">
-  <link rel="stylesheet" href="styles.css?v=axis-fit-rig-aligned-20260603" />
+  <link rel="stylesheet" href="styles.css?v=flow-continuity-20260622" />
 </head>
 <body id="top">
   <a class="skip-link" href="#mainContent">본문 바로가기</a>
 
-  <div class="site-cursor" aria-hidden="true">
-    <span class="site-cursor-dot"></span>
-    <span class="site-cursor-label"></span>
-  </div>
-
   <div class="progress" aria-hidden="true"></div>
-
-  <div class="section-transition-rig" aria-hidden="true">
-    <div class="transition-paper-layer"></div>
-    <div class="transition-baseline"></div>
-  </div>
 
   <div class="section-stage-indicator" aria-hidden="true">
     <span class="stage-index">A-00</span>
@@ -115,7 +105,7 @@
           <span aria-hidden="true">I</span>
           <span aria-hidden="true">O</span>
         </h1>
-        <p class="hero-copy">흐름을 읽고 구조를 다듬어,<br>브랜드에 맞는 디지털 경험으로 연결합니다.</p>
+        <p class="hero-copy">정보의 우선순위를 읽고 화면의 흐름을 설계해,<br>사용자가 목적까지 자연스럽게 도달하는 경험을 만듭니다.</p>
         <div class="hero-actions" aria-label="Portfolio shortcuts">
           <a href="#works">대표 작업 보기</a>
           <a href="#contact">연락 정보 보기</a>
@@ -126,31 +116,14 @@
         </div>
       </div>
 
-      <div class="hero-stage" data-cursor-label="LIGHT">
+      <div class="hero-stage">
         <div class="stage-bg" aria-hidden="true"></div>
-
-        <div class="hero-spec-card" aria-hidden="true">
-          <header class="spec-card-head">
-            <span>A-00 · PORTFOLIO</span>
-            <span>SELECTED WORKS</span>
-          </header>
-          <ul class="spec-card-rows">
-            <li><span>DESIGNER</span><strong>Kim Jaehyeok</strong></li>
-            <li><span>ROLE</span><strong>UI/UX · Web · App Design</strong></li>
-            <li><span>FOCUS</span><strong>Read · Refine · Connect</strong></li>
-            <li><span>WORKS</span><strong>03 Projects · 2026</strong></li>
-          </ul>
-          <footer class="spec-card-foot">
-            <span>CONTACT</span>
-            <strong>zp92@naver.com</strong>
-          </footer>
-        </div>
 
         <div class="stage-image image-parallax">
           <div class="hero-atelier-scene">
             <img
               class="hero-atelier-layer hero-atelier-bg"
-              src="assets/atelier-wide-bg.png"
+              src="assets/atelier-wide-bg.webp"
               alt=""
             >
 
@@ -162,7 +135,7 @@
 
             <img
               class="hero-atelier-layer hero-atelier-table"
-              src="assets/atelier-wide-table.png?v=2"
+              src="assets/atelier-wide-table.webp"
               alt=""
             >
 
@@ -215,8 +188,8 @@
 
       <div class="hero-work-rail" aria-label="Selected work quick links">
         <a class="is-active" href="#works" data-hero-preview="kia" data-preview-title="KIA WEBSITE" data-preview-image="assets/kia-thumb.webp"><span>01</span>KIA Website</a>
-        <a href="#works" data-hero-preview="gunit" data-preview-title="GUNIT APP" data-preview-image="assets/gunit-thumb.png"><span>02</span>GUNIT App</a>
-        <a href="#works" data-hero-preview="gro" data-preview-title="GRO APP" data-preview-image="assets/GRO-project-thumb.png"><span>03</span>GRO App</a>
+        <a href="#works" data-hero-preview="gunit" data-preview-title="GUNIT APP" data-preview-image="assets/thumb-gunit.webp"><span>02</span>GUNIT App</a>
+        <a href="#works" data-hero-preview="gro" data-preview-title="GRO APP" data-preview-image="assets/thumb-gro.webp"><span>03</span>GRO App</a>
       </div>
     </section>
 
@@ -252,9 +225,10 @@
                 </p>
               </div>
 
-              <aside class="designer-profile-card" aria-label="Designer personal information">
-                <span>PERSONAL INFO</span>
+              <aside class="designer-profile-card" aria-label="Designer profile">
+                <span>DESIGNER PROFILE</span>
                 <strong>KIM JAEHYEOK</strong>
+                <p>UI/UX · WEB/APP DESIGNER</p>
                 <dl class="designer-personal-info">
                   <div>
                     <dt>NAME</dt>
@@ -265,38 +239,25 @@
                     <dd>UI/UX · Web/App Design</dd>
                   </div>
                   <div>
-                    <dt>CONTACT</dt>
-                    <dd><a href="mailto:zp92@naver.com">zp92@naver.com</a></dd>
-                  </div>
-                  <div>
-                    <dt>BASE</dt>
-                    <dd>Visual System · Information Architecture · Frontend</dd>
+                    <dt>METHOD</dt>
+                    <dd>Read · Refine · Connect</dd>
                   </div>
                   <div>
                     <dt>FOCUS</dt>
-                    <dd>Web/App UI · Interaction · Portfolio Presentation</dd>
+                    <dd>Information Architecture · User Flow · Interaction</dd>
+                  </div>
+                  <div>
+                    <dt>TOOLS</dt>
+                    <dd>Figma · Photoshop · Illustrator · HTML/CSS/JS</dd>
+                  </div>
+                  <div>
+                    <dt>CONTACT</dt>
+                    <dd><a href="mailto:zp92@naver.com">zp92@naver.com</a></dd>
                   </div>
                 </dl>
               </aside>
             </div>
 
-            <div class="designer-steps" aria-label="Work standard">
-              <article>
-                <span>01</span>
-                <strong>READ</strong>
-                <p>사용자의 목적과 정보 우선순위를 먼저 읽습니다.</p>
-              </article>
-              <article>
-                <span>02</span>
-                <strong>REFINE</strong>
-                <p>흩어진 정보를 화면 흐름과 구조로 다듬습니다.</p>
-              </article>
-              <article>
-                <span>03</span>
-                <strong>CONNECT</strong>
-                <p>정리된 구조를 UI와 인터랙션으로 연결합니다.</p>
-              </article>
-            </div>
           </div>
 
           <canvas class="wood-scratch-canvas" data-wood-scratch-canvas aria-hidden="true"></canvas>
@@ -304,16 +265,16 @@
           <div class="wood-residue-layer" aria-hidden="true"></div>
           <div class="sawdust-particle-layer" aria-hidden="true"></div>
 
-          <img class="wood-shaving-drop shaving-drop-1" src="assets/about/wood-shaving-pass-01.png.png" alt="" aria-hidden="true">
-          <img class="wood-shaving-drop shaving-drop-2" src="assets/about/wood-shaving-pass-02.png.png" alt="" aria-hidden="true">
-          <img class="wood-shaving-drop shaving-drop-3" src="assets/about/wood-shaving-pass-03.png.png" alt="" aria-hidden="true">
+          <img class="wood-shaving-drop shaving-drop-1" src="assets/about/wood-shaving-pass-01.webp" alt="" aria-hidden="true">
+          <img class="wood-shaving-drop shaving-drop-2" src="assets/about/wood-shaving-pass-02.webp" alt="" aria-hidden="true">
+          <img class="wood-shaving-drop shaving-drop-3" src="assets/about/wood-shaving-pass-03.webp" alt="" aria-hidden="true">
 
           <div class="sawdust-bed" aria-hidden="true"></div>
 
           <img
             class="plane-cursor"
-            src="assets/wood-plane-top.png.png"
-            data-plane-fallback="assets/wood-plane-top.png.png"
+            src="assets/wood-plane-top.webp"
+            data-plane-fallback="assets/wood-plane-top.webp"
             alt=""
             aria-hidden="true"
           >
@@ -324,7 +285,7 @@
     </section>
     <section class="tools-photo-section" id="tools" data-section-name="TOOLS" data-section-index="A-02" data-section-title="TOOL BOARD">
       <div class="tools-photo-stage">
-        <img class="tools-board-photo" src="assets/tools/tools_board_empty.png" alt="Tools board background" />
+        <img class="tools-board-photo" src="assets/tools/tools_board_empty.webp" alt="Tools board background" />
 
         <div class="tools-board-title">
           <strong>TOOL BOARD</strong>
@@ -341,35 +302,35 @@
           <span>Development</span>
         </div>
 
-        <button class="tool-pin tool-pin-js" type="button" aria-label="JavaScript tool" data-tool-target="javascript" data-cursor-label="INSPECT">
+        <button class="tool-pin tool-pin-js" type="button" aria-label="JavaScript tool" data-tool-target="javascript">
           <img src="assets/tools/javascript_tape.png" alt="JavaScript tape measure" />
         </button>
 
-        <button class="tool-pin tool-pin-ps" type="button" aria-label="Photoshop tool" data-tool-target="photoshop" data-cursor-label="INSPECT">
+        <button class="tool-pin tool-pin-ps" type="button" aria-label="Photoshop tool" data-tool-target="photoshop">
           <img src="assets/tools/photoshop_screwdriver.png" alt="Photoshop screwdriver" />
         </button>
 
-        <button class="tool-pin tool-pin-ai" type="button" aria-label="Illustrator tool" data-tool-target="illustrator" data-cursor-label="INSPECT">
+        <button class="tool-pin tool-pin-ai" type="button" aria-label="Illustrator tool" data-tool-target="illustrator">
           <img src="assets/tools/illustrator_screwdriver.png" alt="Illustrator screwdriver" />
         </button>
 
-        <button class="tool-pin tool-pin-figma" type="button" aria-label="Figma tool" data-tool-target="figma" data-cursor-label="INSPECT">
+        <button class="tool-pin tool-pin-figma" type="button" aria-label="Figma tool" data-tool-target="figma">
           <img src="assets/tools/figma_chisel.png" alt="Figma chisel" />
         </button>
 
-        <button class="tool-pin tool-pin-vscode" type="button" aria-label="VS Code tool" data-tool-target="vscode" data-cursor-label="INSPECT">
+        <button class="tool-pin tool-pin-vscode" type="button" aria-label="VS Code tool" data-tool-target="vscode">
           <img src="assets/tools/vscode_tool.png" alt="VS Code plane" />
         </button>
 
-        <button class="tool-pin tool-pin-aitools" type="button" aria-label="AI tools" data-tool-target="aitools" data-cursor-label="INSPECT">
+        <button class="tool-pin tool-pin-aitools" type="button" aria-label="AI tools" data-tool-target="aitools">
           <img src="assets/tools/ai_saw.png" alt="AI tools saw" />
         </button>
 
-        <button class="tool-pin tool-pin-autocad" type="button" aria-label="AutoCAD tool" data-tool-target="autocad" data-cursor-label="INSPECT">
+        <button class="tool-pin tool-pin-autocad" type="button" aria-label="AutoCAD tool" data-tool-target="autocad">
           <img src="assets/tools/autocad_caliper.png" alt="AutoCAD caliper" />
         </button>
 
-        <button class="tool-pin tool-pin-react" type="button" aria-label="React tool" data-tool-target="react" data-cursor-label="INSPECT">
+        <button class="tool-pin tool-pin-react" type="button" aria-label="React tool" data-tool-target="react">
           <img src="assets/tools/react_chisel.png" alt="React chisel" />
         </button>
 
@@ -377,31 +338,34 @@
           <article class="tools-card-text" data-tool-info="javascript">
             <strong>JavaScript</strong>
             <span>Interaction</span>
-            <div class="tools-proficiency" style="--level:80%">
+            <div class="tools-proficiency" style="--level:60%">
               <small>LEVEL</small>
-              <b>80%</b>
+              <b>60%</b>
               <span aria-hidden="true"></span>
-            </div>            <em>USE</em>
+            </div>
+            <em>USE</em>
             <i>Motion · DOM</i>
           </article>
           <article class="tools-card-text" data-tool-info="vscode">
             <strong>VS Code</strong>
             <span>Frontend</span>
-            <div class="tools-proficiency" style="--level:85%">
+            <div class="tools-proficiency" style="--level:80%">
               <small>LEVEL</small>
-              <b>85%</b>
+              <b>80%</b>
               <span aria-hidden="true"></span>
-            </div>            <em>USE</em>
+            </div>
+            <em>USE</em>
             <i>Build · Debug</i>
           </article>
           <article class="tools-card-text" data-tool-info="react">
             <strong>React</strong>
             <span>Component</span>
-            <div class="tools-proficiency" style="--level:70%">
+            <div class="tools-proficiency" style="--level:40%">
               <small>LEVEL</small>
-              <b>70%</b>
+              <b>40%</b>
               <span aria-hidden="true"></span>
-            </div>            <em>USE</em>
+            </div>
+            <em>USE</em>
             <i>UI · State</i>
           </article>
           <article class="tools-card-text" data-tool-info="figma">
@@ -411,47 +375,52 @@
               <small>LEVEL</small>
               <b>90%</b>
               <span aria-hidden="true"></span>
-            </div>            <em>USE</em>
+            </div>
+            <em>USE</em>
             <i>IA · Prototype</i>
           </article>
           <article class="tools-card-text" data-tool-info="photoshop">
             <strong>Photoshop</strong>
             <span>Visual Edit</span>
-            <div class="tools-proficiency" style="--level:78%">
+            <div class="tools-proficiency" style="--level:85%">
               <small>LEVEL</small>
-              <b>78%</b>
+              <b>85%</b>
               <span aria-hidden="true"></span>
-            </div>            <em>USE</em>
+            </div>
+            <em>USE</em>
             <i>Image · Tone</i>
           </article>
           <article class="tools-card-text" data-tool-info="illustrator">
             <strong>Illustrator</strong>
             <span>Vector System</span>
-            <div class="tools-proficiency" style="--level:76%">
+            <div class="tools-proficiency" style="--level:90%">
               <small>LEVEL</small>
-              <b>76%</b>
+              <b>90%</b>
               <span aria-hidden="true"></span>
-            </div>            <em>USE</em>
+            </div>
+            <em>USE</em>
             <i>Vector · Line</i>
           </article>
           <article class="tools-card-text" data-tool-info="aitools">
             <strong>AI Tools</strong>
             <span>Workflow</span>
-            <div class="tools-proficiency" style="--level:88%">
+            <div class="tools-proficiency" style="--level:90%">
               <small>LEVEL</small>
-              <b>88%</b>
+              <b>90%</b>
               <span aria-hidden="true"></span>
-            </div>            <em>USE</em>
+            </div>
+            <em>USE</em>
             <i>Ideation · Assist</i>
           </article>
           <article class="tools-card-text" data-tool-info="autocad">
             <strong>AutoCAD</strong>
             <span>Drafting</span>
-            <div class="tools-proficiency" style="--level:72%">
+            <div class="tools-proficiency" style="--level:85%">
               <small>LEVEL</small>
-              <b>72%</b>
+              <b>85%</b>
               <span aria-hidden="true"></span>
-            </div>            <em>USE</em>
+            </div>
+            <em>USE</em>
             <i>Plan · Measure</i>
           </article>
         </div>
@@ -462,15 +431,12 @@
 
     <section id="merge" class="project-axis-section" aria-label="A-03 Project Axis" data-section-name="PROJECT AXIS" data-section-index="A-03" data-section-title="PROJECT AXIS">
       <div class="project-axis-stage">
-        <div class="axis-sheet" aria-hidden="true">
+        <div class="axis-edge-labels" aria-hidden="true">
           <span class="axis-label axis-label-a">A-03 PROJECT AXIS</span>
           <span class="axis-label axis-label-b">3 WORKS / ONE PILLAR</span>
           <span class="axis-label axis-label-c">3 WORKS ENTER</span>
           <span class="axis-label axis-label-d">READ · REFINE · CONNECT</span>
         </div>
-
-        <div class="axis-boundary" aria-hidden="true"></div>
-        <div class="axis-contact-veil" aria-hidden="true"></div>
 
         <div class="axis-stage-ruler" aria-hidden="true">
           <span data-axis-step="stack">WORKS</span>
@@ -504,13 +470,13 @@
             </button>
 
             <button class="axis-stack-card axis-stack-card-gunit" type="button" data-stack-card="1" data-axis-project="gunit" aria-label="GUNIT App 상세 보기">
-              <img src="assets/gunit-thumb.png" alt="GUNIT App">
+              <img src="assets/thumb-gunit.webp" alt="GUNIT App">
               <span>02 / GUNIT App</span>
               <em class="axis-card-cta">VIEW DETAIL</em>
             </button>
 
             <button class="axis-stack-card axis-stack-card-gro" type="button" data-stack-card="2" data-axis-project="gro" aria-label="GRO App 상세 보기">
-              <img src="assets/GRO-project-thumb.png" alt="GRO App">
+              <img src="assets/thumb-gro.webp" alt="GRO App">
               <span>03 / GRO App</span>
               <em class="axis-card-cta">VIEW DETAIL</em>
             </button>
@@ -536,10 +502,25 @@
             <div class="pillar-layer pillar-gunit"></div>
             <div class="pillar-layer pillar-gro"></div>
             <div class="pillar-glaze"></div>
+            <svg class="pillar-cut-contour" viewBox="0 0 1000 140" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M72 78 C 112 66, 148 66, 190 71 C 238 77, 282 77, 330 70 C 388 62, 438 50, 492 39 C 542 29, 586 29, 630 37 C 674 45, 714 55, 758 59 C 804 63, 842 61, 882 66 C 920 70, 940 76, 952 82" />
+            </svg>
             <span>COMPOSITE PILLAR</span>
           </div>
 
           <div class="axis-fit-gap"></div>
+
+          <div class="axis-seat-lock" aria-hidden="true">
+            <span></span>
+            <i></i>
+            <em>PILLAR SEATED</em>
+          </div>
+
+          <div class="axis-contact-front" aria-hidden="true">
+            <span></span>
+            <i></i>
+            <b></b>
+          </div>
 
           <div class="axis-contact-dots">
             <span></span>
@@ -553,32 +534,39 @@
           </div>
 
           <div class="axis-foundation-stone">
-            <img src="assets/axis/foundation-stone.png" alt="">
+            <img src="assets/axis/foundation-stone.webp" alt="">
           </div>
 
-          <div class="axis-fitting-trace" data-axis-trace-zone data-cursor-label="CUT">
+          <div class="axis-fitting-trace" data-axis-trace-zone>
             <svg class="foundation-trace-svg" viewBox="0 0 1000 220" preserveAspectRatio="none">
               <path
                 id="foundationContourPath"
                 class="foundation-contour-path"
-                d="M80 160 C 88 126, 96 94, 114 80 C 132 68, 156 69, 182 70 C 218 70, 246 80, 276 78 C 318 76, 362 69, 410 63 C 464 55, 510 38, 560 30 C 606 22, 636 38, 668 45 C 700 52, 735 50, 770 51 C 812 52, 848 58, 879 80 C 900 96, 914 128, 920 164"
+                d="M100.56 93.97 L110.55 86.67 L120.53 78.58 L130.52 73.1 L140.5 69.62 L150.49 67.85 L160.47 67.56 L170.46 67.95 L180.44 68.74 L190.43 69.62 L200.41 70.45 L210.39 71.63 L220.38 73.39 L230.36 75.1 L240.35 76.87 L250.33 78.19 L260.32 78.14 L270.3 77.21 L280.29 75.84 L290.27 74.47 L300.26 73.29 L310.24 71.77 L320.23 70.45 L330.21 69.27 L340.2 68.34 L350.18 67.56 L360.17 67.27 L370.15 66.63 L380.14 65.99 L390.12 65.21 L400.11 64.08 L410.09 62.61 L420.08 60.8 L430.06 58.79 L440.05 56.78 L450.03 54.67 L460.02 53.1 L470 51.54 L479.99 49.38 L489.97 46.88 L499.96 44.24 L509.94 41.54 L519.93 38.9 L529.91 36.3 L539.89 33.95 L549.88 31.89 L559.86 30.08 L569.85 28.61 L579.83 27.33 L589.82 26.35 L599.8 25.76 L609.79 26.3 L619.77 27.87 L629.76 31.55 L639.74 36.84 L649.73 40.86 L659.71 43.55 L669.7 45.71 L679.68 47.57 L689.67 49.18 L699.65 50.41 L709.64 51.14 L719.62 51.49 L729.61 51.44 L739.59 51.14 L749.58 50.61 L759.56 49.77 L769.55 48.79 L779.53 47.91 L789.52 47.13 L799.5 46.59 L809.49 46.98 L819.47 49.38 L829.46 55.8 L839.44 61.68 L849.42 65.94 L859.41 70.65 L869.39 77.75 L879.38 84.95 L889.36 92.25 L899.35 100.88 L908.26 106.02"
               />
               <path
                 id="foundationTraceDrawPath"
                 class="foundation-trace-draw-path"
-                d="M80 160 C 88 126, 96 94, 114 80 C 132 68, 156 69, 182 70 C 218 70, 246 80, 276 78 C 318 76, 362 69, 410 63 C 464 55, 510 38, 560 30 C 606 22, 636 38, 668 45 C 700 52, 735 50, 770 51 C 812 52, 848 58, 879 80 C 900 96, 914 128, 920 164"
+                d="M100.56 93.97 L110.55 86.67 L120.53 78.58 L130.52 73.1 L140.5 69.62 L150.49 67.85 L160.47 67.56 L170.46 67.95 L180.44 68.74 L190.43 69.62 L200.41 70.45 L210.39 71.63 L220.38 73.39 L230.36 75.1 L240.35 76.87 L250.33 78.19 L260.32 78.14 L270.3 77.21 L280.29 75.84 L290.27 74.47 L300.26 73.29 L310.24 71.77 L320.23 70.45 L330.21 69.27 L340.2 68.34 L350.18 67.56 L360.17 67.27 L370.15 66.63 L380.14 65.99 L390.12 65.21 L400.11 64.08 L410.09 62.61 L420.08 60.8 L430.06 58.79 L440.05 56.78 L450.03 54.67 L460.02 53.1 L470 51.54 L479.99 49.38 L489.97 46.88 L499.96 44.24 L509.94 41.54 L519.93 38.9 L529.91 36.3 L539.89 33.95 L549.88 31.89 L559.86 30.08 L569.85 28.61 L579.83 27.33 L589.82 26.35 L599.8 25.76 L609.79 26.3 L619.77 27.87 L629.76 31.55 L639.74 36.84 L649.73 40.86 L659.71 43.55 L669.7 45.71 L679.68 47.57 L689.67 49.18 L699.65 50.41 L709.64 51.14 L719.62 51.49 L729.61 51.44 L739.59 51.14 L749.58 50.61 L759.56 49.77 L769.55 48.79 L779.53 47.91 L789.52 47.13 L799.5 46.59 L809.49 46.98 L819.47 49.38 L829.46 55.8 L839.44 61.68 L849.42 65.94 L859.41 70.65 L869.39 77.75 L879.38 84.95 L889.36 92.25 L899.35 100.88 L908.26 106.02"
               />
               <path
                 id="foundationTraceDashedPath"
                 class="foundation-trace-dashed-path"
-                d="M80 160 C 88 126, 96 94, 114 80 C 132 68, 156 69, 182 70 C 218 70, 246 80, 276 78 C 318 76, 362 69, 410 63 C 464 55, 510 38, 560 30 C 606 22, 636 38, 668 45 C 700 52, 735 50, 770 51 C 812 52, 848 58, 879 80 C 900 96, 914 128, 920 164"
+                d="M100.56 93.97 L110.55 86.67 L120.53 78.58 L130.52 73.1 L140.5 69.62 L150.49 67.85 L160.47 67.56 L170.46 67.95 L180.44 68.74 L190.43 69.62 L200.41 70.45 L210.39 71.63 L220.38 73.39 L230.36 75.1 L240.35 76.87 L250.33 78.19 L260.32 78.14 L270.3 77.21 L280.29 75.84 L290.27 74.47 L300.26 73.29 L310.24 71.77 L320.23 70.45 L330.21 69.27 L340.2 68.34 L350.18 67.56 L360.17 67.27 L370.15 66.63 L380.14 65.99 L390.12 65.21 L400.11 64.08 L410.09 62.61 L420.08 60.8 L430.06 58.79 L440.05 56.78 L450.03 54.67 L460.02 53.1 L470 51.54 L479.99 49.38 L489.97 46.88 L499.96 44.24 L509.94 41.54 L519.93 38.9 L529.91 36.3 L539.89 33.95 L549.88 31.89 L559.86 30.08 L569.85 28.61 L579.83 27.33 L589.82 26.35 L599.8 25.76 L609.79 26.3 L619.77 27.87 L629.76 31.55 L639.74 36.84 L649.73 40.86 L659.71 43.55 L669.7 45.71 L679.68 47.57 L689.67 49.18 L699.65 50.41 L709.64 51.14 L719.62 51.49 L729.61 51.44 L739.59 51.14 L749.58 50.61 L759.56 49.77 L769.55 48.79 L779.53 47.91 L789.52 47.13 L799.5 46.59 L809.49 46.98 L819.47 49.38 L829.46 55.8 L839.44 61.68 L849.42 65.94 L859.41 70.65 L869.39 77.75 L879.38 84.95 L889.36 92.25 L899.35 100.88 L908.26 106.02"
               />
               <path
                 id="foundationTraceCutDonePath"
                 class="foundation-trace-cut-done-path"
-                d="M80 160 C 88 126, 96 94, 114 80 C 132 68, 156 69, 182 70 C 218 70, 246 80, 276 78 C 318 76, 362 69, 410 63 C 464 55, 510 38, 560 30 C 606 22, 636 38, 668 45 C 700 52, 735 50, 770 51 C 812 52, 848 58, 879 80 C 900 96, 914 128, 920 164"
+                d="M100.56 93.97 L110.55 86.67 L120.53 78.58 L130.52 73.1 L140.5 69.62 L150.49 67.85 L160.47 67.56 L170.46 67.95 L180.44 68.74 L190.43 69.62 L200.41 70.45 L210.39 71.63 L220.38 73.39 L230.36 75.1 L240.35 76.87 L250.33 78.19 L260.32 78.14 L270.3 77.21 L280.29 75.84 L290.27 74.47 L300.26 73.29 L310.24 71.77 L320.23 70.45 L330.21 69.27 L340.2 68.34 L350.18 67.56 L360.17 67.27 L370.15 66.63 L380.14 65.99 L390.12 65.21 L400.11 64.08 L410.09 62.61 L420.08 60.8 L430.06 58.79 L440.05 56.78 L450.03 54.67 L460.02 53.1 L470 51.54 L479.99 49.38 L489.97 46.88 L499.96 44.24 L509.94 41.54 L519.93 38.9 L529.91 36.3 L539.89 33.95 L549.88 31.89 L559.86 30.08 L569.85 28.61 L579.83 27.33 L589.82 26.35 L599.8 25.76 L609.79 26.3 L619.77 27.87 L629.76 31.55 L639.74 36.84 L649.73 40.86 L659.71 43.55 L669.7 45.71 L679.68 47.57 L689.67 49.18 L699.65 50.41 L709.64 51.14 L719.62 51.49 L729.61 51.44 L739.59 51.14 L749.58 50.61 L759.56 49.77 L769.55 48.79 L779.53 47.91 L789.52 47.13 L799.5 46.59 L809.49 46.98 L819.47 49.38 L829.46 55.8 L839.44 61.68 L849.42 65.94 L859.41 70.65 L869.39 77.75 L879.38 84.95 L889.36 92.25 L899.35 100.88 L908.26 106.02"
               />
             </svg>
+
+            <img
+              class="foundation-trace-dotted-image"
+              src="assets/axis/foundation-line2.png.png"
+              alt=""
+              aria-hidden="true"
+            >
 
             <div class="trace-snap-halo" aria-hidden="true"></div>
 
@@ -597,14 +585,25 @@
             </div>
           </div>
 
-          <div class="axis-stability-hint" aria-hidden="true">
-            <span>WHEEL OR DRAG TO TEST FIT</span>
-          </div>
+        <div class="axis-stability-hint" aria-hidden="true">
+          <span>WHEEL OR DRAG TO TEST FIT</span>
+        </div>
+      </div>
+
+      <button class="axis-skip-button" type="button" data-axis-skip>
+        <span>SKIP TRACE</span>
+        <strong>VIEW WORKS</strong>
+      </button>
+
+      <div class="axis-final-copy">
+          <h2>READ · REFINE · CONNECT</h2>
+          <p>세 개의 주요 프로젝트를 정보 구조, 시각 시스템, 인터랙션 기준으로 다시 정리해 문제를 읽고 화면으로 연결하는 작업 방식을 보여줍니다.</p>
         </div>
 
-        <div class="axis-final-copy">
-          <h2>READ · REFINE · CONNECT</h2>
-          <p>세 개의 작업을 하나의 기준 위에 쌓고, 압축하고, 연결해 포트폴리오의 방향성을 보여줍니다.</p>
+        <div class="axis-modal-hit-layer" aria-label="Project details">
+          <button type="button" data-axis-project="kia" aria-label="KIA Website 상세 보기"></button>
+          <button type="button" data-axis-project="gunit" aria-label="GUNIT App 상세 보기"></button>
+          <button type="button" data-axis-project="gro" aria-label="GRO App 상세 보기"></button>
         </div>
 
       </div>
@@ -613,7 +612,7 @@
 
     <section class="works-display" id="works" data-section-name="WORKS" data-section-index="A-04" data-section-title="SELECTED WORKS">
       <div class="works-canvas">
-        <img class="works-bg" src="assets/works-pegboard-bg.png" alt="" aria-hidden="true">
+        <img class="works-bg" src="assets/works-pegboard-bg.webp" alt="" aria-hidden="true">
 
         <div class="works-copy">
           <div class="works-copy-meta">
@@ -621,15 +620,15 @@
             <span>SELECTED WORKS</span>
           </div>
           <div class="works-inspector" data-works-inspector>
-            <div class="works-inspector-panel is-active" data-inspector-panel="default">
+            <div class="works-inspector-panel" data-inspector-panel="default">
               <p class="eyebrow">04 / Supporting Works</p>
               <h2>Hover a board,<br>read the work,<br>inspect the result.</h2>
-              <p>오른쪽 보드에 마우스를 올리면 왼쪽 종이에 이미지와 작업 요약이 함께 표시됩니다.</p>
+              <p>보드를 선택하면 작업의 목표, 범위, 역할, 결과를 한 화면에서 확인할 수 있습니다.</p>
             </div>
 
-            <div class="works-inspector-panel" data-inspector-panel="character">
+            <div class="works-inspector-panel is-active" data-inspector-panel="character">
               <figure class="works-inspector-visual">
-                <img src="assets/character-crop.png" alt="Character Design board">
+                <img src="assets/character-crop.webp" alt="Character Design board">
               </figure>
               <p class="eyebrow">01 / Character · Illustration · 3D Application</p>
               <h2>Character Design</h2>
@@ -643,7 +642,7 @@
 
             <div class="works-inspector-panel" data-inspector-panel="residential">
               <figure class="works-inspector-visual">
-                <img src="assets/modeling-residential-board.png" alt="Residential House Project board">
+                <img src="assets/modeling-pavilion-board.webp" alt="Residential House Project board">
               </figure>
               <p class="eyebrow">02 / 3D Modeling · Residential Space</p>
               <h2>Residential House</h2>
@@ -657,7 +656,7 @@
 
             <div class="works-inspector-panel" data-inspector-panel="pavilion">
               <figure class="works-inspector-visual">
-                <img src="assets/modeling-pavilion-board.png" alt="Wood Pavilion Architectural Space Study board">
+                <img src="assets/modeling-residential-board.webp" alt="Wood Pavilion Architectural Space Study board">
               </figure>
               <p class="eyebrow">03 / 3D Modeling · Wood Pavilion</p>
               <h2>Wood Pavilion</h2>
@@ -678,17 +677,17 @@
         </div>
 
         <nav class="works-hanging-list" aria-label="Selected projects">
-          <button class="works-hanging-card project-open" type="button" data-project="character" data-project-category="visual" data-inspector-target="character" data-cursor-label="OPEN">
+          <button class="works-hanging-card project-open" type="button" data-project="character" data-project-category="visual" data-inspector-target="character">
             <span class="work-no">01</span>
             <strong>Character Design</strong>
             <span class="work-type">CHARACTER · ILLUSTRATION · 3D APPLICATION</span>
           </button>
-          <button class="works-hanging-card project-open" type="button" data-project="residential" data-project-category="3d" data-inspector-target="residential" data-cursor-label="OPEN">
+          <button class="works-hanging-card project-open" type="button" data-project="residential" data-project-category="3d" data-inspector-target="residential">
             <span class="work-no">02</span>
             <strong>Residential House</strong>
             <span class="work-type">3D MODELING · SPACE VISUALIZATION · RENDERING</span>
           </button>
-          <button class="works-hanging-card project-open" type="button" data-project="pavilion" data-project-category="3d" data-inspector-target="pavilion" data-cursor-label="OPEN">
+          <button class="works-hanging-card project-open" type="button" data-project="pavilion" data-project-category="3d" data-inspector-target="pavilion">
             <span class="work-no">03</span>
             <strong>Wood Pavilion</strong>
             <span class="work-type">3D MODELING · WOOD STRUCTURE · LIGHT STUDY</span>
@@ -702,9 +701,9 @@
         <p class="eyebrow">Contact</p>
         <h2>APPLICATION<br>INFO</h2>
         <p class="contact-copy">
-          흐름을 읽고, 구조를 정리하고,<br>
-          목적까지 자연스럽게 연결되는 화면을 설계하는 디자이너 김재혁입니다.<br>
-          포트폴리오 검토나 채용 관련 연락은 아래 채널로 부탁드립니다.
+          정보 구조와 시각 시스템을 바탕으로,<br>
+          사용자가 목적까지 자연스럽게 이동하는 웹·앱 화면을 설계합니다.<br>
+          포트폴리오 검토와 채용 관련 연락은 아래 채널로 부탁드립니다.
         </p>
         <div class="contact-summary" aria-label="Application summary">
           <article>
@@ -729,7 +728,6 @@
           data-portfolio-url=""
         >
           <a href="mailto:zp92@naver.com">Email</a>
-          <a href="https://github.com/jaeking92-lgtm/jaehyuk-portfolio" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </div>
     </section>
@@ -759,22 +757,19 @@
         <p class="project-modal-type" id="projectModalType"></p>
         <p class="project-modal-desc" id="projectModalDesc"></p>
         <div class="project-modal-section">
-          <h3>간단 설명</h3>
+          <h3>핵심 설계</h3>
           <ul class="project-modal-points" id="projectModalPoints"></ul>
         </div>
 
         <div class="project-modal-section project-modal-link-section" id="projectModalLinkSection">
-          <label class="project-modal-git-label" id="projectModalGitLabel" for="projectModalGit">Project Link</label>
-          <div class="project-modal-link-row">
-            <input id="projectModalGit" class="project-modal-git-input" type="text" value="" readonly>
-            <a id="projectModalLink" class="project-modal-link-button" href="#" target="_blank" rel="noopener noreferrer">VIEW PROJECT ↗</a>
-          </div>
+          <h3 id="projectModalGitLabel">GitHub</h3>
+          <div class="project-modal-link-list" id="projectModalLinks"></div>
         </div>
 
         <div class="project-modal-tags" id="projectModalTags" aria-label="Project tags"></div>
       </div>
     </section>
   </div>
-  <script src="scripts.js?v=axis-fit-rig-aligned-20260603"></script>
+  <script src="scripts.js?v=gunit-planning-link-20260623"></script>
 </body>
 </html>
