@@ -10363,6 +10363,90 @@ body.modal-open{overflow:hidden;}
   z-index:86 !important;
 }
 
+/* Lightweight first-use guidance for the portfolio's interactive sections. */
+.interaction-hint{
+  position:absolute;
+  z-index:160;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0;
+  padding:7px 9px;
+  border:1px solid rgba(45,23,14,.18);
+  background:rgba(255,248,238,.90);
+  color:rgba(45,23,14,.72);
+  box-shadow:0 10px 22px rgba(45,23,14,.10);
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:.14em;
+  line-height:1.25;
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity .32s ease,transform .32s cubic-bezier(.22,1,.36,1);
+}
+.interaction-hint span{
+  color:rgba(45,23,14,.42);
+  font-size:8px;
+  letter-spacing:.18em;
+}
+.tools-interaction-hint{
+  left:50%;
+  bottom:9%;
+  transform:translate(-50%, 8px);
+}
+.works-interaction-hint{
+  left:51.75%;
+  top:6.2%;
+}
+.axis-interaction-hint{
+  left:50%;
+  top:19%;
+  transform:translate(-50%, 8px);
+  white-space:nowrap;
+}
+.tools-photo-section.section-in:not(.is-interaction-hint-dismissed) .tools-interaction-hint,
+.works-display.section-in:not(.is-interaction-hint-dismissed) .works-interaction-hint,
+.project-axis-section:not(.is-interaction-hint-dismissed) .axis-interaction-hint{
+  opacity:1;
+}
+.tools-photo-section.section-in:not(.is-interaction-hint-dismissed) .tools-interaction-hint,
+.axis-interaction-hint{
+  transform:translate(-50%, 0);
+}
+.works-display.section-in:not(.is-interaction-hint-dismissed) .works-interaction-hint{
+  transform:translateY(0);
+}
+@media(max-width:760px){
+  .interaction-hint{
+    max-width:calc(100vw - 32px);
+    padding:8px 9px;
+    font-size:8px;
+    letter-spacing:.11em;
+  }
+  .tools-interaction-hint{
+    left:14px;
+    bottom:12px;
+    transform:translateY(8px);
+  }
+  .tools-photo-section.section-in:not(.is-interaction-hint-dismissed) .tools-interaction-hint{
+    transform:translateY(0);
+  }
+  .works-interaction-hint{
+    left:8%;
+    top:46%;
+  }
+  .axis-interaction-hint{
+    top:15%;
+    white-space:normal;
+    text-align:center;
+    justify-content:center;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .interaction-hint{transition:none}
+}
+
 /* Continuity polish: keep the work board connected to the paper contact page,
    make the manual A-03 step escapable, and preserve tool-board legibility on phones. */
 .works-display{
@@ -10755,5 +10839,52 @@ body.is-axis-continuity:before{
   .axis-modal-hit-layer{
     width:min(96vw, 720px);
     height:min(46vh, 500px);
+  }
+}
+
+/* The cards use geometry-based click detection, so mirror that detection
+   with a hover class instead of relying on :hover/pointer-events. */
+.project-axis-stage.has-axis-card-hover{
+  cursor:pointer !important;
+}
+.project-axis-stage:not(.has-foundation-visible) .axis-stack-card.is-axis-hovered{
+  z-index:130 !important;
+  border-color:rgba(45,23,14,.9) !important;
+  box-shadow:
+    0 38px 88px rgba(45,23,14,.30),
+    0 0 0 2px rgba(255,248,238,.82),
+    inset 0 1px 0 rgba(255,255,255,.58) !important;
+  filter:saturate(1.08) contrast(1.04) brightness(1.02) !important;
+}
+.project-axis-stage:not(.has-foundation-visible) .axis-stack-card.is-axis-hovered:after{
+  background:linear-gradient(180deg, rgba(28,19,13,.06), rgba(28,19,13,.30)) !important;
+  opacity:1 !important;
+}
+.project-axis-stage:not(.has-foundation-visible) .axis-stack-card img{
+  transition:transform .32s cubic-bezier(.22,1,.36,1), filter .22s ease !important;
+}
+.project-axis-stage:not(.has-foundation-visible) .axis-stack-card.is-axis-hovered img{
+  transform:scale(calc(var(--card-image-scale, 1) + .025)) !important;
+}
+.project-axis-stage:not(.has-foundation-visible) .axis-stack-card.is-axis-hovered .axis-card-cta,
+.project-axis-stage:not(.has-foundation-visible) .axis-stack-card:focus-visible .axis-card-cta{
+  display:inline-flex !important;
+  visibility:visible !important;
+  left:50% !important;
+  right:auto !important;
+  top:50% !important;
+  padding:10px 13px !important;
+  border-color:rgba(45,23,14,.42) !important;
+  background:rgba(255,248,238,.95) !important;
+  color:rgba(45,23,14,.92) !important;
+  box-shadow:0 10px 30px rgba(28,19,13,.22) !important;
+  font-size:9px !important;
+  font-weight:700 !important;
+  opacity:1 !important;
+  transform:translate(-50%, -50%) !important;
+}
+@media(hover:none){
+  .project-axis-stage.has-axis-card-hover{
+    cursor:default !important;
   }
 }

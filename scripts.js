@@ -1233,6 +1233,7 @@ initTitleReveal();
 initHeroIntroInteractions();
 initWorksInspector();
 initProjectFilters();
+initInteractionHints();
 initContactLinks();
 initWorksPreviewCursor();
 initToolsPegboardInteraction();
@@ -1356,7 +1357,13 @@ const projectModalData = {
       '반복 관리에 집중할 수 있도록 홈, 루틴, 기록 화면의 우선순위 정리',
       '차분한 그린 톤 UI와 카드형 정보 구조로 일상적인 관리 경험 제공'
     ],
-    git: '',
+    links: {
+      live: 'https://jaeking92-lgtm.github.io/gro-plant-care/',
+      planning: '',
+      github: '',
+      figma: '',
+      prototype: ''
+    },
     tags: ['App Design', 'Routine', 'Plant Care']
   },
   character: {
@@ -1735,7 +1742,7 @@ projectOpenButtons.forEach((button) => {
 
 axisProjectButtons.forEach((button) => {
   button.addEventListener('click', (event) => {
-    if (!button.closest('.axis-modal-hit-layer')) {
+    if (!button.closest('.axis-modal-hit-layer') && event.detail !== 0) {
       event.preventDefault();
       event.stopPropagation();
       return;
@@ -2023,6 +2030,61 @@ function initProjectFilters() {
   });
 
   setFilter('all');
+}
+
+function initInteractionHints() {
+  const toolsSection = document.querySelector('#tools');
+  const axisSection = document.querySelector('#merge');
+  const axisStage = axisSection?.querySelector('.project-axis-stage');
+  const axisCards = Array.from(axisSection?.querySelectorAll('.axis-stack-card[data-axis-project]') || []);
+  const worksSection = document.querySelector('#works');
+
+  const dismiss = (section) => {
+    section?.classList.add('is-interaction-hint-dismissed');
+  };
+
+  document.querySelectorAll('#tools [data-tool-target]').forEach((tool) => {
+    ['pointerenter', 'focus', 'click'].forEach((eventName) => {
+      tool.addEventListener(eventName, () => dismiss(toolsSection), {once:true});
+    });
+  });
+
+  document.querySelectorAll('#works .works-hanging-card, #works [data-project-filter]').forEach((control) => {
+    ['pointerenter', 'focus', 'click'].forEach((eventName) => {
+      control.addEventListener(eventName, () => dismiss(worksSection), {once:true});
+    });
+  });
+
+  const clearAxisCardHover = () => {
+    axisStage?.classList.remove('has-axis-card-hover');
+    axisCards.forEach((card) => card.classList.remove('is-axis-hovered'));
+  };
+
+  axisStage?.addEventListener('pointermove', (event) => {
+    if (event.pointerType === 'touch' || axisStage.classList.contains('has-foundation-visible')) {
+      clearAxisCardHover();
+      return;
+    }
+
+    const projectKey = getAxisProjectKeyFromVisibleCardPoint(event.clientX, event.clientY);
+    axisStage.classList.toggle('has-axis-card-hover', Boolean(projectKey));
+    axisCards.forEach((card) => {
+      card.classList.toggle('is-axis-hovered', card.dataset.axisProject === projectKey);
+    });
+  });
+  axisStage?.addEventListener('pointerleave', clearAxisCardHover);
+
+  const dismissAxisHint = () => dismiss(axisSection);
+  axisStage?.addEventListener('pointerdown', dismissAxisHint, {once:true});
+  document.querySelector('[data-axis-skip]')?.addEventListener('click', dismissAxisHint, {once:true});
+  const onAxisWheel = () => {
+    const rect = axisSection?.getBoundingClientRect();
+    if (!rect || rect.top >= window.innerHeight || rect.bottom <= 0) return;
+
+    dismissAxisHint();
+    window.removeEventListener('wheel', onAxisWheel);
+  };
+  window.addEventListener('wheel', onAxisWheel, {passive:true});
 }
 
 async function initContactLinks() {
